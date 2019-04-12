@@ -10,7 +10,7 @@
           <span class="menu-header">易酒批仓配服务系统</span>
         </div>
         <div class="top-bar">
-          <span>{{userInfo.trueName}},你好</span>
+          <span>{{userInfo.wxNickName}},你好</span>
           <!--<el-select size="mini" :value="choosenRole" @change="changeRole" placeholder="请选择"
                      style="margin-right:20px;background-color: transparent">
             <el-option size="mini"
@@ -23,8 +23,11 @@
           </el-select>-->
           <el-dropdown @command="changeRole" trigger="click">
             <span class="el-dropdown-link">
-              {{`${choseRoleInfoList.orgName}${choseRoleInfoList.role}`}}<i
-              class="el-icon-arrow-down el-icon--right"></i>
+                角色:
+             <span v-if="userInfo.userType==1">经销商</span>
+             <span v-if="userInfo.userType==2">销售人员</span>
+              <!--{{`${choseRoleInfoList.orgName}${choseRoleInfoList.role}`}}-->
+              <i class=" el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in userInfo.userLoginAuth" :command="item.roleCode">
@@ -59,21 +62,6 @@
           </el-menu>
 
 
-          <!--<el-menu :router="true">-->
-          <!--<el-submenu index="1">-->
-          <!--<template slot="title"><i class="iconfont icon-dingdan"></i>订单管理</template>-->
-          <!--<el-menu-item index="1-1" :route="{name:`inboundOrder`}">第三方入库申请单</el-menu-item>-->
-          <!--<el-menu-item index="1-2" :route="{name:`outboundOrder`}">第三方出库申请单</el-menu-item>-->
-          <!--<el-menu-item index="1-3" :route="{name:`entrustDeliveryOrder`}">第三方委托配送单</el-menu-item>-->
-          <!--</el-submenu>-->
-          <!--</el-menu>-->
-          <!--<el-menu :router="true">-->
-          <!--<el-submenu index="2">-->
-          <!--<template slot="title"><i class="iconfont icon-cangkucangchu"></i>仓库管理</template>-->
-          <!--<el-menu-item index="2-1" :route="{name:`warehouseMessageManage`}">仓库信息管理</el-menu-item>-->
-          <!--<el-menu-item index="2-2" :route="{name:`warehouseStock`}">仓库库存</el-menu-item>-->
-          <!--</el-submenu>-->
-          <!--</el-menu>-->
         </el-aside>
         <!--功能区-->
         <el-main>

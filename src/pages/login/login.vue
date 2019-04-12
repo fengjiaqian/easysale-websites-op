@@ -12,7 +12,7 @@
       <div class="title">用户登录</div>
       <div class="grid-content bg-purple">
         <el-input style="width: 363px;margin: 48px 0 24px 0;" placeholder="请输入用户名" prefix-icon="el-icon-mobile-phone"
-                  v-model="account"></el-input>
+                  v-model="phone"></el-input>
       </div>
       <div class="grid-content bg-purple">
         <el-input style="width: 363px;" placeholder="请输入登陆密码" type="password" prefix-icon="el-icon-edit"
@@ -42,6 +42,7 @@
         deviceOS: ``,
         deviceType: ``,
         userToken: '',
+        phone:'',
         fullscreenLoading: false
       }
     },
@@ -49,8 +50,8 @@
       //UA认证接口，拿到token之后,再调登陆接口
       getUALogin() {
         this.fullscreenLoading = true
-        let {account, password, appCode, appVersion, deviceId, deviceOS, deviceType} = this
-        http.getUALogin({account, password, appCode, appVersion, deviceId, deviceOS, deviceType}).then(data => {
+        let {account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone} = this
+        http.getUALogin({account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone}).then(data => {
           this.userToken = data.token
           this.setToken({token: this.userToken});
           this.updateToken(this.userToken);
@@ -66,18 +67,19 @@
       getLoginInfo() {
         this.fullscreenLoading = true
         let userToken = this.userToken;
-        http.getLoginInfo({userToken}).then(data => {
+        let {account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone} = this
+        http.getLoginInfo({account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone}).then(data => {
           //将获取到的用户信息存在vuex中
           this.setUserInfo({userInfo: data});
           this.updateUserInfo(data);
-          this.roleCode = data.userLoginAuth[0].roleCode;
-          let choseRoleInfoList = data.userLoginAuth[0];//当前选中角色的信息
-          this.setChoseRoleInfoList(choseRoleInfoList);
-          this.updateChoseRoleInfoList(choseRoleInfoList);
-          //this.roleCode=`Developer`
-          this.updateChoosenRole(this.roleCode);//将角色列表中的第一角色存在vuex中
-          this.updateChoseRole(this.roleCode);
-          console.log('role', this.roleCode)
+          // this.roleCode = data.userLoginAuth[0].roleCode;
+          // let choseRoleInfoList = data.userLoginAuth[0];//当前选中角色的信息
+          // this.setChoseRoleInfoList(choseRoleInfoList);
+          // this.updateChoseRoleInfoList(choseRoleInfoList);
+          this.roleCode=`Developer`
+          // this.updateChoosenRole(this.roleCode);//将角色列表中的第一角色存在vuex中
+          // this.updateChoseRole(this.roleCode);
+          // console.log('role', this.roleCode)
           this.$message('登录成功');
           this.getMenuList()
           this.$router.replace({path: `/emptyPage`})
@@ -140,6 +142,12 @@
             menuItem.routePage = `warehouseStock`
           } else if (menuItem.nameSpace === `/warehouseControl`) {//仓库库存
             menuItem.routePage = `warehouseControl`
+          }else if (menuItem.nameSpace === `/UserManage`) {//用户管理
+            menuItem.routePage = `warehouseControl`
+          }else if (menuItem.nameSpace === `/RoleManage`) {//角色管理
+            menuItem.routePage = `warehouseStock`
+          }else if (menuItem.nameSpace === `/PermissionManage`) {//功能管理
+            menuItem.routePage = `applyWarehouseProduct`
           }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
