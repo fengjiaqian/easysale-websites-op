@@ -22,7 +22,7 @@
       <el-button type="primary" @click="getRoleList" size="medium">查询</el-button>
       <el-button type="info" @click="resetForm()" size="medium">重置</el-button>
     </div>
-    <el-button type="primary" class="addAd" @click="addAccount">新增账号</el-button>
+    <el-button type="primary" class="addAd" @click="addRole">新增角色</el-button>
     <el-table
       v-loading="loading"
       :data="accountList"
@@ -45,8 +45,11 @@
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="gotoAccountDetail(scope.row.id,scope.row.cityId)">详情</el-button>
-          <el-button type="text" size="small" @click="resetPassword(scope.row.id)">重置密码</el-button>
+          <!--<el-button type="text" size="small" @click="resetPassword(scope.row.id)">重置密码</el-button>-->
           <el-button type="text" size="small" @click="editAccount(scope.row)">编辑</el-button>
+          <el-button type="text" size="medium" @click="toggleState(scope.row,scope.$index)">
+            {{scope.row.state===0?'启用':'停用'}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -276,13 +279,9 @@
       indexMethods(index) {
         return (this.currentPage - 1) * this.pageSize + index + 1
       },
-      addAccount() {
+      addRole() {
         //只有OPAdmin,HR这个角色可以新增账户
-        if (this.choseRoleInfoList.roleCode === `OPAdmin` || this.choseRoleInfoList.roleCode === `HR`) {
-          this.$router.push({name: `addAccount`})
-        } else {
-          this.$message.error(`当前角色无法新增账户`)
-        }
+          this.$router.push({name: `addRole`})
 
       },
       handlePageNumChange(num) {

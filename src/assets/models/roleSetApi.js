@@ -7,9 +7,9 @@ export default {
   getRoleList(params = {}) {
     return axios.post(prefix + '/role/roleList', params)
   },
-  //新增仓库查询城市接口
-  listAdminCity() {
-    return axios.get(prefix + `/base/findAllJiupiCityList`)
+  //新增角色
+  addRole(params = {}) {
+    return axios.post(prefix + '/role/saveBackRole', params)
   },
   //获取角色清单
   findRoleList(params = {}) {

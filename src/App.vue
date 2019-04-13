@@ -264,6 +264,12 @@
             menuItem.routePage = `warehouseStock`
           } else if (menuItem.nameSpace === `/warehouseControl`) {//仓库库存
             menuItem.routePage = `warehouseControl`
+          }else if (menuItem.nameSpace === `/UserManage`) {//用户管理
+            menuItem.routePage = `warehouseControl`
+          }else if (menuItem.nameSpace === `/RoleManage`) {//角色管理
+            menuItem.routePage = `roleSetting`
+          }else if (menuItem.nameSpace === `/PermissionManage`) {//功能管理
+            menuItem.routePage = `applyWarehouseProduct`
           }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
