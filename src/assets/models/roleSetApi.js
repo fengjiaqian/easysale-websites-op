@@ -19,7 +19,11 @@ export default {
   updateBackRole(params = {}) {
     return axios.post(prefix + '/role/updateBackRole', params)
   },
-
+ //查询角色信息
+  selectRoleById(params={}){
+    console.log(params);
+    return axios.post(prefix + '/role/selectRoleById', params)
+  },
 
 
 

@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="gotoAccountDetail(scope.row.id,scope.row.cityId)">详情</el-button>
+          <el-button type="text" size="small" @click="gotoRoleDetail(scope.row)">详情</el-button>
           <el-button type="text" size="small" @click="editRole(scope.row)">编辑</el-button>
           <el-button type="text" size="medium" @click="toggleRoleState(scope.row,scope.$index)">
             {{scope.row.state===0?'启用':'停用'}}
@@ -221,9 +221,10 @@
           this.loading = false
         })
       },
-      gotoAccountDetail(id, cityId) {
-        //item=JSON.stringify(item)
-        this.$router.push({name: `accountDetail`, query: {id: id, cityId: cityId}})
+      gotoRoleDetail(row) {
+        // item=JSON.stringify(item)
+        console.log(row);
+        this.$router.push({name: `roleDetail`, query: {id: row.id}})
       },
       ensureReset() {
         if (this.resetRuleForm.newPass === this.resetRuleForm.newPassRepeat) {

@@ -56,7 +56,7 @@ import roleSetting from '../pages/role/roleSetting.vue'
 //添加角色
 import addRole from '../pages/role/addRole.vue'
 //角色详情
-import roleDetail from '../pages/sysSeting/accountDetail'
+import roleDetail from '../pages/role/roleDetail'
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'

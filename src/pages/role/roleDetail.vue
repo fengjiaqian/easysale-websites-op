@@ -2,14 +2,13 @@
   <div>
     <div class="block-box">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="人员信息" name="first" v-loading="loading">
+        <el-tab-pane label="角色信息" name="first" v-loading="loading">
           <div style="line-height: 20px;margin-top: 30px;font-size: 14px;">
-            <div class="userInfo">姓名： {{employeeInfo.trueName}}</div>
-            <div class="userInfo">服务商： {{employeeInfo.cityName}}</div>
-            <div class="userInfo">手机号： {{employeeInfo.mobileNo}}</div>
-            <div class="userInfo">性别： {{employeeInfo.gender}}</div>
-            <div class="userInfo">人员类型： {{employeeInfo.employeeTypeName}}</div>
-            <div class="userInfo">状态： {{employeeInfo.enableState==0?'停用':'启用'}}</div>
+            <div class="userInfo">角色： {{employeeInfo.roleName}}</div>
+            <div class="userInfo">父角色名称： {{employeeInfo.parentName}}</div>
+            <div class="userInfo">创建时间： {{employeeInfo.createTime}}</div>
+            <div class="userInfo">状态: {{employeeInfo.state==0?'停用':'启用'}}</div>
+
             <el-button class="userInfo" @click="goBack">返回</el-button>
           </div>
 
@@ -126,7 +125,7 @@
 <script>
 
 
-  import http from 'http/accountSetApi';
+  import http from 'http/roleSetApi';
   import {mapState, mapMutations} from "vuex";
   import BusinessCitySelector from 'common/BusinessCitySelector'
 
@@ -136,9 +135,12 @@
     data() {
       return {
         activeName: 'first',
+        roleId:'',
+        roleName:'',
         loading:true,
         employeeInfo: {
-         authList: []
+         authList: [],
+
         },
         optUserId: '',//创建人id
         currentPage: 1,
@@ -167,10 +169,11 @@
     },
     methods: {
       //单个用户信息查询接口
-      queryUserInfo(){
-        let userId=this.user_Id;
-        http.queryUserInfo(userId).then(data=>{
+      selectRoleById(){
+
+        http.selectRoleById(this.role).then(data=>{
           this.employeeInfo = data;
+          console.log( this.employeeInfo);
           if (this.employeeInfo.authList) {
             this.employeeInfo.authList.forEach(item => {
               item.trueName = this.employeeInfo.trueName;
@@ -197,27 +200,14 @@
         )
       },
       //查询一级服务商信息接口
-      // findFristOrgClass() {
-      //   http.findFristOrgClass().then(data => {
-      //     this.serviceList = data;
-      //   }).catch(e => {
-      //     console.log(e)
-      //   })
-      // },
-      //获取仓库信息接口
-      findJiuPiWarehouseListByCityId() {
-        let cityId = this.$route.query.cityId;//通过路由传过来的当前人员的城市Id
-        http.findJiuPiWarehouseListByCityId(cityId).then(data => {
-          let loginRole = this.choseRoleInfoList.orgType;
-          let loginOrgId = this.choseRoleInfoList.orgId;
-          //如果登录角色时仓库级别的（orgType为3），筛选出data列表中Id与当前角色的orgId相等的一项
-          if (loginRole === 3) {
-            this.warehouseList = data.filter(item => item.id === loginOrgId)
-          } else {
-            this.warehouseList = data
-          }
+      findFristOrgClass() {
+        http.findFristOrgClass().then(data => {
+          this.serviceList = data;
+        }).catch(e => {
+          console.log(e)
         })
       },
+
       //移除角色接口
       removeAdminAuth() {
         let {oneRoleId} = this;
@@ -281,7 +271,7 @@
         return index !== -1;
       },
 
-      //新增用户角色
+      // //新增用户角色
       addAdminAuth() {
         let {optUserId, orgType, org_Id, role, user_Id} = this;
         http.addAdminAuth({optUserId, orgType, org_Id, role, user_Id}).then(data => {
@@ -289,30 +279,14 @@
             type: 'success',
             message: '新增成功!'
           })
-          this.queryUserInfo();
+          this.selectRoleById();
           this.queryRefList();
         }).catch(e => {
           this.$message.error(e);
         })
       },
-      //获取可授权的组织机构列表
-      findAllCityList() {
-        let orgId = this.citySearchId;
-        http.findAllCityListWithParent(orgId).then(data => {
-          this.cityRoleOptions = data
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      handleClick() {
-      },
-      goBack() {
-        this.$router.go(-1)
-      },
-      indexMethods(index) {
-        return (this.currentPage - 1) * this.pageSize + index + 1
-      },
-      //确认新增角色
+
+      // //确认新增角色
       clickAddNewRole() {
         this.checkCityRoleList();
         if (this.org_Id || (this.org_Id === 0&&this.choosenRole===`Developer`)) {
@@ -326,7 +300,7 @@
       addNewRole() {
         this.dialogVisible = true
       },
-      //删除角色
+      // //删除角色
       deleteOneRole(roleId, userRole) {
         this.oneRoleId = roleId;
         this.$confirm('是否删除?', '提示', {
@@ -347,7 +321,11 @@
           });
         });
       },
-
+      handleClick() {
+      },
+      goBack() {
+        this.$router.go(-1)
+      },
       //WarehouseOperative  HR OPAdmin 先判断如果是ruleOrgId=0的超管登录，需要选择一级服务商，传选中的作为ruleOrgId，如果不等于0，直接传登录人的ruleOrgId
       //Developer orgId传 0 orgType 1
       checkAdminRole() {
@@ -361,10 +339,10 @@
           }
         }
       },
-      //根据选择的角色判断后台传值
-      //后台要求 ：WarehouseOperative  HR OPAdmin Developer orgType 1
-      //Cashier CityAdmin CityManager DeliveryUser SaleUser orgId传cityId  orgType 2
-      //StoreAdmin  LogisticsLeader Stevedore WarehouseManager  orgId传 warehouseId orgType传3
+      // //根据选择的角色判断后台传值
+      // //后台要求 ：WarehouseOperative  HR OPAdmin Developer orgType 1
+      // //Cashier CityAdmin CityManager DeliveryUser SaleUser orgId传cityId  orgType 2
+      // //StoreAdmin  LogisticsLeader Stevedore WarehouseManager  orgId传 warehouseId orgType传3
       checkCityRoleList() {
         let adminRole = [`WarehouseOperative`, `HR`, `OPAdmin`, `Developer`,`DealerAuditManager`,`ShopAuditManager`];
         let cityRole = ['CityAdmin', 'CityManager', 'DeliveryUser', 'SaleUser'];
@@ -395,17 +373,17 @@
       // }
     },
     activated(){
-      if (this.$route.query.id) {
-        this.user_Id = this.$route.query.id;
-        this.citySearchId = this.$route.query.cityId;
+      console.log(this.$route.query);
+      this.employeeInfo = this.$route.query.id || {}
+      if (this.$route.query) {
+        this.role = this.$route.query;
+        console.log(this.role)
       }
-      if (this.$store.state.user.userInfo.userId) {
-        this.optUserId = this.$store.state.user.userInfo.userId;
-      }
-      this.queryUserInfo();
-      this.findJiuPiWarehouseListByCityId();
-      this.findAllCityList();
-      this.findParentCity();
+
+      this.selectRoleById();
+      // this.findJiuPiWarehouseListByCityId();
+      // this.findAllCityList();
+      // this.findParentCity();
     },
     mounted() {
       if (this.$route.query.id) {
@@ -415,10 +393,10 @@
       if (this.$store.state.user.userInfo.userId) {
         this.optUserId = this.$store.state.user.userInfo.userId;
       }
-      this.queryUserInfo();
-      this.findJiuPiWarehouseListByCityId();
-      this.findAllCityList();
-      this.findParentCity();
+      this.selectRoleById();
+      // this.findJiuPiWarehouseListByCityId();
+      // this.findAllCityList();
+      // this.findParentCity();
     },
     computed: {
       ...mapState(`user`, [`choosenRole`, `userInfo`, `choseRoleInfoList`]),
