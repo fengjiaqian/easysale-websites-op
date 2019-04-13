@@ -7,7 +7,7 @@
       <el-header class="header-wrap">
         <div class="header-logo">
           <img src="./assets/icons/neibu.png"/>
-          <span class="menu-header">易酒批仓配服务系统</span>
+          <span class="menu-header">易经销运营平台</span>
         </div>
         <div class="top-bar">
           <span>{{userInfo.wxNickName}},你好</span>

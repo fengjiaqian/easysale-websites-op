@@ -145,7 +145,7 @@
           }else if (menuItem.nameSpace === `/UserManage`) {//用户管理
             menuItem.routePage = `warehouseControl`
           }else if (menuItem.nameSpace === `/RoleManage`) {//角色管理
-            menuItem.routePage = `warehouseStock`
+            menuItem.routePage = `roleSetting`
           }else if (menuItem.nameSpace === `/PermissionManage`) {//功能管理
             menuItem.routePage = `applyWarehouseProduct`
           }

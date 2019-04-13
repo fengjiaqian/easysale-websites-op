@@ -51,6 +51,12 @@ import shopAuditDetail from '../pages/dealerManage/shopAuditDetail'
 import applyWarehouseProduct from '../pages/productManage/applyWarehouseProduct'
 //新增产品
 import productAdd from '../pages/productManage/productAdd'
+//角色管理
+import roleSetting from '../pages/role/roleSetting.vue'
+//添加角色
+import addRole from '../pages/role/addRole.vue'
+//角色详情
+import roleDetail from '../pages/sysSeting/accountDetail'
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
@@ -411,6 +417,27 @@ export default new Router({
       path: '/chooseProduct',
       name: 'chooseProduct',
       component: chooseProduct,
+    },
+    //角色管理
+    {
+      path: '/roleSetting',
+      name: 'roleSetting',
+      component: roleSetting,
+      meta: {
+        keepalive: true
+      }
+    },
+    {
+      path: '/roleDetail/id',
+      name: 'roleDetail',
+      component: roleDetail,
+
+    },
+    {
+      path: '/addRole',
+      name: 'addRole',
+      component: addRole,
+
     },
   ]
 })
