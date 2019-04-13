@@ -18,10 +18,9 @@
                    :remote-method="queryDealerList"
                    autocomplete
                    @change="selectWarehouse"
-                   :disabled="pageType=='edit'"
         >
-          <el-option v-for="dealer in dealerList" :label="dealer.roleName" :value="dealer.id"
-                     :key="dealer.id"></el-option>
+          <el-option v-for="(dealer,id) in dealerList" :label="dealer.roleName" :value="dealer.id"
+                     :key="id"></el-option>
         </el-select>
       </el-form-item>
 
@@ -59,6 +58,8 @@
         productDetailForm: {
           roleName:'',//角色名称
           parentId:'',//父id
+          parentName:'',
+          roleId:'',
           state: 1,//状态 0=停用 1=启用
         },
         dealerList: [],
@@ -159,34 +160,32 @@
         params.userId = this.userInfo.id
 
         this.$refs[formName].validate((valid) => {
-          if (valid) {
+          console.log(params);
+          if (valid && this.pageType === `add`) {
             https.addRole(params)
               .then(() => {
-               console.log(params);
-                if (this.pageType == 'add') {
-                  this.$message(`新增成功`)
-
-                } else {
-                  this.$message(`修改成功`)
-                }
+                this.fullscreenLoading = false
+                this.$message(`新增成功`)
                 this.$router.go(-1)
               })
               .catch(e => {
-                // this.fullscreenLoading = false
+                this.fullscreenLoading = false
                 this.$message(e)
               })
-          } /*else if (valid && this.pageType === `edit`) {
-            http.updateWarehouse(params)
+          } else if (valid && this.pageType === `edit`) {
+            params.roleId=params.id;
+            console.log(params);
+            https.updateBackRole(params)
               .then(() => {
-                // this.fullscreenLoading = false
+                this.fullscreenLoading = false
                 this.$message(`编辑成功`)
                 this.$router.go(-1)
               })
               .catch(e => {
-                // this.fullscreenLoading = false
+                this.fullscreenLoading = false
                 this.$message(e)
               })
-          }*/ else {
+          } else {
             console.log('error submit!!');
             return false;
           }

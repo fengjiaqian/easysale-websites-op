@@ -431,12 +431,18 @@ export default new Router({
       path: '/roleDetail/id',
       name: 'roleDetail',
       component: roleDetail,
+      meta: {
+        keepalive: true
+      }
 
     },
     {
       path: '/addRole',
       name: 'addRole',
       component: addRole,
+      meta: {
+        keepalive: true
+      }
 
     },
   ]

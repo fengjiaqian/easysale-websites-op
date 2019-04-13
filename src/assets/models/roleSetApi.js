@@ -15,6 +15,18 @@ export default {
   updateUserRoleState(params = {}) {
     return axios.post(prefix + '/role/updateUserRoleState', params)
   },
+  //编辑角色
+  updateBackRole(params = {}) {
+    return axios.post(prefix + '/role/updateBackRole', params)
+  },
+
+
+
+
+
+
+
+
   //获取角色清单
   findRoleList(params = {}) {
     return axios.post(prefix + `/commonSelectOptionService/queryList`, params)

@@ -45,7 +45,7 @@
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="gotoAccountDetail(scope.row.id,scope.row.cityId)">详情</el-button>
-          <el-button type="text" size="small" @click="editAccount(scope.row)">编辑</el-button>
+          <el-button type="text" size="small" @click="editRole(scope.row)">编辑</el-button>
           <el-button type="text" size="medium" @click="toggleRoleState(scope.row,scope.$index)">
             {{scope.row.state===0?'启用':'停用'}}
           </el-button>
@@ -236,14 +236,10 @@
       },
 
       //编辑账户
-      editAccount(rowItem) {
-        //只有OPAdmin,HR这个角色可以编辑账户
-        if (this.choseRoleInfoList.roleCode === `OPAdmin` || this.choseRoleInfoList.roleCode === `HR`) {
-          rowItem = JSON.stringify(rowItem)
-          this.$router.push({name: `editAccount`, query: {rowItem}})
-        } else {
-          this.$message.error(`当前角色无法编辑账户`)
-        }
+      editRole(rowItem) {
+        console.log(rowItem);
+        this.$router.push({path: '/addRole', query: {productInfo: rowItem}})
+
       },
       indexMethods(index) {
         return (this.currentPage - 1) * this.pageSize + index + 1
