@@ -11,6 +11,10 @@ export default {
   addRole(params = {}) {
     return axios.post(prefix + '/role/saveBackRole', params)
   },
+  //启用停用
+  updateUserRoleState(params = {}) {
+    return axios.post(prefix + '/role/updateUserRoleState', params)
+  },
   //获取角色清单
   findRoleList(params = {}) {
     return axios.post(prefix + `/commonSelectOptionService/queryList`, params)

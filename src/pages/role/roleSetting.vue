@@ -45,9 +45,8 @@
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="gotoAccountDetail(scope.row.id,scope.row.cityId)">详情</el-button>
-          <!--<el-button type="text" size="small" @click="resetPassword(scope.row.id)">重置密码</el-button>-->
           <el-button type="text" size="small" @click="editAccount(scope.row)">编辑</el-button>
-          <el-button type="text" size="medium" @click="toggleState(scope.row,scope.$index)">
+          <el-button type="text" size="medium" @click="toggleRoleState(scope.row,scope.$index)">
             {{scope.row.state===0?'启用':'停用'}}
           </el-button>
         </template>
@@ -65,24 +64,6 @@
       >
       </el-pagination>
     </div>
-    <!--重置密码对话框-->
-    <el-dialog title="重置密码" top="160px" :modal="false" :visible.sync="resetDialogVisible" width="40%" center>
-      <el-form :label-width="resetFormLabelWidth" :model="resetRuleForm" :rules="rules" ref="resetRuleForm">
-        <!--<el-form-item label="原密码" prop="oldPass">-->
-          <!--<el-input v-model="resetRuleForm.oldPass" auto-complete="off"></el-input>-->
-        <!--</el-form-item>-->
-        <el-form-item label="新密码" prop="newPass">
-          <el-input v-model="resetRuleForm.newPass" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="newPassRepeat">
-          <el-input v-model="resetRuleForm.newPassRepeat" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button type="primary" @click="ensureReset()">确定</el-button>
-        <el-button @click="resetDialogVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
 
   </div>
 </template>
@@ -167,17 +148,8 @@
         if (this.choseRoleInfoList.ruleOrgId) {
           this.findAllCityList();
         } else {
-          this.findFristOrgClass();
           this.showServiceSelector = true;
         }
-      },
-      //查询一级服务商信息接口
-      findFristOrgClass() {
-        http.findFristOrgClass().then(data => {
-          this.serviceList = data;
-        }).catch(e => {
-          console.log(e)
-        })
       },
       //获取可授权的组织机构列表
       findAllCityList() {
@@ -198,10 +170,10 @@
       //获取账户接口
       getRoleList() {
         let roleOrgId = this.choseRoleInfoList.ruleOrgId
-        let {currentPage, mobileNo, pageSize, roleName, state} = this;
+        let {currentPage, mobileNo, pageSize, roleName, state,userInfo} = this;
         let cityId = this.cityId || this.parentOrgId||''
         //let cityId = cityInfoList[1];
-        http.getRoleList({cityId, currentPage, mobileNo, pageSize, roleName, state, roleOrgId}).then(data => {
+        http.getRoleList({cityId, currentPage, mobileNo, pageSize, roleName, state, roleOrgId,userInfo}).then(data => {
           this.accountList = data || [];
           this.totalCount = data ? data.totalCount : 0;
           this.roleListData = data.authList;
@@ -220,18 +192,6 @@
           console.log(e)
         })
       },
-      //重置密码接口
-      changePasswordByOld() {
-        let {newPass, newPassRepeat} = this.resetRuleForm;
-        let identify = this.identify;
-        let userId = this.identify.userId;
-        http.changePasswordByOld({userId, identify, newPass, newPassRepeat}).then(data => {
-          this.$message({type: 'success', message: '修改成功！'})
-        }).catch(e => {
-          this.$message(e)
-        })
-      },
-
 
       resetForm() {
         this.roleName = null;
@@ -240,6 +200,26 @@
         this.cityId = null;
         this.state = null;
         this.getRoleList();
+      },
+      /*设置状态*/
+      toggleRoleState(row, index) {
+        this.loading = true;
+        console.log(this.userInfo);
+        console.log(this.user_Id);
+        let param = {
+          roleId: row.id,
+          // userId: this.userInfo.id,
+          state: row.state == 0 ? 1 : 0,
+        }
+        console.log(param);
+        return http.updateUserRoleState(param).then(data => {
+          this.$message(`修改成功`)
+          this.getRoleList()
+          this.loading = false
+        }).catch(e => {
+          this.$message(e)
+          this.loading = false
+        })
       },
       gotoAccountDetail(id, cityId) {
         //item=JSON.stringify(item)
@@ -254,18 +234,7 @@
 
         this.resetDialogVisible = false;
       },
-      //重置密码
-      resetPassword(id) {
-        if(this.choseRoleInfoList.roleCode===`LogisticsLeader`||this.choseRoleInfoList.roleCode===`StoreAdmin`){
-          this.$message.error(`当前角色无法修改密码`)
-        }else {
-          this.resetRuleForm.oldPass = ``;
-          this.resetRuleForm.newPass = ``;
-          this.resetRuleForm.newPassRepeat = ``;
-          this.resetDialogVisible = true;
-          this.identify.userId = id;
-        }
-      },
+
       //编辑账户
       editAccount(rowItem) {
         //只有OPAdmin,HR这个角色可以编辑账户

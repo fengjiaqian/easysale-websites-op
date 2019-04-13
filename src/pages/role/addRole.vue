@@ -203,20 +203,8 @@
           this.productDetailForm.landingCharge = 0
         } else {
           this.productDetailForm = {
-            productName: ``,//商品名称
-            productSpecificationId: ``,	//商品规格参数id
-            productBrand: ``,//品牌
-            dealerName: ``,  //经销商名称
-            dealerId: ``,    //经销商id
-            facilitatorId: ``,   //服务商id
-            mobileNo: ``,    //经销商手机
-            specificationName: ``,   //包装规格
-            unloadingCharge: 0,//下车费
-            sortingCharge: 0,//分拣费
-            custodianCharge: 0,//托管费
-            loadingCharge: 0,//装车费
-            transportCharge: 0,//运输费
-            landingCharge: 0,//卸货费
+            roleName: ``,//角色名称
+            parentId: ``,   //服务商id
             state: 1,//状态 0=停用 1=启用
           }
         }
