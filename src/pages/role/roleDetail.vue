@@ -1,5 +1,7 @@
 <template>
   <div>
+
+
     <div class="block-box">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="角色信息" name="first" v-loading="loading">
@@ -13,105 +15,54 @@
           </div>
 
         </el-tab-pane>
-        <el-tab-pane label="人员授权" name="second">
+
+
+        <el-tab-pane label="功能授权" name="second">
           <div style="line-height: 20px;">
             <el-button type="primary" class="addAd" @click="addNewRole">+ 新增授权</el-button>
-            <el-table
-              :data="roleList"
-              border
-              style="width: 100%;margin-top:16px;">
-              <el-table-column label="序号" width="60">
-                <template slot-scope="scope">
-                  <span>{{indexMethods(scope.$index)}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="角色" width="260" prop="roleName"></el-table-column>
-              <el-table-column prop="trueName" label="姓名" width="180"></el-table-column>
-              <el-table-column label="手机号" width="180" prop="mobileNo"></el-table-column>
-              <el-table-column label="性别" width="180" prop="gender"></el-table-column>
-              <el-table-column label="人员类型" width="180" prop="employeeTypeName"></el-table-column>
-              <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope" v-if="scope.row.canRemove">
-                  <el-button type="primary" icon="el-icon-delete" size="small"
-                             @click="deleteOneRole(scope.row.id,scope.row.userRole)">移除
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <!--<el-table-->
+              <!--:data="roleList"-->
+              <!--border-->
+              <!--style="width: 100%;margin-top:16px;">-->
+              <!--<el-table-column label="序号" width="60">-->
+                <!--<template slot-scope="scope">-->
+                  <!--<span>{{indexMethods(scope.$index)}}</span>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
+              <!--<el-table-column label="角色" width="260" prop="roleName"></el-table-column>-->
+              <!--<el-table-column prop="trueName" label="姓名" width="180"></el-table-column>-->
+              <!--<el-table-column label="手机号" width="180" prop="mobileNo"></el-table-column>-->
+              <!--<el-table-column label="性别" width="180" prop="gender"></el-table-column>-->
+              <!--<el-table-column label="人员类型" width="180" prop="employeeTypeName"></el-table-column>-->
+              <!--<el-table-column fixed="right" label="操作">-->
+                <!--<template slot-scope="scope" v-if="scope.row.canRemove">-->
+                  <!--<el-button type="primary" icon="el-icon-delete" size="small"-->
+                             <!--@click="deleteOneRole(scope.row.id,scope.row.userRole)">移除-->
+                  <!--</el-button>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
+            <!--</el-table>-->
           </div>
 
         </el-tab-pane>
 
       </el-tabs>
     </div>
+
     <!--人员授权弹框-->
-    <el-dialog title="人员授权" top="160px" :modal="false" :visible.sync="dialogVisible" width="40%" center>
-      <el-form :label-width="resetFormLabelWidth" ref="resetRuleForm">
-        <el-form-item label="角色" prop="userRole">
-          <el-select v-model="role" placeholder="请选择">
-            <el-option
-              v-for="item in queryRoleList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="showWarehouseList" label="仓库：" prop="warehouseId">
-          <el-select v-model="warehouseId" placeholder="请选择">
-            <el-option
-              v-for="item in warehouseList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
+    <el-dialog title="角色功能授权" top="160px" :modal="false" :visible.sync="dialogVisible" width="40%" center>
+      <el-form :label-width="resetFormLabelWidth" ref="tree">
+        <el-tree
+          :data="menuItems"
+          show-checkbox
+          node-key="id"
+          :default-expanded-keys="expandedKeys"
+          :default-checked-keys="checkedKeys"
+          :props="defaultProps"
+          @click="getCheckedKeys"
+        >
+        </el-tree>
 
-        <el-form-item v-if="showServiceSelector" label="服务商：" prop="parentOrgId">
-          <el-select v-model="parentOrgId" size="medium"
-                     placeholder="请选择">
-            <el-option
-              v-for="item in serviceList"
-              :key="item.parentOrgId"
-              :label="item.orgName"
-              :value="item.parentOrgId">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="城市：" v-if="showCityList" prop="cityId">
-
-          <!--<el-col  v-if="showServiceSelector">-->
-          <!--<el-select v-model="parentOrgId"  @change="handleSelectService"-->
-          <!--placeholder="请选择">-->
-          <!--<el-option-->
-          <!--v-for="item in serviceList"-->
-          <!--:key="item.parentOrgId"-->
-          <!--:label="item.orgName"-->
-          <!--:value="item.parentOrgId">-->
-          <!--</el-option>-->
-          <!--</el-select>-->
-
-          <!--&lt;!&ndash;<el-cascader size="mini"&ndash;&gt;-->
-          <!--&lt;!&ndash;:options="provinceList"&ndash;&gt;-->
-          <!--&lt;!&ndash;:show-all-levels="false"&ndash;&gt;-->
-          <!--&lt;!&ndash;v-model="cityInfoList"&ndash;&gt;-->
-          <!--&lt;!&ndash;@change="onSelectCity">&ndash;&gt;-->
-          <!--&lt;!&ndash;</el-cascader>&ndash;&gt;-->
-          <!--</el-col>-->
-          <el-col style="margin-top: 3px">
-            <el-select v-model="cityId" placeholder="请选择城市">
-              <el-option
-                v-for="item in cityRoleOptions"
-                :key="item.cityId"
-                :label="item.cityName"
-                :value="item.cityId">
-              </el-option>
-            </el-select>
-          </el-col>
-        </el-form-item>
       </el-form>
       <div slot="footer">
         <el-button type="primary" @click="clickAddNewRole()">确定</el-button>
@@ -131,7 +82,7 @@
 
   export default {
 
-    name: "accountDetail",
+    name: "roleDetail",
     data() {
       return {
         activeName: 'first',
@@ -165,12 +116,57 @@
         cityId: ``,//选择的城市Id
         cityRoleOptions: [],//新增角色，选择city
         citySearchId: ``,
+        expandedKeys: [],//展开的菜单项
+        checkedKeys: [],//选中的菜单项
+        menuItem:[],
+        menuItems: [{
+          id: 1,
+          label: '系统管理',
+          children: [{
+            id: 4,
+            label: '功能管理',
+            children: [{
+              id: 9,
+              label: '功能维护',
+              children: [{
+                id: 11,
+                label: '功能分配'
+              }]
+            }, {
+              id: 10,
+              label: '资源管理'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '账户管理',
+          children: [{
+            id: 5,
+            label: '用户管理'
+          }, {
+            id: 6,
+            label: '角色管理'
+          }]
+        }, {
+          id: 3,
+          label: '任务管理',
+          children: [{
+            id: 7,
+            label: '任务执行'
+          }, {
+            id: 8,
+            label: '执行记录'
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        }
       }
     },
     methods: {
-      //单个用户信息查询接口
+      //单个用户的角色查寻
       selectRoleById(){
-
         http.selectRoleById(this.role).then(data=>{
           this.employeeInfo = data;
           console.log( this.employeeInfo);
@@ -183,12 +179,40 @@
             })
             this.roleList = this.employeeInfo.authList;
           }
-          this.queryRefList();
           this.loading=false
         }).catch(e=>{
           console.log(e)
         })
       },
+
+      //单个角色的权限查寻
+      findAllRolePermission(){
+        console.log(this.role);
+        http.findAllRolePermission(this.role).then(data=>{
+          this.expandedKeys = data;
+          this.checkedKeys = data;
+          console.log(data);
+          this.loading=false
+        }).catch(e=>{
+          console.log(e)
+        })
+      },
+
+      //查寻所有的功能列表
+      findAllPermissionList(){
+        http.findAllPermissionList().then(data=>{
+          this.menuItems = data;
+          console.log(data);
+          this.loading=false
+        }).catch(e=>{
+          console.log(e)
+        })
+      },
+
+
+
+
+
       //根据用户信息查询一级服务商信息
       findParentCity(){
         let orgId=this.citySearchId;
@@ -234,42 +258,7 @@
           console.log(e)
         })
       },
-      //查询当前角色权限下可移除角色接口
-      queryRefList() {
-        let dictionaryValue = this.choosenRole;
-        //后台接口要求
-        let dictionaryCode = `userRole`;
-        let dictionaryRefCode = `userRoleAuth`;
-        http.queryRefList({dictionaryValue, dictionaryCode, dictionaryRefCode}).then(data => {
-          this.queryRoleList = data;//可新增的角色
-          this.operateRoleList = data
-          this.choseCanRemoveRole();
-         // console.log('operateList', this.operateRoleList)
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      //1.拿到当前账号的角色，比如Developer
-      //2.通过当前角色，去查询该角色有权限操作的角色列表 命名为operateRoleList
-      //3.获取人员详情中的列表，此列表与上述列表不一样 命名为queryRoleList
-      //4.遍历命名为queryRoleList，在queryRoleList的每个item中增加一个是否可以操作移除的属性 canRemove
-      //如果queryRoleList[index]的userRole在operateRoleList中存在，则证明该项可操作，queryRoleList[index].canRemove=true,否则设置为false
-      //注意：在页面顶部的角色切换的时候，相应的roleList也要跟着刷新，queryRoleList里的canRemove也要刷新
-      //设置当前  列表的canRemove属性
-      choseCanRemoveRole() {
-        this.roleList.forEach(role => {
-          //role.canRemove = this.getCanRemoveProp(role)
-          let resultIndex = this.getCanRemoveProp(role);
-          //Vue 不能检测以下变动的数组,例如：vm.items[indexOfItem] = newValue,需使用this.$set让页面响应渲染
-          role.canRemove = this.$set(role, "canRemove", resultIndex);
-          this.$forceUpdate()
-        })
-      },
-      //获取当前角色的canRemove属性
-      getCanRemoveProp(role) {
-        let index = this.operateRoleList.findIndex(item => item.value === role.userRole);
-        return index !== -1;
-      },
+
 
       // //新增用户角色
       addAdminAuth() {
@@ -280,7 +269,6 @@
             message: '新增成功!'
           })
           this.selectRoleById();
-          this.queryRefList();
         }).catch(e => {
           this.$message.error(e);
         })
@@ -288,12 +276,10 @@
 
       // //确认新增角色
       clickAddNewRole() {
-        this.checkCityRoleList();
-        if (this.org_Id || (this.org_Id === 0&&this.choosenRole===`Developer`)) {
-          this.addAdminAuth();
-        } else {
-          this.$message.error(`请填写完整角色信息`);
-        }
+        // this.checkedKeys = data;
+        console.log(this.$refs.tree);
+        console.log(this.checkedKeys);
+
         this.dialogVisible = false;
       },
       //显示新增角色弹框
@@ -366,7 +352,6 @@
     watch: {
       //监听当前角色改变，重新调角色权限操作接口
       choosenRole(newValue) {
-        this.queryRefList()
       },
       // role(newRole){
       //   this.checkAdminRole()
@@ -379,11 +364,10 @@
         this.role = this.$route.query;
         console.log(this.role)
       }
-
       this.selectRoleById();
-      // this.findJiuPiWarehouseListByCityId();
-      // this.findAllCityList();
-      // this.findParentCity();
+      this.findAllPermissionList();
+      this.findAllRolePermission();
+
     },
     mounted() {
       if (this.$route.query.id) {
@@ -394,9 +378,6 @@
         this.optUserId = this.$store.state.user.userInfo.userId;
       }
       this.selectRoleById();
-      // this.findJiuPiWarehouseListByCityId();
-      // this.findAllCityList();
-      // this.findParentCity();
     },
     computed: {
       ...mapState(`user`, [`choosenRole`, `userInfo`, `choseRoleInfoList`]),

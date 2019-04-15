@@ -24,7 +24,15 @@ export default {
     console.log(params);
     return axios.post(prefix + '/role/selectRoleById', params)
   },
-
+  //查寻所有功能信息
+  findAllPermissionList(params={}){
+    console.log(params);
+    return axios.post(prefix + '/permission/getPermissionTreeByIds', params)
+  },
+  //查寻该角色的所有权限
+  findAllRolePermission(params={}){
+    return axios.post(prefix + '/role/selectPermissionIdList', params);
+  },
 
 
 
@@ -55,10 +63,6 @@ export default {
   editAdminUser(params = {}) {
     return axios.post(prefix + `/user/editAdminUser`, params)
   },
-  //查询可删除角色权限接口
-  queryRefList(params = {}) {
-    return axios.post(prefix + `/commonSelectOptionService/queryRefList`, params)
-  },
   //新增用户角色
   addAdminAuth(params = {}) {
     return axios.post(prefix + `/user/addAdminAuth`, params)
@@ -68,10 +72,5 @@ export default {
     return axios.get(prefix + `/warehouse/findJiuPiWarehouseListByCityId/${params}`)
   },
 
-
-  //根据用户信息查询一级服务商信息
-  findParentCity(params=``){
-    return axios.get(prefix+`/base/findParentCity/${params}`)
-  }
 
 }
