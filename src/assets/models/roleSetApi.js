@@ -34,6 +34,14 @@ export default {
     return axios.post(prefix + '/role/selectPermissionIdList', params);
   },
 
+  //查寻该角色的所有权限
+  updateRolePermissionList(params={}){
+    console.log(params);
+    return axios.post(prefix + '/role/updateRolePermissionList', params);
+  },
+
+
+
 
 
 
@@ -67,6 +75,11 @@ export default {
   addAdminAuth(params = {}) {
     return axios.post(prefix + `/user/addAdminAuth`, params)
   },
+
+
+
+
+
   //获取仓库列表
   findJiuPiWarehouseListByCityId(params = ``) {
     return axios.get(prefix + `/warehouse/findJiuPiWarehouseListByCityId/${params}`)

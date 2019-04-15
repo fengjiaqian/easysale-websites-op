@@ -19,29 +19,25 @@
 
         <el-tab-pane label="功能授权" name="second">
           <div style="line-height: 20px;">
-            <el-button type="primary" class="addAd" @click="addNewRole">+ 新增授权</el-button>
-            <!--<el-table-->
-              <!--:data="roleList"-->
-              <!--border-->
-              <!--style="width: 100%;margin-top:16px;">-->
-              <!--<el-table-column label="序号" width="60">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<span>{{indexMethods(scope.$index)}}</span>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-              <!--<el-table-column label="角色" width="260" prop="roleName"></el-table-column>-->
-              <!--<el-table-column prop="trueName" label="姓名" width="180"></el-table-column>-->
-              <!--<el-table-column label="手机号" width="180" prop="mobileNo"></el-table-column>-->
-              <!--<el-table-column label="性别" width="180" prop="gender"></el-table-column>-->
-              <!--<el-table-column label="人员类型" width="180" prop="employeeTypeName"></el-table-column>-->
-              <!--<el-table-column fixed="right" label="操作">-->
-                <!--<template slot-scope="scope" v-if="scope.row.canRemove">-->
-                  <!--<el-button type="primary" icon="el-icon-delete" size="small"-->
-                             <!--@click="deleteOneRole(scope.row.id,scope.row.userRole)">移除-->
-                  <!--</el-button>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-            <!--</el-table>-->
+            <!--<el-button type="primary" class="addAd" @click="addNewRole">+ 新增授权</el-button>-->
+            <el-form :label-width="resetFormLabelWidth" style="margin-left: 100px">
+              <el-tree
+                ref="tree"
+                :data="menuItems"
+                show-checkbox
+                node-key="id"
+                :default-expanded-keys="expandedKeys"
+                :default-checked-keys="checkedKeys"
+                :props="defaultProps"
+                :highlight-current="true"
+              >
+              </el-tree>
+
+            </el-form>
+            <div slot="footer" style="margin-left: 120px;margin-top: 20px">
+              <el-button  @click="clickAddNewRole()">保存</el-button>
+              <!--<el-button @click="dialogVisible = false">取消</el-button>-->
+            </div>
           </div>
 
         </el-tab-pane>
@@ -51,15 +47,16 @@
 
     <!--人员授权弹框-->
     <el-dialog title="角色功能授权" top="160px" :modal="false" :visible.sync="dialogVisible" width="40%" center>
-      <el-form :label-width="resetFormLabelWidth" ref="tree">
+      <el-form :label-width="resetFormLabelWidth" >
         <el-tree
+          ref="tree"
           :data="menuItems"
           show-checkbox
           node-key="id"
           :default-expanded-keys="expandedKeys"
           :default-checked-keys="checkedKeys"
           :props="defaultProps"
-          @click="getCheckedKeys"
+          :highlight-current="true"
         >
         </el-tree>
 
@@ -88,6 +85,7 @@
         activeName: 'first',
         roleId:'',
         roleName:'',
+        authIdList:'',
         loading:true,
         employeeInfo: {
          authList: [],
@@ -187,6 +185,7 @@
 
       //单个角色的权限查寻
       findAllRolePermission(){
+        this.roleId=this.role.id;
         console.log(this.role);
         http.findAllRolePermission(this.role).then(data=>{
           this.expandedKeys = data;
@@ -209,55 +208,24 @@
         })
       },
 
-
-
-
-
-      //根据用户信息查询一级服务商信息
-      findParentCity(){
-        let orgId=this.citySearchId;
-        http.findParentCity(orgId).then(data=>{
-          this.serviceList = data;
-        }).catch(e=>{
-          console.log(e)
-          }
-        )
-      },
-      //查询一级服务商信息接口
-      findFristOrgClass() {
-        http.findFristOrgClass().then(data => {
-          this.serviceList = data;
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-
-      //移除角色接口
-      removeAdminAuth() {
-        let {oneRoleId} = this;
-        http.removeAdminAuth(oneRoleId).then(data => {
-          this.roleList = this.roleList.filter(item => item.id !== oneRoleId);
+      // //确认新增角色
+      clickAddNewRole() {
+        console.log(this.$refs.tree.getCheckedKeys());
+        this.authIdList=this.$refs.tree.getCheckedKeys();
+        let {roleId,authIdList} = this;
+        http.updateRolePermissionList({authIdList, roleId}).then(data => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
-          });
+            message: '新增成功!'
+          })
+          this.selectRoleById();
         }).catch(e => {
-          console.log(e)
+          this.$message.error(e);
         })
+        this.dialogVisible = false;
       },
-      //删除司机角色
-      removeAdminAuthForDriver() {
-        let params = {authId: this.oneRoleId, userId: this.user_Id};
-        http.removeAdminAuthForDriver(params).then(data => {
-          this.roleList = this.roleList.filter(item => item.id !== this.oneRoleId);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(e => {
-          console.log(e)
-        })
-      },
+
+
 
 
       // //新增用户角色
@@ -274,14 +242,6 @@
         })
       },
 
-      // //确认新增角色
-      clickAddNewRole() {
-        // this.checkedKeys = data;
-        console.log(this.$refs.tree);
-        console.log(this.checkedKeys);
-
-        this.dialogVisible = false;
-      },
       //显示新增角色弹框
       addNewRole() {
         this.dialogVisible = true
@@ -325,28 +285,7 @@
           }
         }
       },
-      // //根据选择的角色判断后台传值
-      // //后台要求 ：WarehouseOperative  HR OPAdmin Developer orgType 1
-      // //Cashier CityAdmin CityManager DeliveryUser SaleUser orgId传cityId  orgType 2
-      // //StoreAdmin  LogisticsLeader Stevedore WarehouseManager  orgId传 warehouseId orgType传3
-      checkCityRoleList() {
-        let adminRole = [`WarehouseOperative`, `HR`, `OPAdmin`, `Developer`,`DealerAuditManager`,`ShopAuditManager`];
-        let cityRole = ['CityAdmin', 'CityManager', 'DeliveryUser', 'SaleUser'];
-        let warehouseRole = ['Cashier','StoreAdmin', 'LogisticsLeader', 'Stevedore', 'WarehouseManager', 'OrderPicker'];
-        let choseWarehouseRole = warehouseRole.filter(item => item === this.role);
-        let choseCityRole = cityRole.filter(item => item === this.role);
-        let choseAdminRole = adminRole.filter(item => item === this.role);
-        if (choseCityRole.length) {
-          this.org_Id = this.cityId;
-          this.orgType = 2;
-        } else if (choseWarehouseRole.length) {
-          this.orgType = 3;
-          this.org_Id = this.warehouseId;
-        } else if (choseAdminRole.length) {
-          this.orgType = 1;
-          this.checkAdminRole()
-        }
-      },
+
       ...mapMutations(`user`, [`setChoseRoleInfoList`]),
     },
     watch: {
