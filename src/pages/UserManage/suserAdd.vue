@@ -11,6 +11,10 @@
       <el-form-item label="手机号码" prop="phone">
         <el-input v-model="suserInfo.phone" placeholder="请输入手机号码"  class="disable-input"></el-input>
       </el-form-item>
+      <el-form-item label="登录密码" prop="password">
+        <el-input v-model="suserInfo.password" placeholder="请输入登录密码"  class="disable-input"></el-input>
+      </el-form-item>
+
 
       <el-form-item label="用户类型" prop="userType">
         <el-select v-model="suserInfo.userType" placeholder="目前只能选择经销商">
@@ -60,7 +64,8 @@
           update_time:'',
           create_user:'',
           update_user:'',
-          state:1
+          state:1,
+          password:''
         },
         dealerList: [],
         productList: [],
@@ -106,7 +111,8 @@
             update_time:'',
             create_user:'',
             update_user:'',
-            state:1
+            state:1,
+            password:''
           }
         }
       },
@@ -132,6 +138,10 @@
           this.$message(`请输入手机号`)
           return false;
         }
+        if (jsonobj.password == null || jsonobj.password == undefined || jsonobj.password == '') {
+          this.$message(`请输入密码`)
+          return false;
+        }
         return true;
       },
     },
@@ -139,11 +149,10 @@
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted:function(){
-
       //TODO 获取当前用户ID   赋值
-      console.log(sessionStorage.getItem(`userInfo`));
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
-        this.crrur_userid = sessionStorage.getItem(`userInfo`).id;
+        let  userobj  =sessionStorage.getItem(`userInfo`);
+        this.crrur_userid = (JSON.parse(userobj)).id;
       }else{
         //用户信息获取失败
         this.$message("网络异常获取用户信息失败!");
