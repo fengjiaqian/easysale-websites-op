@@ -218,7 +218,7 @@
             type: 'success',
             message: '新增成功!'
           })
-          this.selectRoleById();
+          this.$router.go(-1);
         }).catch(e => {
           this.$message.error(e);
         })
