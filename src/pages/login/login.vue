@@ -84,6 +84,9 @@
           this.getMenuList()
           this.$router.replace({path: `/emptyPage`})
           this.fullscreenLoading = false
+
+          console.log("登录成功============================");
+          this.$router.go(0);
         }).catch(e => {
           console.log(e)
           this.clearToken()
@@ -143,11 +146,11 @@
           } else if (menuItem.nameSpace === `/warehouseControl`) {//仓库库存
             menuItem.routePage = `warehouseControl`
           }else if (menuItem.nameSpace === `/UserManage`) {//用户管理
-            menuItem.routePage = `warehouseControl`
+            menuItem.routePage = `suserManage`
           }else if (menuItem.nameSpace === `/RoleManage`) {//角色管理
             menuItem.routePage = `roleSetting`
           }else if (menuItem.nameSpace === `/PermissionManage`) {//功能管理
-            menuItem.routePage = `applyWarehouseProduct`
+            menuItem.routePage = `functionManage`
           }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
