@@ -2,7 +2,6 @@ import axios from 'axios';
 import Urls from './baseUrl'
 
 //tets
-
 const prefix = Urls.supplyChainUrl
 export default {
 
