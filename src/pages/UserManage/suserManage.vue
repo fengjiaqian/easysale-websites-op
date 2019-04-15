@@ -13,23 +13,6 @@
       <el-form-item label="手机号">
         <el-input v-model="suserInfo.phone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
-
-     <!-- 用户类型(1:经销商 2：销售人员  3：终端客户)-->
-     <!-- <el-form-item label="用户类型" prop="userType">
-        <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
-          <el-option label="请选择" :value="6"></el-option>
-          <el-option label="经销商" :value="1"></el-option>
-          <el-option label="销售人员" :value="2"></el-option>
-          <el-option label="终端客户" :value="3"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-select v-model="suserInfo.state" placeholder="请选择状态">
-          <el-option label="请选择" :value="6"></el-option>
-          <el-option label="停用" :value="0"></el-option>
-          <el-option label="启用" :value="1"></el-option>
-        </el-select>
-      </el-form-item>-->
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getSuserList_" size="medium">查询</el-button>
@@ -86,10 +69,7 @@
     </el-pagination>
   </div>
 </template>
-
 <script>
-
-
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
   import https_f from 'http/suserManageApi'
@@ -160,16 +140,7 @@
         // console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
-          // console.log(JSON.stringify(data.dataList));
-          // console.log("-------------------------------------");
-          // console.log(JSON.stringify(data.pager));
-
           let objs  = data.dataList;
-          // for(let x=0;x<objs.length;x++){
-          //     if(objs[x].wxNick){
-          //
-          //     }
-          // }
           this.suserList = data.dataList;
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
@@ -250,7 +221,6 @@
       this.suserInfo.wxNickName='';
       this.suserInfo.phone='';
       this.suserInfo.userType=6;
-
       this.getSuserList_();
     }
   }

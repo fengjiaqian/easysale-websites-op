@@ -217,6 +217,7 @@
       update_state(param){
         // console.log(JSON.stringify(param));
         https_f.updateFuctionObj(param).then(data => {
+          this.getFunctionList_();
           this.$message("执行成功!");
         }).catch(e => {
           this.$message("执行失败!");
@@ -236,7 +237,7 @@
           return false;
         }
         let param = {
-          update_user:this.crrur_userid,
+          updateUser:this.crrur_userid,
           id:this.up_pid,
         }
         //以上正常不触发 执行下面

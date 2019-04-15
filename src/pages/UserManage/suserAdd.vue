@@ -82,7 +82,6 @@
         params.create_user = this.crrur_userid;
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
-          console.log(JSON.stringify(params));
           https_f.addSuserObj(params).then(data => {
             this.$message(`新增成功`)
             this.resetForm();
@@ -118,18 +117,6 @@
       },
       valiFromObj(jsonobj){
         //TODO  验证数据合法性
-        /* suserInfo: {
-              wx_nick_name:'',
-              phone:'',
-              user_type:1,
-              image_url:'',
-              wx_app_id:'',
-              update_time:'',
-              create_user:'',
-              update_user:'',
-              state:1
-         },*/
-
         if (jsonobj.wxNickName == null || jsonobj.wxNickName == undefined || jsonobj.wxNickName == '') {
           this.$message(`请输入微信昵称`)
           return false;
@@ -160,8 +147,6 @@
     }
   }
 </script>
-
-
 <style lang="stylus">
   .suserAdd {
     .el-form {

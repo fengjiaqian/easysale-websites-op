@@ -4,21 +4,21 @@
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
-      <el-form-item label="父级节点" prop="parentId">
+     <!-- <el-form-item label="父级节点" prop="parentId">
         <el-input v-model="functionInfo.parentId" placeholder="请输入父级节点" disabled="disabled" class="disable-input"></el-input>
       </el-form-item>
 
       <el-form-item label="父级WholeId" prop="parentWholeId">
         <el-input v-model="functionInfo.wholeId" placeholder="请输入父级节点WholeId" disabled="disabled" class="disable-input"></el-input>
       </el-form-item>
-
-      <el-form-item label="功能类型" prop="type">
+-->
+    <!--  <el-form-item label="功能类型" prop="type">
         <el-select v-model="functionInfo.type" placeholder="请选择功能类型">
           <el-option label="模型" :value="1"></el-option>
           <el-option label="菜单" :value="2"></el-option>
           <el-option label="功能" :value="3"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item label="系统类型" prop="systemType">
         <el-select v-model="functionInfo.systemType" placeholder="请选择系统类型">
@@ -125,8 +125,8 @@
         delete newarr['createUser'];
         delete newarr['parentId'];
         delete newarr['parentId'];
-        newarr.update_user = newarr.updateUser;
-        delete newarr['updateUser'];
+        // newarr.update_user = newarr.updateUser;
+        // delete newarr['updateUser'];
         return newarr;
       },
       // 确定修改
@@ -139,7 +139,7 @@
         params.updateUser = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
-          // console.log(JSON.stringify(new_ar));
+          console.log(JSON.stringify(new_ar));
           https_f.updateFuctionObj(new_ar).then(data => {
             this.$message("修改成功!");
           }).catch(e => {

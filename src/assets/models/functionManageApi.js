@@ -24,4 +24,5 @@ export default {
     return axios.post(prefix +'/permission/getPermissionsByParam', params)
   }
 
+
 }
