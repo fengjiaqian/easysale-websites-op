@@ -20,7 +20,7 @@
         <el-tab-pane label="功能授权" name="second">
           <div style="line-height: 20px;">
             <!--<el-button type="primary" class="addAd" @click="addNewRole">+ 新增授权</el-button>-->
-            <el-form :label-width="resetFormLabelWidth" style="margin-left: 100px">
+            <el-form :label-width="resetFormLabelWidth" style="margin-left: 140px">
               <el-tree
                 ref="tree"
                 :data="menuItems"
@@ -36,6 +36,7 @@
             </el-form>
             <div slot="footer" style="margin-left: 120px;margin-top: 20px">
               <el-button  @click="clickAddNewRole()">保存</el-button>
+              <el-button class="userInfo" @click="goBack">返回</el-button>
               <!--<el-button @click="dialogVisible = false">取消</el-button>-->
             </div>
           </div>
@@ -218,7 +219,7 @@
             type: 'success',
             message: '新增成功!'
           })
-          this.selectRoleById();
+          this.$router.go(-1);
         }).catch(e => {
           this.$message.error(e);
         })
