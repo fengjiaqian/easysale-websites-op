@@ -57,6 +57,18 @@ import roleSetting from '../pages/role/roleSetting.vue'
 import addRole from '../pages/role/addRole.vue'
 //角色详情
 import roleDetail from '../pages/role/roleDetail'
+
+//用户管理
+import suserManage from '../pages/UserManage/suserManage'
+import suserAdd from '../pages/UserManage/suserAdd'
+import suserUpdate from '../pages/UserManage/suserUpdate'
+import suser_roleAuthorization from '../pages/UserManage/suser_roleAuthorization'
+
+//功能管理
+import  functionManage from '../pages/PermissionManage/functionManage'
+import  functionAdd from '../pages/PermissionManage/functionAdd'
+import  functionUpdate from '../pages/PermissionManage/functionUpdate'
+
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
@@ -443,6 +455,39 @@ export default new Router({
       meta: {
         keepalive: true
       }
+
+    },{
+      path: '/suserManage',
+      name: 'suserManage',
+      component: suserManage
+
+    },
+    {
+      path: '/suserUpdate',
+      name: 'suserUpdate',
+      component: suserUpdate
+    },
+    {
+      path: '/suserAdd',
+      name: 'suserAdd',
+      component: suserAdd
+    },
+    {
+      path: '/suser_roleAuthorization',
+      name: 'suser_roleAuthorization',
+      component: suser_roleAuthorization
+    },{
+      path: '/functionManage',
+      name: 'functionManage',
+      component: functionManage
+    },{
+      path: '/functionAdd',
+      name: 'functionAdd',
+      component: functionAdd
+    },{
+      path: '/functionUpdate',
+      name: 'functionUpdate',
+      component: functionUpdate
 
     },
   ]
