@@ -34,7 +34,7 @@
 
       <el-form-item>
         <el-button type="primary" @click="submitForm('productDetailForm')">提交</el-button>
-        <el-button @click="resetForm()">重置</el-button>
+        <!--<el-button @click="resetForm()">重置</el-button>-->
         <el-button @click="$router.go(-1)">返回</el-button>
       </el-form-item>
     </el-form>
