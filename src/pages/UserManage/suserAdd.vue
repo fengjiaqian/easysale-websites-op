@@ -97,7 +97,6 @@
         }
       },
       resetForm() {
-        console.log(this.pageType)
         if (this.pageType === 'edit') {
         } else {
           this.suserInfo={

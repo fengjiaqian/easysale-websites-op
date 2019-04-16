@@ -165,23 +165,19 @@
         this.loading = true;
         //保存
         if(this.isauth_user){
-          console.log("保存");
           https_f.add_authuser_role(cdparam).then(data => {
             this.loading = false;
             this.$message("授权成功");
           }).catch(e => {
-            console.log("授权失败:"+JSON.stringify(e));
             this.$message(e)
             this.loading = false
           })
         }else{
           //修改
-          console.log("修改");
           https_f.update_authuser_role(cdparam).then(data => {
             this.loading = false;
             this.$message("修改授权成功");
           }).catch(e => {
-            console.log("修改授权失败:"+JSON.stringify(e));
             this.$message(e)
             this.loading = false
           })
@@ -200,7 +196,6 @@
       },
       /*获取功能数据列表*/
       getSuserList_() {
-        console.log("查询");
         this.loading = true;
         https_f.getAllRole(this.roleInfo).then(data => {
           this.loading = false

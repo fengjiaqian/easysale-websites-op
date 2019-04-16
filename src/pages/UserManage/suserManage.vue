@@ -132,7 +132,6 @@
       },
       /*用户授权 */
       userAuthRole(id){
-        console.log(id);
         this.$router.push({name:'suser_roleAuthorization', query:{id}})
       },
       /*获取功能数据列表*/
@@ -171,7 +170,6 @@
       },
       // 详情 修改
       goToDetail(row) {
-        console.log(row.id);
         let id = row.id;
         this.$router.push({name:`suserUpdate`, query:{id}})
       },

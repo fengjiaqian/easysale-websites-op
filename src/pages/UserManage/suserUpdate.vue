@@ -99,7 +99,6 @@
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
-          console.log(JSON.stringify(new_ar));
           https_f.updateSuserObj(new_ar).then(data => {
             this.$message("修改成功!");
           }).catch(e => {
@@ -117,7 +116,6 @@
         this.alertInfoState = true;
       },
       resetForm() {
-        console.log(this.pageType)
         if (this.pageType === 'edit') {
         } else {
           this.suserInfo={
@@ -153,11 +151,9 @@
         https_f.getSuserObj(param_).then(data => {
           // 查询出实体 赋值
           this.loading = false;
-          console.log("成功打印数据:"+JSON.stringify(data));
           this.suserInfo = data;
         }).catch(e => {
           this.$message(`网络异常`)
-          console.log("失败:" + JSON.stringify(e));
           this.loading = false;
         })
       }else{
