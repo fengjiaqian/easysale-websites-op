@@ -133,6 +133,11 @@
         if (jsonobj.password == null || jsonobj.password == undefined || jsonobj.password == '') {
           this.$message(`请输入密码`)
           return false;
+        }else{
+          if((jsonobj.password).length < 6 ){
+            this.$message(`密码最少由6位字符串组成`)
+            return false;
+          }
         }
         return true;
       },
