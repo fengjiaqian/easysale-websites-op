@@ -123,6 +123,12 @@
         if (jsonobj.phone == null || jsonobj.phone == undefined || jsonobj.phone == '') {
           this.$message(`请输入手机号`)
           return false;
+        }else{
+          if(!(/^1[34578]\d{9}$/.test(jsonobj.phone))){
+            this.suserInfo.phone = '';
+            this.$message("手机号码有误，请重填");
+            return false;
+          }
         }
         if (jsonobj.password == null || jsonobj.password == undefined || jsonobj.password == '') {
           this.$message(`请输入密码`)
