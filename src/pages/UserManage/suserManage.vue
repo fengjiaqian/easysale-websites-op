@@ -103,6 +103,7 @@
       AdminCitySelector
     },
     methods: {
+      //处理传递参数 剔除不要的
       param_handle(arr){
         let newarr = arr;
         if(newarr.type == 6){
@@ -148,6 +149,7 @@
           this.loading = false
         })
       },
+      //刷新
       resetForm() {
         this. suserInfo= {
           type:6,	// 权限类型（1：模型 2：菜单 3：功能）
@@ -176,9 +178,11 @@
       /*设置状态*/
       toggleState(row, index) {
       },
+      //点击上一下 下一页的时候  设置当前页码值
       indexMethods(index) {
         return (this.suserInfo.pageNum - 1) * this.suserInfo.pageSize + index + 1
       },
+      //执行
       handlePageNumChange(num) {
         this.suserInfo.pageNum = num
         this.getSuserList_();
@@ -210,8 +214,9 @@
     computed: {
       ...mapState(`user`, [`choseRoleInfoList`, `userInfo`])
     },
+    //載入
     mounted:function(){
-      //TODO  默认不根据条件查询拉去 第一页
+      //初始化页码数据 默认不根据条件查询拉去 第一页
       this.suserInfo.pageNum = 1;
       this.suserInfo.pageSize = 20;
       this.suserInfo.type=6;

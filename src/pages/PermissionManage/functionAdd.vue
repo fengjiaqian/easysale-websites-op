@@ -120,6 +120,7 @@
       AdminCitySelector
     },
     methods: {
+      //动态触发 根据选择的类型 拉去对应类型上级数据
       typechange(val){
         if(val > 1){
           let params = {
@@ -159,13 +160,14 @@
           this.ck_types = 1;
         }
       },
+      //提交
       submitForm(formName) {
         this.loading = true;
         let params = Object.assign({}, this.functionInfo)
         params.createUser = this.crrur_userid;
         params.updateUser = this.crrur_userid;
+        //简单校验下数据
         if(this.valiFromObj(params)){
-
           if(this.ck_types == 2){
             if(this.model_arrselect.length != ''){
               params.parentId = this.model_arrselect;
@@ -180,6 +182,7 @@
           }
           console.log(JSON.stringify(params));
           this.loading = false;
+          //调用新增
           https_f.addFucntionObj(params).then(data => {
             this.$message(`新增成功`)
             this.resetForm();
@@ -190,12 +193,11 @@
             this.loading = false;
           })
         }else{
-         // this.$message(`请输入提示项`)
           this.loading = false;
         }
       },
+      //刷新
       resetForm() {
-        // console.log(this.pageType)
         if (this.pageType === 'edit') {
           //TODO
         } else {
@@ -222,8 +224,8 @@
           }
         }
       },
+      //校验数据
       valiFromObj(jsonobj){
-        //TODO  验证数据合法性
        /* functionInfo: {
             parentId:0,	 //父级节点
             parentWholeId:0,	 //父节点wholeId
@@ -264,14 +266,12 @@
     computed: {
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
+    //页面载入
     mounted:function(){
-      //TODO 获取当前用户ID   赋值
-
+      //获取当前登录人信息  设置当前操作人ID
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
-    //    console.log("init:"+userobj +"==="+(JSON.parse(userobj)).id);
         this.crrur_userid = (JSON.parse(userobj)).id;
-     //   console.log(this.crrur_userid);
       }else{
         //用户信息获取失败
         this.$message("网络异常获取用户信息失败!");

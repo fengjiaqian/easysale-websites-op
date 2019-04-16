@@ -87,7 +87,7 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        //当前操作人的ID  页面载入的时候 动态设置
         crrur_userid:6666666,
         // initAddressStr: ``,
         functionInfo: {
@@ -193,8 +193,9 @@
     },
     // 页面载入 触发
     mounted:function(){
+      //进来之后刷新表单  防止页面缓存
       this.resetForm();
-      //TODO 根据ID 拉取功能实体  id 暂时写死  到时候从跳转的query里面获取 id
+      //获取编辑修改的  功能ID
       let pid_ = this.$route.query.id;
       if(pid_.length > 0) {
         this.loading = true;
@@ -213,7 +214,7 @@
             this.$message(`网络异常`)
           }
           this.loading = false;
-          //TODO 获取当前用户ID   赋值
+          // 获取当前用户ID 设置当前操作人ID
           if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
             let  userobj  =sessionStorage.getItem(`userInfo`);
             this.crrur_userid = (JSON.parse(userobj)).id;

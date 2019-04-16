@@ -354,6 +354,7 @@
       this.functionInfo.systemType=6;
       this.functionInfo.state=6;
       this.functionInfo.name='';
+      //获取用户信息  设置当前操作人的ID
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
         this.crrur_userid = (JSON.parse(userobj)).id;

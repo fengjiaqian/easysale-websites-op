@@ -92,6 +92,7 @@
     data() {
       return {
         ckboxarr:[],
+        //页面载入  动态设置当前操作人ID
         crrur_userid:6666666,
         crrud_auth_uid:0,
         startDatePicker: this.beginDate(),
@@ -152,7 +153,6 @@
             this.userrolearr.push(val);
           }
         }
-        // console.log(JSON.stringify(this.userrolearr));
       },
       // 确定修改
       ensureCharge(){
@@ -161,9 +161,7 @@
           roleIdList:this.userrolearr,
           userId:this.crrud_auth_uid
         }
-        // console.log("授权传递参数:"+JSON.stringify(cdparam));
-        //TODO 执行用户角色授权
-        //authuser_role
+        // 执行用户角色授权
         this.loading = true;
         //保存
         if(this.isauth_user){
@@ -196,12 +194,8 @@
           this.$message('请选择要授权的角色');
         }
       },
-      changeFun(val){
-        this.ckboxarr = val;
-      },
       param_handle(arr){
         let newarr = arr;
-        // delete newarr['systemType'];
         return newarr;
       },
       /*获取功能数据列表*/
@@ -211,9 +205,8 @@
         https_f.getAllRole(this.roleInfo).then(data => {
           this.loading = false
           this.suserList = data;
-          //TODO 测试添加选中状态
+          // 测试添加选中状态
           let rids  = this.userrolearr;
-
           for(let x=0;x<this.suserList.length;x++){
             for(let i=0;i<rids.length;i++){
               if(this.suserList[x].id == rids[i]){
@@ -221,10 +214,8 @@
               }
             }
           }
-         // console.log(JSON.stringify(this.suserList));
           // this.totalCount = data.pager.recordCount;
         }).catch(e => {
-          // console.log("角色列表获取失败:"+JSON.stringify(e));
           this.$message(e)
           this.loading = false
         })
@@ -284,7 +275,7 @@
       ...mapState(`user`, [`choseRoleInfoList`, `userInfo`])
     },
     mounted:function(){
-      //TODO  默认不根据条件查询拉去 第一页
+      // 默认不根据条件查询拉去 第一页
       this.roleInfo.id = 0;
       this.roleInfo.roleName = '';
       this.roleInfo.state=1;
@@ -297,16 +288,15 @@
       if(this.crrud_auth_uid > 0) {
         this.loading = true;
         this.getUserAuthRoleIds_(this.crrud_auth_uid);
-        //TODO 初始化userid  crrur_userid
-        // console.log(sessionStorage.getItem(`userInfo`));
+        // 初始化userid  crrur_userid
         if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
-          this.crrur_userid = sessionStorage.getItem(`userInfo`).id;
+          let  userobj  =sessionStorage.getItem(`userInfo`);
+          this.crrur_userid = (JSON.parse(userobj)).id;
         }else{
-          //用户信息获取失败
           // this.$message("网络异常获取用户信息失败!");
         }
       }else{
-        this.$message("<>网络异常!");
+        this.$message("获取用户信息失败!");
       }
     }
   }

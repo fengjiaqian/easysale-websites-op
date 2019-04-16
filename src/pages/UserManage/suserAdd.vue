@@ -50,7 +50,7 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        // 先写死 页面载入动态设置
         crrur_userid:6666666,
         title: `新增仓库`,
         pageType: `add`,
@@ -99,7 +99,6 @@
       resetForm() {
         console.log(this.pageType)
         if (this.pageType === 'edit') {
-          //TODO
         } else {
           this.suserInfo={
             wxNickName:'',
@@ -116,7 +115,7 @@
         }
       },
       valiFromObj(jsonobj){
-        //TODO  验证数据合法性
+        // 验证数据合法性
         if (jsonobj.wxNickName == null || jsonobj.wxNickName == undefined || jsonobj.wxNickName == '') {
           this.$message(`请输入微信昵称`)
           return false;
@@ -136,7 +135,7 @@
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted:function(){
-      //TODO 获取当前用户ID   赋值
+      //获取当前用户ID   赋值
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
         this.crrur_userid = (JSON.parse(userobj)).id;
