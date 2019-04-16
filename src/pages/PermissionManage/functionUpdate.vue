@@ -158,7 +158,6 @@
       resetForm() {
         // console.log(this.pageType)
         if (this.pageType === 'edit') {
-          //TODO
         } else {
           this.functionInfo={
             parentId:0,	 //父级节点
@@ -202,7 +201,6 @@
           id: pid_+""
         }
         https_f.getFunctionObj(param_).then(data => {
-          //TODO 查询出实体 赋值
           let objs = data.dataList;
           if (objs.length == 1) {
             this.functionInfo = objs[0];
@@ -224,7 +222,7 @@
           this.loading = false;
         })
       }else{
-        this.$message(`<>网络异常`)
+        this.$message(`缺省功能ID网络异常`)
       }
     }
   }
