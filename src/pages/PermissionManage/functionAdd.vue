@@ -180,7 +180,6 @@
               params.parentId = this.model_arrselect;
             }
           }
-          console.log(JSON.stringify(params));
           this.loading = false;
           //调用新增
           https_f.addFucntionObj(params).then(data => {

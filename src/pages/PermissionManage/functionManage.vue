@@ -184,7 +184,7 @@
     data() {
       //页面取值的数据
       return {
-        //TODO 先写死 整合之后 改活
+        //当前操作用户
         crrur_userid:6666666,
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -246,7 +246,6 @@
         }else{
           param .state = 1;
         }
-        console.log(JSON.stringify(param));
         this.update_state(param);
       },
       //停用或启动

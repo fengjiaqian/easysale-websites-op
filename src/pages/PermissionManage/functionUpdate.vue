@@ -139,7 +139,6 @@
         params.updateUser = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
-          console.log(JSON.stringify(new_ar));
           https_f.updateFuctionObj(new_ar).then(data => {
             this.$message("修改成功!");
           }).catch(e => {
@@ -202,11 +201,9 @@
         let param_ = {
           id: pid_+""
         }
-        console.log("传递参数:"+JSON.stringify(param_));
         https_f.getFunctionObj(param_).then(data => {
           //TODO 查询出实体 赋值
           let objs = data.dataList;
-          console.log("查詢出來的实体:"+JSON.stringify(objs));
           if (objs.length == 1) {
             this.functionInfo = objs[0];
           } else {
@@ -224,7 +221,6 @@
           }
         }).catch(e => {
           this.$message(`网络异常`)
-          console.log("失败:" + JSON.stringify(e));
           this.loading = false;
         })
       }else{
