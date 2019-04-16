@@ -4,21 +4,21 @@
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
-      <el-form-item label="父级节点" prop="parentId">
+     <!-- <el-form-item label="父级节点" prop="parentId">
         <el-input v-model="functionInfo.parentId" placeholder="请输入父级节点" disabled="disabled" class="disable-input"></el-input>
       </el-form-item>
 
       <el-form-item label="父级WholeId" prop="parentWholeId">
         <el-input v-model="functionInfo.wholeId" placeholder="请输入父级节点WholeId" disabled="disabled" class="disable-input"></el-input>
       </el-form-item>
-
-      <el-form-item label="功能类型" prop="type">
+-->
+    <!--  <el-form-item label="功能类型" prop="type">
         <el-select v-model="functionInfo.type" placeholder="请选择功能类型">
           <el-option label="模型" :value="1"></el-option>
           <el-option label="菜单" :value="2"></el-option>
           <el-option label="功能" :value="3"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item label="系统类型" prop="systemType">
         <el-select v-model="functionInfo.systemType" placeholder="请选择系统类型">
@@ -87,7 +87,7 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        //当前操作人的ID  页面载入的时候 动态设置
         crrur_userid:6666666,
         // initAddressStr: ``,
         functionInfo: {
@@ -125,8 +125,8 @@
         delete newarr['createUser'];
         delete newarr['parentId'];
         delete newarr['parentId'];
-        newarr.update_user = newarr.updateUser;
-        delete newarr['updateUser'];
+        // newarr.update_user = newarr.updateUser;
+        // delete newarr['updateUser'];
         return newarr;
       },
       // 确定修改
@@ -139,7 +139,6 @@
         params.updateUser = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
-          // console.log(JSON.stringify(new_ar));
           https_f.updateFuctionObj(new_ar).then(data => {
             this.$message("修改成功!");
           }).catch(e => {
@@ -159,7 +158,6 @@
       resetForm() {
         // console.log(this.pageType)
         if (this.pageType === 'edit') {
-          //TODO
         } else {
           this.functionInfo={
             parentId:0,	 //父级节点
@@ -193,19 +191,17 @@
     },
     // 页面载入 触发
     mounted:function(){
+      //进来之后刷新表单  防止页面缓存
       this.resetForm();
-      //TODO 根据ID 拉取功能实体  id 暂时写死  到时候从跳转的query里面获取 id
+      //获取编辑修改的  功能ID
       let pid_ = this.$route.query.id;
       if(pid_.length > 0) {
         this.loading = true;
         let param_ = {
           id: pid_+""
         }
-        console.log("传递参数:"+JSON.stringify(param_));
         https_f.getFunctionObj(param_).then(data => {
-          //TODO 查询出实体 赋值
           let objs = data.dataList;
-          console.log("查詢出來的实体:"+JSON.stringify(objs));
           if (objs.length == 1) {
             this.functionInfo = objs[0];
           } else {
@@ -213,7 +209,7 @@
             this.$message(`网络异常`)
           }
           this.loading = false;
-          //TODO 获取当前用户ID   赋值
+          // 获取当前用户ID 设置当前操作人ID
           if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
             let  userobj  =sessionStorage.getItem(`userInfo`);
             this.crrur_userid = (JSON.parse(userobj)).id;
@@ -223,11 +219,10 @@
           }
         }).catch(e => {
           this.$message(`网络异常`)
-          console.log("失败:" + JSON.stringify(e));
           this.loading = false;
         })
       }else{
-        this.$message(`<>网络异常`)
+        this.$message(`缺省功能ID网络异常`)
       }
     }
   }

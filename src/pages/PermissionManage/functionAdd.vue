@@ -4,19 +4,37 @@
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
-      <el-form-item label="父级节点" prop="parentId">
-          <el-input v-model="functionInfo.parentId" placeholder="请输入父级节点"  class="disable-input"></el-input>
-      </el-form-item>
-
-      <el-form-item label="父级WholeId" prop="parentWholeId">
+     <!-- <el-form-item label="父级WholeId" prop="parentWholeId">
         <el-input v-model="functionInfo.parentWholeId" placeholder="请输入父级节点WholeId"  class="disable-input"></el-input>
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item label="功能类型" prop="type">
-        <el-select v-model="functionInfo.type" placeholder="请选择功能类型">
-          <el-option label="模型" :value="1"></el-option>
+        <el-select v-model="functionInfo.type" placeholder="请选择功能类型"  @change="typechange">
+          <el-option label="模块" :value="1" ></el-option>
           <el-option label="菜单" :value="2"></el-option>
           <el-option label="功能" :value="3"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="请选择模块" v-if="showPrise_1">
+        <el-select v-model="model_arrselect" placeholder="请选择">
+          <el-option
+            v-for="item in model_arr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="请选择菜单" v-if="showPrise_2">
+        <el-select v-model="menu_arrselect" placeholder="请选择">
+          <el-option
+            v-for="item in menu_arr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
         </el-select>
       </el-form-item>
 
@@ -67,15 +85,24 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        ck_types:1,
+        //控制  模型 菜单下拉选 隐藏显示
+        showPrise_1:false,
+        showPrise_2:false,
+        parentId_show:'disabled',
         crrur_userid:6666666,
         title: `新增仓库`,
         pageType: `add`,
         // initAddressStr: ``,
+        //控制  模型  菜单下拉选的 值
+        model_arr:[],
+        model_arrselect:'',
+        menu_arrselect:'',
+        menu_arr:[],
         functionInfo: {
           parentId:0,	 //父级节点
-          parentWholeId:0,	 //父节点wholeId
-          type:3,	// 权限类型（1：模型 2：菜单 3：功能）
+        //  parentWholeId:0,	 //父节点wholeId
+          type:1,	// 权限类型（1：模型 2：菜单 3：功能）
           systemType:1,//系统类型（1：小程序 2：pc端）
           name:'', //权限名称
           url:'',//链接
@@ -93,12 +120,68 @@
       AdminCitySelector
     },
     methods: {
+      //动态触发 根据选择的类型 拉去对应类型上级数据
+      typechange(val){
+        if(val > 1){
+          let params = {
+            type:0
+          }
+          if(val == 2){
+            this.model_arr = [];
+            params.type = 1;
+          }else{
+            params.type = 2;
+          }
+          https_f.getFunctionObj(params).then(data => {
+            if(val == 2){
+              //如果选择的是 菜单  显示模型下拉选   隐藏 菜单下拉选 清空菜单下拉选
+              this.model_arr = data.dataList;
+              this.showPrise_1 = true;
+              this.showPrise_2 = false;
+              this.menu_arr = [];
+              this.ck_types = 2;
+            }else if(val == 3){
+              //如果选择的是 功能   显示模型 菜单下拉选
+              this.menu_arr = data.dataList;
+              this.showPrise_1 = true;
+              this.showPrise_2 = true;
+              this.ck_types = 3;
+            }
+          }).catch(e => {
+            this.$message(`获取父级节点失败`)
+          })
+          this.loading = false;
+        }else{
+          //如果选择的是模型   隐藏下拉选  并且清空选中的值
+          this.showPrise_1 = false;
+          this.showPrise_2 = false;
+          this.model_arr = [];
+          this.menu_arr = [];
+          this.ck_types = 1;
+        }
+      },
+      //提交
       submitForm(formName) {
         this.loading = true;
         let params = Object.assign({}, this.functionInfo)
         params.createUser = this.crrur_userid;
         params.updateUser = this.crrur_userid;
+        //简单校验下数据
         if(this.valiFromObj(params)){
+          if(this.ck_types == 2){
+            if(this.model_arrselect.length != ''){
+              params.parentId = this.model_arrselect;
+            }
+          }
+          if(this.ck_types == 3){
+            if(this.menu_arrselect != ''){
+              params.parentId = this.menu_arrselect;
+            }else{
+              params.parentId = this.model_arrselect;
+            }
+          }
+          this.loading = false;
+          //调用新增
           https_f.addFucntionObj(params).then(data => {
             this.$message(`新增成功`)
             this.resetForm();
@@ -109,31 +192,39 @@
             this.loading = false;
           })
         }else{
-         // this.$message(`请输入提示项`)
           this.loading = false;
         }
       },
+      //刷新
       resetForm() {
-        // console.log(this.pageType)
         if (this.pageType === 'edit') {
           //TODO
         } else {
           this.functionInfo={
-            parentId:0,	 //父级节点
-              parentWholeId:0,	 //父节点wholeId
-              type:3,	// 功能类型（1：模型 2：菜单 3：功能）
+              parentId:0,	 //父级节点
+           //   parentWholeId:0,	 //父节点wholeId
+              type:1,	// 功能类型（1：模型 2：菜单 3：功能）
               systemType:1,//系统类型（1：小程序 2：pc端）
               name:'', //功能名称
               url:'',//链接
               imageUrl:'',//      图标
               state:1,//状态（0:停用 1：启用）
               createUser:'',//	创建人
-              updateUser:''//更新人即创建人
+              updateUser:'',//更新人即创建人
+              ck_types:1,
+              //控制  模型 菜单下拉选 隐藏显示
+              showPrise_1:false,
+              showPrise_2:false,
+              //控制  模型  菜单下拉选的 值
+              model_arr:[],
+              model_arrselect:'',
+              menu_arrselect:'',
+              menu_arr:[],
           }
         }
       },
+      //校验数据
       valiFromObj(jsonobj){
-        //TODO  验证数据合法性
        /* functionInfo: {
             parentId:0,	 //父级节点
             parentWholeId:0,	 //父节点wholeId
@@ -154,20 +245,32 @@
           this.$message(`请输入功能路径`)
           return false;
         }
+        if(this.ck_types == 3){
+          //选择的功能     验证  模块 与 菜单  两者一者要有值
+          if((this.model_arrselect == null || this.model_arrselect == undefined || this.model_arrselect == '') && (this.menu_arrselect == null || this.menu_arrselect == undefined || this.menu_arrselect == '')){
+            this.$message(`请选择模块或者菜单`)
+            this.functionInfo.parentId = 0;
+            return false;
+          }
+        }else if(this.ck_types == 2){
+          //如果是2  说明选择的菜单  那就验证下 选择的模块ID 是否为空
+          if(this.model_arrselect == null || this.model_arrselect == undefined || this.model_arrselect == ''){
+            this.$message(`请选择对应的模块`)
+            return false;
+          }
+        }
         return true;
       },
     },
     computed: {
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
+    //页面载入
     mounted:function(){
-      //TODO 获取当前用户ID   赋值
-
+      //获取当前登录人信息  设置当前操作人ID
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
-    //    console.log("init:"+userobj +"==="+(JSON.parse(userobj)).id);
         this.crrur_userid = (JSON.parse(userobj)).id;
-     //   console.log(this.crrur_userid);
       }else{
         //用户信息获取失败
         this.$message("网络异常获取用户信息失败!");

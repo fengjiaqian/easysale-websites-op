@@ -64,7 +64,7 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        //页面载入 动态设置当前操作人ID
         crrur_userid:6666666,
         // initAddressStr: ``,
         suserInfo: {
@@ -99,7 +99,6 @@
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
-          console.log(JSON.stringify(new_ar));
           https_f.updateSuserObj(new_ar).then(data => {
             this.$message("修改成功!");
           }).catch(e => {
@@ -117,9 +116,7 @@
         this.alertInfoState = true;
       },
       resetForm() {
-        console.log(this.pageType)
         if (this.pageType === 'edit') {
-          //TODO
         } else {
           this.suserInfo={
             id:this.suserInfo.id,
@@ -131,7 +128,7 @@
         }
       },
       valiFromObj(jsonobj){
-        //TODO  验证数据合法性
+        //  验证数据合法性
         if (jsonobj.phone == null || jsonobj.phone == undefined || jsonobj.phone == '') {
           this.$message(`请输入手机号码`)
           return false;
@@ -143,7 +140,7 @@
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted:function(){
-      //TODO 根据ID 拉取功能实体  id 暂时写死  到时候从跳转的query里面获取 id
+      //根据ID 拉取功能实体   编辑修改用户的ID
       let uid = this.$route.query.id;
       if(uid > 0) {
         this.loading = true;
@@ -152,24 +149,19 @@
         }
         // alert("传递参数:"+JSON.stringify(param_));
         https_f.getSuserObj(param_).then(data => {
-          //TODO 查询出实体 赋值
+          // 查询出实体 赋值
           this.loading = false;
-          console.log("成功打印数据:"+JSON.stringify(data));
           this.suserInfo = data;
         }).catch(e => {
           this.$message(`网络异常`)
-          console.log("失败:" + JSON.stringify(e));
           this.loading = false;
         })
       }else{
         this.$message(`网络异常`)
       }
     }
-
   }
 </script>
-
-
 <style lang="stylus">
   .suserUpdate {
     .el-form {

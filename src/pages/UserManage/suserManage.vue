@@ -13,23 +13,6 @@
       <el-form-item label="手机号">
         <el-input v-model="suserInfo.phone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
-
-     <!-- 用户类型(1:经销商 2：销售人员  3：终端客户)-->
-     <!-- <el-form-item label="用户类型" prop="userType">
-        <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
-          <el-option label="请选择" :value="6"></el-option>
-          <el-option label="经销商" :value="1"></el-option>
-          <el-option label="销售人员" :value="2"></el-option>
-          <el-option label="终端客户" :value="3"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-select v-model="suserInfo.state" placeholder="请选择状态">
-          <el-option label="请选择" :value="6"></el-option>
-          <el-option label="停用" :value="0"></el-option>
-          <el-option label="启用" :value="1"></el-option>
-        </el-select>
-      </el-form-item>-->
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getSuserList_" size="medium">查询</el-button>
@@ -86,10 +69,7 @@
     </el-pagination>
   </div>
 </template>
-
 <script>
-
-
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
   import https_f from 'http/suserManageApi'
@@ -123,6 +103,7 @@
       AdminCitySelector
     },
     methods: {
+      //处理传递参数 剔除不要的
       param_handle(arr){
         let newarr = arr;
         if(newarr.type == 6){
@@ -151,7 +132,6 @@
       },
       /*用户授权 */
       userAuthRole(id){
-        console.log(id);
         this.$router.push({name:'suser_roleAuthorization', query:{id}})
       },
       /*获取功能数据列表*/
@@ -160,16 +140,7 @@
         // console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
-          // console.log(JSON.stringify(data.dataList));
-          // console.log("-------------------------------------");
-          // console.log(JSON.stringify(data.pager));
-
           let objs  = data.dataList;
-          // for(let x=0;x<objs.length;x++){
-          //     if(objs[x].wxNick){
-          //
-          //     }
-          // }
           this.suserList = data.dataList;
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
@@ -177,6 +148,7 @@
           this.loading = false
         })
       },
+      //刷新
       resetForm() {
         this. suserInfo= {
           type:6,	// 权限类型（1：模型 2：菜单 3：功能）
@@ -198,16 +170,17 @@
       },
       // 详情 修改
       goToDetail(row) {
-        console.log(row.id);
         let id = row.id;
         this.$router.push({name:`suserUpdate`, query:{id}})
       },
       /*设置状态*/
       toggleState(row, index) {
       },
+      //点击上一下 下一页的时候  设置当前页码值
       indexMethods(index) {
         return (this.suserInfo.pageNum - 1) * this.suserInfo.pageSize + index + 1
       },
+      //执行
       handlePageNumChange(num) {
         this.suserInfo.pageNum = num
         this.getSuserList_();
@@ -239,8 +212,9 @@
     computed: {
       ...mapState(`user`, [`choseRoleInfoList`, `userInfo`])
     },
+    //載入
     mounted:function(){
-      //TODO  默认不根据条件查询拉去 第一页
+      //初始化页码数据 默认不根据条件查询拉去 第一页
       this.suserInfo.pageNum = 1;
       this.suserInfo.pageSize = 20;
       this.suserInfo.type=6;
@@ -250,7 +224,6 @@
       this.suserInfo.wxNickName='';
       this.suserInfo.phone='';
       this.suserInfo.userType=6;
-
       this.getSuserList_();
     }
   }

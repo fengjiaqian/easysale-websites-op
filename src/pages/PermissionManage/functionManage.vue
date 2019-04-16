@@ -184,7 +184,7 @@
     data() {
       //页面取值的数据
       return {
-        //TODO 先写死 整合之后 改活
+        //当前操作用户
         crrur_userid:6666666,
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -217,6 +217,7 @@
       update_state(param){
         // console.log(JSON.stringify(param));
         https_f.updateFuctionObj(param).then(data => {
+          this.getFunctionList_();
           this.$message("执行成功!");
         }).catch(e => {
           this.$message("执行失败!");
@@ -236,7 +237,7 @@
           return false;
         }
         let param = {
-          update_user:this.crrur_userid,
+          updateUser:this.crrur_userid,
           id:this.up_pid,
         }
         //以上正常不触发 执行下面
@@ -245,7 +246,6 @@
         }else{
           param .state = 1;
         }
-        console.log(JSON.stringify(param));
         this.update_state(param);
       },
       //停用或启动
@@ -353,6 +353,7 @@
       this.functionInfo.systemType=6;
       this.functionInfo.state=6;
       this.functionInfo.name='';
+      //获取用户信息  设置当前操作人的ID
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
         this.crrur_userid = (JSON.parse(userobj)).id;

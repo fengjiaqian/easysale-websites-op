@@ -50,7 +50,7 @@
     props: [],
     data() {
       return {
-        //TODO 先写死 整合之后 改活
+        // 先写死 页面载入动态设置
         crrur_userid:6666666,
         title: `新增仓库`,
         pageType: `add`,
@@ -82,7 +82,6 @@
         params.create_user = this.crrur_userid;
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
-          console.log(JSON.stringify(params));
           https_f.addSuserObj(params).then(data => {
             this.$message(`新增成功`)
             this.resetForm();
@@ -98,9 +97,7 @@
         }
       },
       resetForm() {
-        console.log(this.pageType)
         if (this.pageType === 'edit') {
-          //TODO
         } else {
           this.suserInfo={
             wxNickName:'',
@@ -117,19 +114,7 @@
         }
       },
       valiFromObj(jsonobj){
-        //TODO  验证数据合法性
-        /* suserInfo: {
-              wx_nick_name:'',
-              phone:'',
-              user_type:1,
-              image_url:'',
-              wx_app_id:'',
-              update_time:'',
-              create_user:'',
-              update_user:'',
-              state:1
-         },*/
-
+        // 验证数据合法性
         if (jsonobj.wxNickName == null || jsonobj.wxNickName == undefined || jsonobj.wxNickName == '') {
           this.$message(`请输入微信昵称`)
           return false;
@@ -137,10 +122,21 @@
         if (jsonobj.phone == null || jsonobj.phone == undefined || jsonobj.phone == '') {
           this.$message(`请输入手机号`)
           return false;
+        }else{
+          if(!(/^1[34578]\d{9}$/.test(jsonobj.phone))){
+            this.suserInfo.phone = '';
+            this.$message("手机号码有误，请重填");
+            return false;
+          }
         }
         if (jsonobj.password == null || jsonobj.password == undefined || jsonobj.password == '') {
           this.$message(`请输入密码`)
           return false;
+        }else{
+          if((jsonobj.password).length < 6 ){
+            this.$message(`密码最少由6位字符串组成`)
+            return false;
+          }
         }
         return true;
       },
@@ -149,7 +145,7 @@
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted:function(){
-      //TODO 获取当前用户ID   赋值
+      //获取当前用户ID   赋值
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
         this.crrur_userid = (JSON.parse(userobj)).id;
@@ -160,8 +156,6 @@
     }
   }
 </script>
-
-
 <style lang="stylus">
   .suserAdd {
     .el-form {

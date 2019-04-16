@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Urls from './baseUrl'
 
+//tets
 const prefix = Urls.supplyChainUrl
 export default {
 
@@ -23,5 +24,6 @@ export default {
   getFunctionObj(params = {}){
     return axios.post(prefix +'/permission/getPermissionsByParam', params)
   }
+
 
 }
