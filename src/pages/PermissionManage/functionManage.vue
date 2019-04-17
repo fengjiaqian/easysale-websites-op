@@ -84,7 +84,8 @@
           <span>{{indexMethods(scope.$index)}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="parentId" label="父级节点" width="80">
+      <!--      prop="parentId"-->
+      <el-table-column prop="parentId"  label="父级节点" width="80">
       </el-table-column>
       <el-table-column prop="wholeId" label="父级wholeid" width="120">
       </el-table-column>
@@ -104,21 +105,6 @@
       </el-table-column>
       <el-table-column prop="name" label="功能名称">
       </el-table-column>
-<!--      <el-table-column label="状态">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{scope.row.status===0?'停用':'启用'}}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-      <!--<el-table-column label="是否收取仓配费用">
-        <template slot-scope="scope">
-          <span>{{scope.row.isGetWarehouseCharge==0?'否':'是'}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="业务类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.businessType==0?'正常业务':'贷款业务'}}</span>
-        </template>
-      </el-table-column>-->
       <el-table-column prop="url" label="url路径" >
       </el-table-column>
       <el-table-column prop="state" label="状态" width="80">
@@ -134,7 +120,8 @@
       </el-table-column>-->
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="goToDetail(scope.row)">编辑/详情</el-button>
+          <el-button type="text" size="small" @click="updateFunction(scope.row)">编辑</el-button>
+          <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
           <el-button type="text" size="small" @click="close_start_state(scope.row.state,scope.row.id)">{{scope.row.state===0?'启用':'停用'}}</el-button>
         </template>
       </el-table-column>
@@ -185,10 +172,11 @@
       //页面取值的数据
       return {
         //当前操作用户
+        testarr:[{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131}],
         crrur_userid:6666666,
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
-         //6为页面默认状态
+        //6为页面默认状态
         functionInfo: {
           type:6,	// 权限类型（1：模型 2：菜单 3：功能）
           systemType:6,//系统类型（1：小程序 2：pc端）
@@ -206,7 +194,46 @@
           status:0,
         },
         up_state:6,
-        up_pid:6
+        up_pid:6,
+        data: [{
+          label: '一级 1',
+          children: [{
+            label: '二级 1-1',
+            children: [{
+              label: '三级 1-1-1'
+            }]
+          }]
+        }, {
+          label: '一级 2',
+          children: [{
+            label: '二级 2-1',
+            children: [{
+              label: '三级 2-1-1'
+            }]
+          }, {
+            label: '二级 2-2',
+            children: [{
+              label: '三级 2-2-1'
+            }]
+          }]
+        }, {
+          label: '一级 3',
+          children: [{
+            label: '二级 3-1',
+            children: [{
+              label: '三级 3-1-1'
+            }]
+          }, {
+            label: '二级 3-2',
+            children: [{
+              label: '三级 3-2-1'
+            }]
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        }
       }
     },
     components: {
@@ -228,10 +255,10 @@
       },
       //确认修改状态
       ensureCharge(){
-          if(this.up_state == 6){
-            this.$message("网络异常!");
-            return false;
-          }
+        if(this.up_state == 6){
+          this.$message("网络异常!");
+          return false;
+        }
         if(this.up_pid == 6){
           this.$message("网络异常!");
           return false;
@@ -250,9 +277,9 @@
       },
       //停用或启动
       close_start_state(state,id){
-         this.alertInfoState = true;
-         this.up_state = state;
-         this.up_pid  = id;
+        this.alertInfoState = true;
+        this.up_state = state;
+        this.up_pid  = id;
       },
       //简单处理传递到后台的数据
       param_handle(arr){
@@ -280,6 +307,7 @@
           // console.log("-------------------------------------");
           this.productList = data.dataList;
           this.totalCount = data.pager.recordCount;
+          console.log(JSON.stringify(this.productList));
         }).catch(e => {
           this.$message(e)
           this.loading = false
@@ -288,24 +316,29 @@
       //刷新页面
       resetForm() {
         this. functionInfo= {
-            type:6,	// 权限类型（1：模型 2：菜单 3：功能）
-            systemType:6,//系统类型（1：小程序 2：pc端）
-            name:'', //权限名称
-            state:6,//状态（0:停用 1：启用）
-            pageSize:20,
-            pageNum:1,
+          type:6,	// 权限类型（1：模型 2：菜单 3：功能）
+          systemType:6,//系统类型（1：小程序 2：pc端）
+          name:'', //权限名称
+          state:6,//状态（0:停用 1：启用）
+          pageSize:20,
+          pageNum:1,
         }
-       // this.getProductList()
+        // this.getProductList()
       },
       getSelectDate(value) {
         this.functionInfo.startTime = value[0]
         this.functionInfo.endTime = value[1]
       },
-      // 详情 修改
-      goToDetail(row) {
+      //  修改
+      updateFunction(row) {
         // console.log(row.id);
         let id = row.id;
         this.$router.push({name:`functionUpdate`, query:{id}})
+      },
+      // 详情
+      goToDetail(row){
+        let id = row.id;
+        this.$router.push({name:`functionInfo`, query:{id}})
       },
       /*设置状态*/
       toggleState(row, index) {

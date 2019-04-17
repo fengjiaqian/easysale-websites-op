@@ -52,8 +52,9 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="goToDetail(scope.row)">编辑/详情</el-button>
-          <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">用户授权</el-button>
+          <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
+          <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+          <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -168,10 +169,15 @@
         this.suserInfo.startTime = value[0]
         this.suserInfo.endTime = value[1]
       },
-      // 详情 修改
-      goToDetail(row) {
+      //  修改
+      updateuser(row) {
         let id = row.id;
         this.$router.push({name:`suserUpdate`, query:{id}})
+      },
+      //详情
+      goToDetail(row){
+        let id = row.id;
+        this.$router.push({name:`suserInfo`, query:{id}})
       },
       /*设置状态*/
       toggleState(row, index) {
