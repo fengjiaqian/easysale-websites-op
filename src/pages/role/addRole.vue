@@ -19,8 +19,10 @@
                    autocomplete
                    @change="selectWarehouse"
         >
-          <el-option v-for="(dealer,id) in dealerList" :label="dealer.roleName" :value="dealer.id"
-                     :key="id"></el-option>
+          <el-option v-for="dealer in dealerList" :label="dealer.roleName" :value="dealer.id"
+                     :key="dealer.id">
+            {{dealer.roleName}}
+          </el-option>
         </el-select>
       </el-form-item>
 
