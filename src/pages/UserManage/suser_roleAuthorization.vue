@@ -51,8 +51,9 @@
       <el-table-column prop="createUser" label="创建人" >
       </el-table-column>
     </el-table>
-    <div>
-      <el-button type="primary" @click="onckbox_" style="float: right;" size="medium">勾选角色授权</el-button>
+    <div style="margin:0 auto;width:300px;height:100px">
+      <el-button type="primary" @click="onckbox_"  size="medium">保存</el-button>
+      <el-button @click="$router.go(-1)">返回</el-button>
     </div>
     <!--分页-->
    <!-- <el-pagination

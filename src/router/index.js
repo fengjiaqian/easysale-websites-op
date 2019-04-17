@@ -70,7 +70,8 @@ import  functionManage from '../pages/PermissionManage/functionManage'
 import  functionAdd from '../pages/PermissionManage/functionAdd'
 import  functionUpdate from '../pages/PermissionManage/functionUpdate'
 import  functionInfo from '../pages/PermissionManage/functionInfo'
-
+import  tabletree from '../pages/PermissionManage/tabletree'
+import  ztreetable from '../pages/PermissionManage/ztreetable'
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
@@ -500,6 +501,14 @@ export default new Router({
       path: '/functionInfo',
       name: 'functionInfo',
       component: functionInfo
+    },{
+      path: '/tabletree',
+      name: 'tabletree',
+      component: tabletree
+    },{
+      path: '/ztreetable',
+      name: 'ztreetable',
+      component: ztreetable
     },
   ]
 })
