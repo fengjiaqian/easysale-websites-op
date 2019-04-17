@@ -7,7 +7,7 @@
         <el-tab-pane label="角色信息" name="first" v-loading="loading">
           <div style="line-height: 20px;margin-top: 30px;font-size: 14px;">
             <div class="userInfo">角色： {{employeeInfo.roleName}}</div>
-            <div class="userInfo">父角色名称： {{employeeInfo.parentName}}</div>
+            <div class="userInfo" v-if="employeeInfo.parentName">父角色名称： {{employeeInfo.parentName}}</div>
             <div class="userInfo">创建时间： {{employeeInfo.createTime}}</div>
             <div class="userInfo">状态: {{employeeInfo.state==0?'停用':'启用'}}</div>
 
