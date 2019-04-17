@@ -63,11 +63,13 @@ import suserManage from '../pages/UserManage/suserManage'
 import suserAdd from '../pages/UserManage/suserAdd'
 import suserUpdate from '../pages/UserManage/suserUpdate'
 import suser_roleAuthorization from '../pages/UserManage/suser_roleAuthorization'
+import suserInfo from '../pages/UserManage/suserInfo'
 
 //功能管理
 import  functionManage from '../pages/PermissionManage/functionManage'
 import  functionAdd from '../pages/PermissionManage/functionAdd'
 import  functionUpdate from '../pages/PermissionManage/functionUpdate'
+import  functionInfo from '../pages/PermissionManage/functionInfo'
 
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
@@ -489,6 +491,15 @@ export default new Router({
       name: 'functionUpdate',
       component: functionUpdate
 
+    },{
+      path: '/suserInfo',
+      name: 'suserInfo',
+      component: suserInfo
+
+    },{
+      path: '/functionInfo',
+      name: 'functionInfo',
+      component: functionInfo
     },
   ]
 })
