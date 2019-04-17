@@ -202,7 +202,10 @@
         // console.log(JSON.stringify(param));
         https_f.updateFuctionObj(param).then(data => {
           this.getFunctionList_();
-          this.$message("执行成功!");
+          this.$message({
+            type: 'success',
+            message: '执行成功!'
+          });
         }).catch(e => {
           this.$message("执行失败!");
         })
@@ -234,9 +237,23 @@
       },
       //停用或启动
       close_start_state(state,id){
-        this.alertInfoState = true;
+        // this.alertInfoState = true;
         this.up_state = state;
         this.up_pid  = id;
+        this.$confirm('确定要改变当前数据状态吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行
+          this.ensureCharge();
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取变更'
+          });
+        });
+
       },
       //简单处理传递到后台的数据
       param_handle(arr){
@@ -261,8 +278,6 @@
         this.loading = true;
         https_f.functionList(this.param_handle(this.functionInfo)).then(data => {
           this.loading = false
-          console.log(JSON.stringify(data.dataList));
-         console.log("-------------------------------------");
           let list = data.dataList;
           let list_ = data.dataList;
           for(let x=0;x<list.length;x++){
@@ -277,7 +292,6 @@
           }
           this.productList = list;
           this.totalCount = data.pager.recordCount;
-          console.log(JSON.stringify(this.productList));
         }).catch(e => {
           this.$message(e)
           this.loading = false

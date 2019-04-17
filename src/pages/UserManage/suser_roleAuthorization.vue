@@ -167,7 +167,10 @@
         if(this.isauth_user){
           https_f.add_authuser_role(cdparam).then(data => {
             this.loading = false;
-            this.$message("授权成功");
+            this.$message({
+              type: 'success',
+              message: '授权成功'
+            });
           }).catch(e => {
             this.$message(e)
             this.loading = false
@@ -176,7 +179,10 @@
           //修改
           https_f.update_authuser_role(cdparam).then(data => {
             this.loading = false;
-            this.$message("修改授权成功");
+            this.$message({
+              type: 'success',
+              message: '修改授权成功'
+            });
           }).catch(e => {
             this.$message(e)
             this.loading = false
@@ -185,7 +191,20 @@
       },
       onckbox_(){
         if((this.userrolearr).length >0){
-          this.alertInfoState = true;
+          // this.alertInfoState = true;
+          this.$confirm('您确定授权这些角色给用户吗, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            //执行
+            this.ensureCharge();
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取变更'
+            });
+          });
         }else{
           this.$message('请选择要授权的角色');
         }

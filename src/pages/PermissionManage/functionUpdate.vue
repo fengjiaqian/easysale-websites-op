@@ -140,7 +140,10 @@
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
           https_f.updateFuctionObj(new_ar).then(data => {
-            this.$message("修改成功!");
+            this.$message({
+              type: 'success',
+              message: '修改成功能'
+            });
           }).catch(e => {
             this.$message("修改失败!");
           })
@@ -152,7 +155,20 @@
       },
       //弹出确认窗口
       submitForm() {
-        this.alertInfoState = true;
+        // this.alertInfoState = true;
+        this.$confirm('确定要修改当前数据吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行
+          this.ensureCharge();
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取变更'
+          });
+        });
       },
       //刷新表单
       resetForm() {
