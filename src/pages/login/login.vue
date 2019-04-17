@@ -46,6 +46,8 @@
         fullscreenLoading: false
       }
     },
+
+
     methods: {
       //UA认证接口，拿到token之后,再调登陆接口
       getUALogin() {
