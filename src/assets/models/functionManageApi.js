@@ -23,6 +23,10 @@ export default {
   //查询功能实体
   getFunctionObj(params = {}){
     return axios.post(prefix +'/permission/getPermissionsByParam', params)
+  },
+  //返回功能 树形结构
+  getTreeFunctions(params = {}){
+    return axios.post(prefix +'/permission/getPermissionTreeByIds', params)
   }
 
 
