@@ -11,12 +11,12 @@
     <div class="login-input-block">
       <div class="title">用户登录</div>
       <div class="grid-content bg-purple">
-        <el-input style="width: 363px;margin: 48px 0 24px 0;" placeholder="请输入用户名" prefix-icon="el-icon-mobile-phone"
-                  v-model="phone"></el-input>
+        <el-input style="width: 363px;margin: 48px 0 24px 0;" placeholder="请输入用户名" prefix-icon="el-icon-mobile-phone" type="text"
+                  v-model="loginarr.phone"></el-input>
       </div>
       <div class="grid-content bg-purple">
         <el-input style="width: 363px;" placeholder="请输入登陆密码" type="password" prefix-icon="el-icon-edit"
-                  v-model="password"></el-input>
+                  v-model="loginarr.password"></el-input>
       </div>
 
       <el-button type="primary" style="width: 350px;margin-top: 24px;" @click="clickLogin">登录</el-button>
@@ -43,7 +43,11 @@
         deviceType: ``,
         userToken: '',
         phone:'',
-        fullscreenLoading: false
+        fullscreenLoading: false,
+        loginarr:{
+          password:'',
+          phone:''
+        }
       }
     },
 
@@ -52,8 +56,17 @@
       //UA认证接口，拿到token之后,再调登陆接口
       getUALogin() {
         this.fullscreenLoading = true
-        let {account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone} = this
-        http.getUALogin({account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone}).then(data => {
+        let param = {
+          account:this.account,
+          password:this.loginarr.password,
+          appCode:this.appCode,
+          appVersion:this.appVersion,
+          deviceId:this.deviceId,
+          deviceOS:this.deviceOS,
+          deviceType:this.deviceType,
+          phone:this.loginarr.phone
+        }
+        http.getUALogin(param).then(data => {
           this.userToken = data.token
           this.setToken({token: this.userToken});
           this.updateToken(this.userToken);
@@ -69,8 +82,17 @@
       getLoginInfo() {
         this.fullscreenLoading = true
         let userToken = this.userToken;
-        let {account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone} = this
-        http.getLoginInfo({account, password, appCode, appVersion, deviceId, deviceOS, deviceType,phone}).then(data => {
+        let param = {
+          account:this.account,
+          password:this.loginarr.password,
+          appCode:this.appCode,
+          appVersion:this.appVersion,
+          deviceId:this.deviceId,
+          deviceOS:this.deviceOS,
+          deviceType:this.deviceType,
+          phone:this.loginarr.phone
+        }
+        http.getLoginInfo(param).then(data => {
           //将获取到的用户信息存在vuex中
           this.setUserInfo({userInfo: data});
           this.updateUserInfo(data);
@@ -163,8 +185,8 @@
       },
       clickLogin() {
         this.getUALogin();
-        localStorage.setItem("account", this.account);
-        localStorage.setItem("password", this.password);
+        localStorage.setItem("phone", this.loginarr.phone);
+        localStorage.setItem("password", this.loginarr.password);
       },
       ...mapActions(`appConfig`, [`getVersionInfo`]),
       ...mapActions(`user`, [`updateToken`, `updateUserInfo`, `updateChoseRole`, `updateRoleInfoList`, `updateChoseRoleInfoList`,`clearToken`]),
@@ -188,15 +210,24 @@
       // if(getCookie(`token`)){
       //   this.getLoginInfo();
       // }
-
       for (let i = localStorage.length - 1; i >= 0; i--) {
-        if (localStorage.key(i) === 'account') {
-          this.account = localStorage.getItem(localStorage.key(i))
+        if (localStorage.key(i) === 'phone') {
+          let phone = localStorage.getItem(localStorage.key(i))
+          this.phone = phone;
+          this.loginarr.phone = phone;
         } else if (localStorage.key(i) === 'password') {
-          this.password = localStorage.getItem(localStorage.key(i))
+          let passwords = localStorage.getItem(localStorage.key(i))
+          this.loginarr.password  =passwords;
+          this.password = passwords;
         }
       }
     },
+    mounted(){
+       let ph =localStorage.getItem("phone");
+       let password =localStorage.getItem("password");
+       this.loginarr.phone = ph;
+       this.loginarr.password  =password;
+    }
   }
 </script>
 
