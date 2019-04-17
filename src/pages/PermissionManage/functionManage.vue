@@ -1,9 +1,5 @@
 <template>
   <div id="applyWarehouseProduct" v-loading="loading">
-    <!--<el-tabs v-model="productInfo.status" @tab-click="handleClick">
-      <el-tab-pane label="待设置" name=0></el-tab-pane>
-      <el-tab-pane label="已设置" name=1></el-tab-pane>
-    </el-tabs>-->
     <!--搜索条件-->
     <el-form :inline="true" :model="functionInfo"
              size="medium"
@@ -37,34 +33,6 @@
           <el-option label="启用" :value="1"></el-option>
         </el-select>
       </el-form-item>
-      <!--
-      <el-form-item label="入库时间" clearable>
-        &lt;!&ndash;<el-date-picker
-          v-model="timeRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          @change="getSelectDate"
-          value-format=" yyyy-MM-dd" format="yyyy-MM-dd">
-        </el-date-picker>&ndash;&gt;
-          <el-date-picker
-            v-model="productInfo.startTime"
-            type="date"
-            :picker-options="startDatePicker"
-            value-format=" yyyy-MM-dd" format="yyyy-MM-dd"
-            placeholder="开始日期">
-          </el-date-picker>
-          &lt;!&ndash;value-format=" yyyy-MM-dd" format="yyyy-MM-dd"&ndash;&gt;
-          <span>至</span>
-          <el-date-picker
-            v-model="productInfo.endTime"
-            type="date"
-            :picker-options="endDatePicker"
-            value-format=" yyyy-MM-dd" format="yyyy-MM-dd"
-            placeholder="结束日期">
-          </el-date-picker>
-      </el-form-item>-->
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getFunctionList_" size="medium">查询</el-button>
@@ -72,7 +40,6 @@
     </div>
 
     <el-button type="primary" class="add-warehouse" @click="addFunction">新增功能</el-button>
-
     <!--表格-->
     <el-table
       :data="productList"
@@ -85,10 +52,40 @@
         </template>
       </el-table-column>
       <!--      prop="parentId"-->
-      <el-table-column prop="parentId"  label="父级节点" width="80">
-      </el-table-column>
-      <el-table-column prop="wholeId" label="父级wholeid" width="120">
-      </el-table-column>
+   <!--   <el-table-column prop="parentId"  label="父级节点" width="80">
+      </el-table-column>-->
+
+     <!-- <el-table-column prop="parentId"  label="父级节点" width="80"type="expand">
+        <template scope="scope">
+          <el-table class="" :data="scope.row.childrenarr" border>
+            <el-table-column prop="type" label="功能类型" width="80">
+              <template slot-scope="scope">
+                <span>{{scope.row.childrenarr.type===1?'模型':scope.row.childrenarr.type===2?'菜单':'功能'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="systemType" label="系统类型" width="80">
+              <template slot-scope="scope">
+                <span>{{scope.row.childrenarr.systemType===1?'小程序':'PC'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="功能名称">
+            </el-table-column>
+            <el-table-column prop="url" label="url路径" >
+            </el-table-column>
+            <el-table-column prop="state" label="状态" width="80">
+              <template slot-scope="scope">
+                <span>{{scope.row.childrenarr.state===0?'停用':'启用'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="创建时间">
+            </el-table-column>
+            <el-table-column prop="createUser" label="创建人" >
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>-->
+   <!--   <el-table-column prop="wholeId" label="父级wholeid" width="120">
+      </el-table-column>-->
       <!--<el-table-column prop="businessCity" label="业务城市">
       </el-table-column>
       <el-table-column prop="warehouseName" label="仓库"> （1：模型 2：菜单 3：功能）
@@ -100,7 +97,7 @@
       </el-table-column>
       <el-table-column prop="systemType" label="系统类型" width="80">
         <template slot-scope="scope">
-          <span>{{scope.row.type===1?'小程序':'PC'}}</span>
+          <span>{{scope.row.systemType===1?'小程序':'PC'}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="功能名称">
@@ -172,7 +169,6 @@
       //页面取值的数据
       return {
         //当前操作用户
-        testarr:[{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131},{"id":2131,"name":2131}],
         crrur_userid:6666666,
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -195,45 +191,6 @@
         },
         up_state:6,
         up_pid:6,
-        data: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
       }
     },
     components: {
@@ -304,8 +261,21 @@
         this.loading = true;
         https_f.functionList(this.param_handle(this.functionInfo)).then(data => {
           this.loading = false
-          // console.log("-------------------------------------");
-          this.productList = data.dataList;
+          console.log(JSON.stringify(data.dataList));
+         console.log("-------------------------------------");
+          let list = data.dataList;
+          let list_ = data.dataList;
+          for(let x=0;x<list.length;x++){
+            if(list[x].parentId != undefined && list[x].parentId != null && list[x].parentId != ''){
+                list[x].childrenarr = [];
+                for(let i=0;i<list_.length;i++){
+                    if(list_[i].id == list[x].parentId){
+                      list[x].childrenarr.push(list_[i]);
+                    }
+                }
+            }
+          }
+          this.productList = list;
           this.totalCount = data.pager.recordCount;
           console.log(JSON.stringify(this.productList));
         }).catch(e => {
