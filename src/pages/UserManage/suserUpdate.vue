@@ -4,7 +4,7 @@
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
-      <el-form-item label="微信昵称" prop="wxNickName">
+      <el-form-item label="用户名称" prop="wxNickName">
         <el-input v-model="suserInfo.wxNickName" placeholder="可选项"  class="disable-input"></el-input>
       </el-form-item>
 
@@ -13,8 +13,10 @@
       </el-form-item>
 
       <el-form-item label="用户类型" prop="userType">
-        <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
+        <el-select v-model="suserInfo.userType" disabled="disabled" placeholder="请选择用户类型">
           <el-option label="经销商" :value="1"></el-option>
+          <el-option label="销售人员" :value="2"></el-option>
+          <el-option label="终端" :value="3"></el-option>
         </el-select>
       </el-form-item>
 
@@ -168,6 +170,7 @@
           // 查询出实体 赋值
           this.loading = false;
           this.suserInfo = data;
+
         }).catch(e => {
           this.$message(`网络异常`)
           this.loading = false;
