@@ -51,7 +51,7 @@
       <el-table-column prop="createUser" label="创建人" >
       </el-table-column>
     </el-table>
-    <div style="margin:0 auto;width:300px;height:100px">
+    <div style="margin:0 auto;width:300px;height:100px;margin-top:25px">
       <el-button type="primary" @click="onckbox_"  size="medium">保存</el-button>
       <el-button @click="$router.go(-1)">返回</el-button>
     </div>
@@ -201,10 +201,10 @@
             //执行
             this.ensureCharge();
           }).catch(() => {
-            this.$message({
+            /*this.$message({
               type: 'info',
               message: '已取变更'
-            });
+            });*/
           });
         }else{
           this.$message('请选择要授权的角色');
