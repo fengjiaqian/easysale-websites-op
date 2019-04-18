@@ -11,6 +11,7 @@
       </template>
     </el-table-column>
     <el-table-column v-for="(column, index) in columns" v-else :key="column.value" :label="column.text" :width="column.width">
+
       <template slot-scope="scope">
         <!-- Todo -->
         <!-- eslint-disable-next-line vue/no-confusing-v-for-v-if -->
@@ -20,7 +21,13 @@
           <i v-else class="el-icon-minus"/>
         </span>
         <span>
-             {{ scope.row[column.value] }}
+            <span v-if="column.text == '功能类型'">{{ scope.row[column.value] == 1 ? "模型": scope.row[column.value] == 2 ? "菜单" :"功能" }}</span>
+            <span v-if="column.text == '功能名称'">{{ scope.row[column.value] }}</span>
+           <span v-if="column.text == '功能url'"> {{ scope.row[column.value] }}</span>
+           <span v-if="column.text == '系统类型'">{{ scope.row[column.value] == 1 ? "小程序": "PC" }}</span>
+           <span v-if="column.text == '状态'">{{ scope.row[column.value] == 0 ? "停用": "启用" }}</span>
+           <span v-if="column.text == '创建时间'"> {{ scope.row[column.value] }}</span>
+          <span v-if="column.text == '图标imageUrl'"> {{ scope.row[column.value] }}</span>
         </span>
       </template>
     </el-table-column>
@@ -126,18 +133,6 @@
       functionManage
     },
     methods: {
-      respage(){
-        console.log("刷新页面");
-        https_f.getTreeFunctions({}).then(data => {
-          this.loading = false
-          functionManage.resetPage(data);
-        }).catch(e => {
-          console.log("失败");
-          this.loading = false
-        })
-        //上面传递参数 没有改变状态   先刷新
-        this.$router.go(0);
-      },
       showRow: function(row) {
         const show = row.row.parent
           ? row.row.parent._expanded && row.row.parent._show
@@ -172,14 +167,17 @@
           }else{
             param .state = 1;
           }
-          console.log(JSON.stringify(param));
           https_f.updateFuctionObj(param).then(data => {
             this.$message({
               type: 'success',
               message: '执行成功!'
             });
-            //刷新数据来源页面
-            this.respage();
+            //状态如果改变成功 直接通过传递的 对象改变当前表格绑定的数据值
+            if(val.state == 1){
+              val.state = 0;
+            }else{
+              val.state = 1;
+            }
           }).catch(e => {
             console.log(JSON.stringify(e));
             this.$message("执行失败!");

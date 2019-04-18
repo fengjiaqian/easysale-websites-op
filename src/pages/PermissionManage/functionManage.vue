@@ -21,7 +21,7 @@
         columns: [
           {
             text: "功能名称",
-            value: "label"
+            value: "label",
           },
           {
             text: "功能url",
@@ -33,14 +33,17 @@
           },
           {
             text: "功能类型",
-            value: "type"
+            value: "type",
+            width:90
           },{
             text: "系统类型",
             value: "systemType",
+            width:90
           },
           {
             text: "状态",
             value: "state",
+            width:90
           },
           {
             text: "创建时间",
