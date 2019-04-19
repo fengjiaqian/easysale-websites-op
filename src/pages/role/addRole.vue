@@ -11,13 +11,14 @@
       </el-form-item>
 
       <el-form-item label="父角色名称" prop="parentId">
-        <el-select v-model="productDetailForm.parentName" placeholder="请输入关键字"
+        <el-select v-model="productDetailForm.parentId" placeholder="请输入关键字"
                    clearable
                    filterable
                    remote
                    :remote-method="queryDealerList"
                    autocomplete
                    @change="selectWarehouse"
+                   :disabled="pageType=='edit'"
         >
           <el-option v-for="dealer in dealerList" :label="dealer.roleName" :value="dealer.id"
                      :key="dealer.id">
@@ -175,7 +176,7 @@
               })
           } else if (valid && this.pageType === `edit`) {
             params.roleId=params.id;
-            params.parentId=params.parentName;
+            // params.parentId=params.parentName;
             console.log(params);
             https.updateBackRole(params)
               .then(() => {
