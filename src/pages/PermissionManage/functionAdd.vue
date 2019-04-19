@@ -285,8 +285,6 @@
           }
           this.loading = false;
           //调用新增
-          console.log(JSON.stringify(params));
-          return false;
           https_f.addFucntionObj(params).then(data => {
             this.$message(`新增成功`)
             this.resetForm();
