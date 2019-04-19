@@ -1,54 +1,88 @@
 <template>
   <div id="applyWarehouseProduct" v-loading="loading">
 
+
+    <el-form :inline="true" :model="scanInfo"
+             size="medium"
+             label-width="100px"
+             label-suffix="："
+             class="demo-form-inline">
+
+      <el-form-item label="功能名称">
+        <el-input v-model="scanInfo.function_name" placeholder="请输入功能名称" ></el-input>
+      </el-form-item>
+
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button type="primary" @click="scanFunctionName" size="medium">查询</el-button>
+    </el-form>
+
+
     <el-button type="primary" class="add-warehouse" @click="addFunction">新增功能</el-button>
     <!--表格-->
-      <tree-table :data="data" :columns="columns" border/>
+      <tree-table :data="data" :columns="columns"  border/>
   </div>
 </template>
 
 <script>
-  import treeTable from "./tabletree";
+
+  /****
+   *   增加 搜索条件  按功能名称  搜索数据   然后 定位到 对应的 table  表格行上
+   */
+  import treeTable from "./tabletree.vue";
   import {mapState, mapMutations} from 'vuex'
   //引入 vue 后台发请求api接口
   import https_f from 'http/functionManageApi'
+
+  let parentNode = null;
+  let node = null;
+
   export default {
     name: "functionManage",
     data() {
       //页面取值的数据
       return {
+        scanInfo:{
+          function_name:''
+        },
+        functionname:'',
         loading: false,
         columns: [
           {
             text: "功能名称",
             value: "label",
+            bjys:"bjys",
           },
           {
             text: "功能url",
-            value: "url"
+            value: "url",
+            bjys:"bjys",
           },
           {
             text: "图标imageUrl",
             value: "imageUrl"
+          , bjys:"bjys",
           },
           {
             text: "功能类型",
             value: "type",
-            width:90
+            width:90,
+            bjys:"bjys",
           },{
             text: "系统类型",
             value: "systemType",
-            width:90
+            width:90,
+            bjys:"bjys",
           },
           {
             text: "状态",
             value: "state",
-            width:90
+            width:90,
+            bjys:"bjys",
           },
           {
             text: "创建时间",
             value: "createTime",
-            width: 180
+            width: 180,
+            bjys:"bjys",
           },
         ],
         data:[],
@@ -58,6 +92,45 @@
       treeTable
     },
     methods: {
+      //搜索指定名称
+      scanFunctionName(){
+        //进来默认还原数据
+         parentNode = null;
+         node = null;
+        let datas = this.data;
+        for(let x=0;x<datas.length;x++){
+          datas[x].bjys = "";
+        }
+        this.data = datas;
+        if(this.scanInfo.function_name != ''){
+          let obj = getNode(this.data, this.scanInfo.function_name);
+          if(obj.parentNode == null){
+             if(obj.node != null){
+                let id = obj.node.id;
+               this.resetData(id);
+             }else{
+               this.$message("无匹配结果!");
+             }
+          }else{
+            let id = obj.parentNode.id;
+            this.resetData(id);
+          }
+        }
+      },
+      resetData(id){
+         let objs = this.data;
+        if(objs.length > 0){
+          for(let x=0;x<objs.length;x++){
+            if(objs[x].id == id){
+              objs[x].bjys = "background-color:#668B8B";
+              break;
+            }
+          }
+          this.data = objs;
+        }else{
+          this.$message("出现异常!");
+        }
+      },
       //update_
       update_state(param){
         // console.log(JSON.stringify(param));
@@ -139,6 +212,10 @@
         this.loading = true;
         https_f.getTreeFunctions({}).then(data => {
           this.loading = false
+          // console.log(JSON.stringify(data));
+          for(let x= 0;x<data.length;x++){
+            data[x].bjys = "";
+          }
           this.data = data;
         }).catch(e => {
           this.$message(e)
@@ -171,6 +248,48 @@
       this.data = datas;
     }
 
+  }
+
+  function getNode(json, nodeId) {
+    //1.第一层 root 深度遍历整个JSON
+    for (var i = 0; i < json.length; i++) {
+      if (node) {
+        break;
+      }
+      var obj = json[i];
+      //没有就下一个
+      if (!obj || !obj.label) {
+        continue;
+      }
+      //2.有节点就开始找，一直递归下去
+      if (obj.label == nodeId) {
+        //找到了与nodeId匹配的节点，结束递归
+        node = obj;
+        break;
+      } else {
+        //3.如果有子节点就开始找
+        if (obj.children) {
+          //4.递归前，记录当前节点，作为parent 父亲
+          parentNode = obj;
+          //递归往下找
+          getNode(obj.children, nodeId);
+        } else {
+          //跳出当前递归，返回上层递归
+          continue;
+        }
+      }
+    }
+
+    //5.如果木有找到父节点，置为null，因为没有父亲
+    if (!node) {
+      parentNode = null;
+    }
+
+    //6.返回结果obj
+    return {
+      parentNode: parentNode,
+      node: node
+    };
   }
 </script>
 
@@ -207,5 +326,6 @@
   .add-warehouse {
     padding: 10px 24px;
     margin-top: 16px
+    margin :20px;
   }
 </style>

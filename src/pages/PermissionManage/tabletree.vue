@@ -1,6 +1,6 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs">
-    <el-table-column v-if="columns.length===0" width="150">
+  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs"  >
+    <el-table-column v-if="columns.length===0" width="150"  >
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
         <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
@@ -10,17 +10,18 @@
         {{ scope.$index }}
       </template>
     </el-table-column>
-    <el-table-column v-for="(column, index) in columns" v-else :key="column.value" :label="column.text" :width="column.width">
+    <el-table-column v-for="(column, index) in columns"  v-else :key="column.value" :label="column.text" :width="column.width" >
 
-      <template slot-scope="scope">
-        <!-- Todo -->
+      <template slot-scope="scope" >
+        <!-- Todo background-color: red;-->
+        <div :style="scope.row[column.bjys]">
         <!-- eslint-disable-next-line vue/no-confusing-v-for-v-if -->
         <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
         <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
           <i v-if="!scope.row._expanded" class="el-icon-plus"/>
           <i v-else class="el-icon-minus"/>
         </span>
-        <span>
+        <span >
             <span v-if="column.text == '功能类型'">{{ scope.row[column.value] == 1 ? "模型": scope.row[column.value] == 2 ? "菜单" :"功能" }}</span>
             <span v-if="column.text == '功能名称'">{{ scope.row[column.value] }}</span>
            <span v-if="column.text == '功能url'"> {{ scope.row[column.value] }}</span>
@@ -29,13 +30,15 @@
            <span v-if="column.text == '创建时间'"> {{ scope.row[column.value] }}</span>
           <span v-if="column.text == '图标imageUrl'"> {{ scope.row[column.value] }}</span>
         </span>
+        </div>
       </template>
     </el-table-column>
     <el-table-column align="center" label="操作" v-if="treeType === 'normal'" width="250">
       <template slot-scope="props">
-        <el-button type="primary" size="small" @click="gotoEditFunction(props.row)" plain>编辑</el-button>
-        <el-button type="primary" size="small" @click="gotoFunctionInfo(props.row)" plain>详情</el-button>
-        <el-button type="primary" size="small" @click="isChangeState(props.row)" plain>{{props.row.state == 1 ? '停用':'启用'}}</el-button>
+        <el-button type="text" size="small" @click="gotoEditFunction(props.row)" >编辑</el-button>
+        <el-button type="text" size="small" @click="gotoFunctionInfo(props.row)" >详情</el-button>
+        <el-button type="text" size="small" @click="isChangeState(props.row)" >{{props.row.state == 1 ? '停用':'启用'}}</el-button>
+        <el-button type="text" size="small" @click="delFunction(props.row)" >刪除</el-button>
       </template>
     </el-table-column>
     <slot/>
@@ -100,8 +103,10 @@
         default: function () {
           return false
         }
-      }
+      },
+
     },
+
     computed: {
       // 格式化数据源
       formatData: function() {
@@ -118,6 +123,19 @@
         return func.apply(null, args);
       }
     },
+    formatData: function() {
+      let tmp;
+      if (!Array.isArray(this.data)) {
+        tmp = [this.data];
+      } else {
+        tmp = this.data;
+      }
+      const func = this.evalFunc || treeToArray;
+      const args = this.evalArgs
+        ? Array.concat([tmp, this.expandAll], this.evalArgs)
+        : [tmp, this.expandAll];
+      return func.apply(null, args);
+    },
     filters: {
       btnType (value) {
         if(value === 'M') {
@@ -131,6 +149,17 @@
     },
     components: {
       functionManage
+    },
+    scanLocation(){
+      // 遍历表格数据，获取查询的数据
+      if (this.formatData() && this.formatData().length > 0) {
+        for (let i = 0; i < this.formatData.length; i++) {
+          const item = this.formatData[i];
+          console.log(item);
+        }
+      }else{
+        console.log(11111);
+      }
     },
     methods: {
       showRow: function(row) {
@@ -196,12 +225,51 @@
       gotoFunctionInfo(val){
         let id = val.id;
         this.$router.push({name:`functionInfo`, query:{id}})
+      },
+      //刪除
+      delFunction(val){
+        try {
+          if(val.children.length > 0){
+            this.$alert('请先删除子级节点', '存在子级节点', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+          }else{
+            this.$confirm('确定要刪除当前数据状态吗, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              let param ={
+                updateUser:this.crr_uid,
+                id:val.id,
+                state:3
+              }
+              https_f.updateFuctionObj(param).then(data => {
+                this.$message({
+                  type: 'success',
+                  message: '执行成功!'
+                });
+                this.$router.go(0);
+              }).catch(e => {
+                console.log(JSON.stringify(e));
+                this.$message("执行失败!");
+              })
+            }).catch(() => {
+              console.log("取消");
+            });
+          }
+        }catch (e) {
+          this.$message("数据出错!");
+        }
       }
     },
     data(){
       return {
         //当前操作用户
         crr_uid:6666,
+        hackReset:false,
       }
     },
     //页面载入  数据处理
@@ -216,6 +284,8 @@
       }
     }
   };
+
+
 </script>
 <style rel="stylesheet/css">
   @keyframes treeTableShow {
