@@ -51,25 +51,33 @@
           <span>{{indexMethods(scope.$index)}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="wxNickName" label="微信昵称">
+      <el-table-column prop="wxNickName" label="微信昵称" width="250">
       </el-table-column>
-      <el-table-column prop="phone" label="手机号" >
+      <el-table-column prop="phone" label="手机号" width="150">
       </el-table-column>
-      <el-table-column prop="userType" label="用户类型" width="100">
+      <el-table-column prop="userType" label="用户类型" width="120">
         <template slot-scope="scope">
           <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'异常数据'}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="wxAppId" label="微信openid" >
+
+      <el-table-column   label="申请状态"  width="120">
+        <template slot-scope="scope">
+          <div v-if="scope.row.userType == 3">
+            <span>{{scope.row.auditState===0?'申请中':'未申请'}}</span>
+          </div>
+        </template>
       </el-table-column>
-      <el-table-column prop="state" label="状态" width="90">
+
+
+      <el-table-column prop="state" label="状态" width="120">
                 <template slot-scope="scope">
                   <span>{{scope.row.state===0?'停用':'启用'}}</span>
                 </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间">
+      <el-table-column prop="createTime" label="创建时间" width="250">
       </el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
           <!-- 经销商-->
           <div v-if="scope.row.userType == 1">
@@ -88,13 +96,17 @@
           </div>
 
           <!-- 终端人员 -->
-          <div v-if="scope.row.userType == 3">
+          <div v-if="scope.row.userType == 3  && scope.row.auditState == 0">
             <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
           </div>
-
+          <div v-else-if="scope.row.userType == 3  && scope.row.auditState == 1">
+            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
+            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -133,6 +145,7 @@
           wxNickName:'',
           phone:'',
           wxAppId:'',
+          auditState:6,
         },
         chargeDialog: false,
         totalCount: 0,
@@ -151,7 +164,22 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-
+            let par = {
+              id:row.id
+            }
+            https_f.userApplyDer(par).then(data => {
+              this.loading = false
+              this.$message({
+                type: 'success',
+                message: '审核成功'
+              });
+              //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
+              row.userType = 1;
+              this.getSuserList_();
+            }).catch(e => {
+              this.$message(e)
+              this.loading = false
+            })
         }).catch(() => {
 
         });
@@ -254,6 +282,7 @@
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
           // let objs  = data.dataList;
+          console.log("查询的结果:"+JSON.stringify(data.dataList));
           this.suserList = data.dataList;
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
@@ -274,6 +303,7 @@
           wxNickName:'',
           phone:'',
           wxAppId:'',
+          auditState:6,
         }
         // this.getProductList()
       },

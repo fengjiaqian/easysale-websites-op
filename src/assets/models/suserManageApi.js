@@ -9,6 +9,11 @@ export default {
     return axios.post(prefix +'/user/addUser', params)
   },
 
+  //新增用户经销商
+  addUserAndDer(params = {}){
+    return axios.post(prefix +'/user/adddealer', params)
+  },
+
   //用户列表
   suser_List(params = {}){
     return axios.post(prefix +'/user/getUserListByParams', params)
@@ -22,6 +27,9 @@ export default {
   //查询用户实体
   getSuserObj(params = {}){
     return axios.post(prefix +'/user/findUserInfo', params)
-  }
-
+  },
+  //审核userApplyDer
+  userApplyDer(params = {}){
+    return axios.post(prefix +'/user/auditCustomerApplyToDealer', params)
+  },
 }
