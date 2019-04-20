@@ -11,13 +11,12 @@
       </el-form-item>
 
       <el-form-item label="父角色名称" prop="parentId">
-        <el-select v-model="productDetailForm.parentId" placeholder="请输入关键字"
+        <el-select v-model="productDetailForm.parent.roleName" placeholder="请输入关键字"
                    clearable
                    filterable
                    remote
                    :remote-method="queryDealerList"
                    autocomplete
-                   @change="selectWarehouse"
                    :disabled="pageType=='edit'"
         >
           <el-option v-for="dealer in dealerList" :label="dealer.roleName" :value="dealer.id"
@@ -60,6 +59,9 @@
         productDetailForm: {
           roleName:'',//角色名称
           parentId:'',//父id
+          parent:{
+            roleName:'',
+          },
           parentName:'',
           roleId:'',
           state: 1,//状态 0=停用 1=启用
@@ -70,8 +72,10 @@
     },
     activated() {
       console.log(this.choseRoleInfoList)
+      console.log(this.$route.query);
       if (this.$route.query.productInfo) {
         this.pageType = `edit`
+        alert(111);
         this.productDetailForm = this.$route.query.productInfo
       } else {
         this.pageType = `add`
@@ -84,10 +88,12 @@
     },
     components: {
       AdminCitySelector
+
     },
     methods: {
       /*模糊查询经销商列表*/
       queryDealerList(query) {
+        console.log(this.$route.query.productInfo);
         if (query.length >= 1) {
           this.loading = true
           this.getWarehouseList(query)
@@ -102,61 +108,10 @@
             this.dealerList = data
           })
       },
-      /*选择经销商获取经销商手机号*/
-      selectWarehouse(id) {
-        console.log(id)
-        let obj = {}
-        obj = this.dealerList.find(item => {
-          return item.id == id
-        })
-        console.log(obj)
-        if(id==``){
-          this.productDetailForm.mobileNo = ``
-          this.productDetailForm.dealerName = ``
-          this.productDetailForm.dealerId = ``
-        }else{
-          this.productDetailForm.mobileNo = obj.contactNumber
-          this.productDetailForm.dealerName = obj.dealerName
-          // this.productDetailForm.facilitatorId = obj.facilitatorId
-          this.productDetailForm.dealerId = obj.dealerId
-        }
 
-      },
-      //模糊查询产品列表
-      remoteMethod(query) {
-        if (query.length >= 2) {
-          this.loading = true
-          this.getProductList(query)
-        } else {
-          this.productList = []
-        }
-      },
 
-      /*获取产品列表*/
-      getProductList(name) {
-
-        return https.getProductList({productName: name})
-          .then(data => {
-            this.productList = data.dataList
-            this.loading = false
-          })
-      },
-      /*选择产品获取产品规则名称和产品品牌*/
-      selectProduct(id) {
-        console.log(id)
-        let obj = {}
-        obj = this.productList.find(item => {
-          return item.productSpecificationId == id
-        })
-        console.log(obj)
-        this.productDetailForm.productBrand = obj.productBrand
-        this.productDetailForm.productName = obj.productName
-        this.productDetailForm.specificationName = obj.specificationName
-        this.productDetailForm.productSpecificationId = obj.productSpecificationId
-      },
       submitForm(formName) {
         let params = Object.assign({}, this.productDetailForm)
-        console.log(this.productDetailForm);
         console.log(this.userInfo);
         params.userId = this.userInfo.id
 
@@ -215,39 +170,35 @@
     },
     computed: {
       rules() {
-        let moneyValidator = (rule, value, callback) => {
-          if (!value && value !== 0) {
-            callback(new Error(`数值不能为空`))
-          } else if (isNaN(value)) {
-            callback(new Error(`请输入正确的数值`))
-          } else if (parseFloat(value) < 0) {
-            callback(new Error(`数值不能为负数`))
-          } else {
-            callback()
-          }
-        }
         let baseRules = {
           roleName: [{required: true, message: '请输入角色', trigger: 'change'}],
           state: [{required: true, message: '请选择状态', trigger: 'change'}],
 
         }
-        /*if (this.isGroupCompany) {
-          return Object.assign({}, baseRules, {
 
-          })
-        } else {
-
-        }*/
         return baseRules
       },
-      /*isGroupCompany() {
-        return this.choseRoleInfoList.ruleOrgType === 2
-      },*/
-      ruleId() {
-        return this.choseRoleInfoList.ruleOrgId
-      },
+
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
+
+  // 页面载入 触发
+  mounted:function() {
+
+    if (this.$route.query.productInfo) {
+      this.pageType = `edit`
+      this.productDetailForm = this.$route.query.productInfo
+      console.log(this.productDetailForm);
+    } else {
+      this.pageType = `add`
+      this.productDetailForm = {
+        roleName: ``,//商品名称
+        parentId: ``,   //服务商id
+        state: 1,//状态 0=停用 1=启用
+      }
+    }
+  }
+
   }
 </script>
 

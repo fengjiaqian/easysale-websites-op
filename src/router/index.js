@@ -459,7 +459,8 @@ export default new Router({
       name: 'addRole',
       component: addRole,
 
-    },{
+    }
+   ,{
       path: '/suserManage',
       name: 'suserManage',
       component: suserManage
