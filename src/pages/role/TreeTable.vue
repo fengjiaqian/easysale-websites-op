@@ -1,6 +1,6 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs"  >
-    <el-table-column v-if="columns.length===0" width="150"  >
+  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs" row-key="id">
+    <el-table-column v-if="columns.length===0" width="150" >
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
         <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
@@ -10,17 +10,32 @@
         {{ scope.$index }}
       </template>
     </el-table-column>
-    <el-table-column v-for="(column, index) in columns"  v-else :key="column.value" :label="column.text" :width="column.width" >
 
-      <template slot-scope="scope" >
-          <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
-          <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
+    <el-table-column v-for="(column, index) in columns"  v-else :key="column.value" :label="column.text" :width="column.width" row-key="id">
+
+      <template slot-scope="scope"  >
+        <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
+        <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
           <i v-if="!scope.row._expanded" class="el-icon-plus"/>
           <i v-else class="el-icon-minus"/>
         </span>
-         <span >
-          {{ scope.row[column.value] }}
+        <span >
+
+            <span v-if="column.text == '角色名称'">{{ scope.row[column.value] }}</span>
+           <span v-if="column.text == '状态'">{{ scope.row[column.value] == 1 ? "启用" :"停用" }}</span>
+           <span v-if="column.text == '创建时间'"> {{ scope.row[column.value] }}</span>
+           <span v-if="column.text == '唯一编号'">{{ scope.row[column.value] }}</span>
          </span>
+
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="操作" v-if="treeType === 'normal'" width="250">
+      <template slot-scope="props">
+        <el-button type="text" size="small" @click="upRole(props.row)" >编辑</el-button>
+        <el-button type="text" size="small" @click="infoRole(props.row)" >详情</el-button>
+        <el-button type="text" size="small" @click="ischangeRole(props.row)" >{{props.row.state == 1 ? '停用':'启用'}}</el-button>
+        <el-button type="text" size="small" @click="delRole(props.row)" >刪除</el-button>
       </template>
     </el-table-column>
     <slot/>
