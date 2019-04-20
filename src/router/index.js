@@ -458,9 +458,6 @@ export default new Router({
       path: '/addRole',
       name: 'addRole',
       component: addRole,
-      meta: {
-        keepalive: true
-      }
 
     },{
       path: '/suserManage',

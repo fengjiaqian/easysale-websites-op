@@ -125,13 +125,14 @@
     },
     mounted() {
       console.log(`生命周期mounted`)
-      this.getRoleList();
+      // this.getRoleList();
       this.getRoleTreeList();
     },
     //keepalive组件每次进都会触发的方法
     activated() {
       this.cityId = ``
-      this.getRoleList();
+      // this.getRoleList();
+      this.getRoleTreeList();
       console.log(`生命周期activated`)
     },
     components: { treeTable },
@@ -172,7 +173,8 @@
         this.parentOrgId = null;
         this.cityId = null;
         this.state = null;
-        this.getRoleList();
+        // this.getRoleList();
+        this.getRoleTreeList();
       },
 
 
