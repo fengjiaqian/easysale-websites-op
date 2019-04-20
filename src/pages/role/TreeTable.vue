@@ -35,7 +35,10 @@
         <el-button type="text" size="small" @click="gotoRoleDetail(props.row)" >详情</el-button>
         <el-button type="text" size="small" @click="editRole(props.row)" >编辑</el-button>
         <el-button type="text" size="small" @click="toggleRoleState(props.row)" >{{props.row.state == 1 ? '停用':'启用'}}</el-button>
-        <el-button type="text" size="small" @click="delRoleState(props.row)" >刪除</el-button>
+        <el-button type="text" size="small" @click="delRoleState(props.row)" >
+          {{(props.row._level ==1 && props.row.children.length ==0? '删除':'') || (props.row._level ==2 ? '删除':'')}}
+
+          </el-button>
       </template>
     </el-table-column>
     <slot/>
@@ -153,7 +156,6 @@
       },
       //编辑账户
       editRole(rowItem) {
-        this.loading = true;
         console.log(rowItem);
         this.$router.push({path: '/addRole', query: {productInfo: rowItem}})
       },
@@ -217,8 +219,9 @@
           http.updateUserRoleState(param).then(data => {
             this.$message({
               type: 'success',
-              message: '执行成功!'
+              message: '执行成功!',
             });
+
           }).catch(e => {
             console.log(JSON.stringify(e));
             this.$message("执行失败!");

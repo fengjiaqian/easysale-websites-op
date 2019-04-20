@@ -156,9 +156,8 @@
       },
       submitForm(formName) {
         let params = Object.assign({}, this.productDetailForm)
+        console.log(this.productDetailForm);
         console.log(this.userInfo);
-        // params.createUser = this.userInfo.id;
-        // params.lastUpdateUser = this.userInfo.userId
         params.userId = this.userInfo.id
 
         this.$refs[formName].validate((valid) => {
@@ -182,7 +181,7 @@
               .then(() => {
                 this.fullscreenLoading = false
                 this.$message(`编辑成功`)
-                this.$router.go(-1)
+                this.$router.push({name: `roleSetting`})
               })
               .catch(e => {
                 this.fullscreenLoading = false
