@@ -27,6 +27,24 @@
         </el-select>
       </el-form-item>
 
+      <div v-if="suserInfo.userType == 1">
+        <el-form-item label="经销商LOGO:" prop="logoIamgeUrls">
+          <el-upload :action="upLoadUrl" :multiple="ismultiple"  :data="upobject"
+                     ref="upload"
+                     :show-file-list="false"
+                     :on-success="upLoadSuccess"
+                     :before-upload="beforeUpload"
+          >
+            <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
+            &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
+            <div class="el-upload__tip imgsclass" slot="tip"  v-for="(index, items) in img_url">
+              <img @click="isDel(items)" :src="index"  class="avatar"  />
+            </div>
+          </el-upload>
+        </el-form-item>
+      </div>
+
+
       <el-form-item>
         <el-button type="primary" @click="submitForm()">修改</el-button>
         <!--       <el-button @click="resetForm()">重置</el-button>-->
@@ -43,12 +61,21 @@
   import {mapState, mapMutations} from 'vuex'
 
   import https_f from 'http/suserManageApi'
-
+  import Urls from '../../assets/models/baseUrl'
+  const prefix = Urls.supplyChainUrl
   export default {
     name: 'suserUpdate',
     props: [],
     data() {
       return {
+        img_names:[],
+        img_url:[],
+        img_msg:'只能上传jpg/png文件，且不超过3M',
+        upobject:{
+          fileType:1
+        },
+        ismultiple:false,
+        upLoadUrl:prefix+'/file/uploadProductImg',
         //页面载入 动态设置当前操作人ID
         crrur_userid:6666666,
         // initAddressStr: ``,
@@ -73,6 +100,84 @@
       AdminCitySelector
     },
     methods: {
+      //删除图片
+      isDel(val){
+        this.$confirm('确定要删除当前图片吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //在下标处开始删除,删除一位
+          this.img_names.splice(val,1)
+          this.img_url.splice(val,1)
+          console.log(JSON.stringify(this.img_names));
+          console.log(JSON.stringify(this.img_url));
+        }).catch(() => {
+        });
+      },
+      beforeUpload(file) {
+        //上传支持格式（.doc/.docx/.pdf/.rar/.zip/.xls/.xlsx/.ppt）
+        let reg = /\.(jpg|jpeg|png)$/i;
+        if (!reg.test(file.name)) {
+          this.$message({
+            showClose: true,
+            message: '上传支持格式（.jpg/.jpeg/.png）',
+            type: 'error'
+          });
+          return false;
+        }
+
+        else if (file.size > 500 * 1024) {
+          this.$message({
+            showClose: true,
+            message: '文件大小上限为500K',
+            type: 'error'
+          });
+          return false;
+        }
+      },
+
+      // 点击上传图
+      uploadPic () {
+        // this.index = index;
+      },
+//这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
+      upLoadSuccess(response, file, fileList) {
+        console.log(JSON.stringify(fileList));
+        let imgs_ = fileList;
+        if(imgs_.length > 0){
+          if(imgs_[0].status == "success"){
+            if(imgs_[0].response.data == undefined){
+              this.img_url.push(imgs_[0].response);
+              this.suserInfo.logoIamgeUrls = imgs_[0].response
+            }else{
+              this.img_url.push(imgs_[0].response.data);
+              this.suserInfo.logoIamgeUrls = imgs_[0].response.data
+            }
+            //    this.dialogVisible_img = true;
+            this.img_names.push(imgs_[0].name)
+          }else{
+            //上传失败清空上传列表
+            this.$message({
+              showClose: true,
+              message: "上传失败",
+              type: 'error'
+            });
+          }
+        }else{
+          //上传失败清空上传列表
+          this.$message({
+            showClose: true,
+            message: "上传失败",
+            type: 'error'
+          });
+        }
+        console.log("上传的时候:"+JSON.stringify(this.img_names));
+        console.log("上传的时候:"+JSON.stringify(this.img_url));
+        //上传完之后 清空组件缓存的上传信息
+        this.$refs.upload.clearFiles();
+      },
+
       param_handle(arr){
         let newarr = arr;
         delete newarr['phone'];
@@ -132,6 +237,9 @@
             state:6
           }
         }
+        this.img_msg='只能上传jpg/png文件，且不超过3M';
+        this.img_names=[];
+        this.img_url = [];
       },
       valiFromObj(jsonobj){
         //  验证数据合法性
@@ -150,6 +258,9 @@
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted:function(){
+      this.img_msg='只能上传jpg/png文件，且不超过3M';
+      this.img_names=[];
+      this.img_url = [];
       //根据ID 拉取功能实体   编辑修改用户的ID
       let uid = this.$route.query.id;
       if(uid > 0) {

@@ -82,7 +82,7 @@
           <!-- 经销商-->
           <div v-if="scope.row.userType == 1">
             <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
-            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+           <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
@@ -90,20 +90,20 @@
 
           <!-- 销售人员 -->
           <div v-if="scope.row.userType == 2">
-            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+<!--            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
           </div>
 
           <!-- 终端人员 -->
           <div v-if="scope.row.userType == 3  && scope.row.auditState == 0">
-            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+           <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
           </div>
           <div v-else-if="scope.row.userType == 3  && scope.row.auditState == 1">
-            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+            <!--<el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
           </div>
@@ -120,6 +120,37 @@
       v-if="totalCount>0"
     >
     </el-pagination>
+
+
+    <!--设置费用弹框-->
+    <el-dialog
+      :title="sqr_title"
+      :visible.sync="chargeDialog"
+      width="30%"
+    >
+      <el-form :model="applyInfo" label-width="148px" class="el-form-product">
+        <el-form-item label="申请人：">
+          <el-input v-model="applyInfo.name" size="mini" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="申请手机号：">
+          <el-input v-model="applyInfo.phone" size="mini" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="申请时间：">
+          <el-input v-model="applyInfo.ctime" size="mini" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="营业执照：">
+            <img :src="applyInfo.yyzcimg"   />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="chargeDialog = false">取 消</el-button>
+        <el-button type="primary" @click="ckto_examine">通过审核</el-button>
+      </span>
+    </el-dialog>
+
+
+
+
   </div>
 </template>
 <script>
@@ -131,6 +162,7 @@
     name: "suserManage",
     data() {
       return {
+        sqr_title:'申请人信息',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         //6为页面默认状态
@@ -147,6 +179,13 @@
           wxAppId:'',
           auditState:6,
         },
+        applyInfo:{
+           name:'',
+          phone:'',
+          ctime:'',
+          yyzcimg:'',
+          userinfo:null
+        },
         chargeDialog: false,
         totalCount: 0,
         suserList: [],
@@ -159,13 +198,21 @@
     methods: {
       //审核
       to_examine(row){
-        this.$confirm('确定要审核当前用户吗, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+        this.applyInfo.userinfo = row;
+        this.chargeDialog = true;
+      },
+      // 确认审核
+      ckto_examine(){
+        if(this.applyInfo.userinfo == null){
+          this.$message("数据异常审核失败!");
+        }else{
+          this.$confirm('确定要审核当前用户吗, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
             let par = {
-              id:row.id
+              id:this.applyInfo.userinfo.id
             }
             https_f.userApplyDer(par).then(data => {
               this.loading = false
@@ -174,15 +221,17 @@
                 message: '审核成功'
               });
               //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
-              row.userType = 1;
+              this.applyInfo.userinfo.userType = 1;
+              this.chargeDialog = false;
               this.getSuserList_();
             }).catch(e => {
               this.$message(e)
               this.loading = false
             })
-        }).catch(() => {
+          }).catch(() => {
 
-        });
+          });
+        }
       },
       // 删除用户
       deleteuser(row){
@@ -292,7 +341,7 @@
       },
       //刷新
       resetForm() {
-        this. suserInfo= {
+        this.suserInfo= {
           type:6,	// 权限类型（1：模型 2：菜单 3：功能）
           systemType:6,//系统类型（1：小程序 2：pc端）
           name:'', //权限名称
@@ -304,6 +353,13 @@
           phone:'',
           wxAppId:'',
           auditState:6,
+        }
+        this.applyInfo={
+            name:'',
+            phone:'',
+            ctime:'',
+            yyzcimg:'',
+            userinfo:null
         }
         // this.getProductList()
       },
@@ -372,7 +428,13 @@
       this.suserInfo.wxNickName='';
       this.suserInfo.phone='';
       this.suserInfo.userType=6;
-
+      this.applyInfo={
+        name:'',
+        phone:'',
+        ctime:'',
+        yyzcimg:'',
+        userinfo:null
+      }
       this.getSuserList_();
     }
   }
