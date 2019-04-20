@@ -93,18 +93,20 @@
               {
                 text: "角色名称",
                 value: "roleName",
-
+                bjys:"bjys",
               },
 
               {
                 text: "状态",
                 value: "state",
-                width:200
+                width:200,
+                bjys:"bjys",
               },
               {
                 text: "创建时间",
                 value: "createTime",
-                width: 300
+                width: 300,
+                bjys:"bjys",
               },
             ],
             data: [],
