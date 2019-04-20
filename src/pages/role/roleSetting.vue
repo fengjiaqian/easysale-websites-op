@@ -100,58 +100,7 @@
                 width: 300
               },
             ],
-            data: [{
-              "children": [],
-              "createTime": "2019-04-02 15:01:35",
-              "createUser": 2,
-              "id": "66125024155",
-              "roleName": "烟酒店6",
-              "state": 1,
-              "updateTime": "2019-04-02 15:01:35",
-              "updateUser": 2
-            },
-              {
-                "children": [],
-                "createTime": "2019-04-12 21:04:17",
-                "id": "509809977262894348",
-                "roleName": "橘色",
-                "state": 1,
-                "updateTime": "2019-04-12 21:04:17"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "children": [],
-                        "createTime": "2019-04-15 14:41:57",
-                        "createUser": 970361,
-                        "id": "4794874810657009342",
-                        "parentId": "4809793945624642619",
-                        "roleName": "温恩",
-                        "state": 1,
-                        "updateTime": "2019-04-15 14:41:57",
-                        "updateUser": 970361
-                      }
-                    ],
-                    "createTime": "2019-04-13 17:58:42",
-                    "createUser": 8118051876142393000,
-                    "id": "4809793945624642619",
-                    "parentId": "661250242354700444",
-                    "roleName": "23424",
-                    "state": 1,
-                    "updateTime": "2019-04-13 17:58:42",
-                    "updateUser": 8118051876142393000
-                  }
-                ],
-                "createTime": "2019-04-02 15:01:35",
-                "createUser": 2,
-                "id": "661250242354700444",
-                "roleName": "老板33",
-                "state": 1,
-                "updateTime": "2019-04-02 15:01:35",
-                "updateUser": 2
-              }],
+            data: [],
 
         //账户查询字段
         roleName: null,
@@ -177,12 +126,12 @@
     mounted() {
       console.log(`生命周期mounted`)
       this.getRoleList();
-      // this.getRoleTreeList();
+      this.getRoleTreeList();
     },
     //keepalive组件每次进都会触发的方法
     activated() {
       this.cityId = ``
-      // this.getRoleList();
+      this.getRoleList();
       console.log(`生命周期activated`)
     },
     components: { treeTable },
@@ -193,8 +142,6 @@
         http.getRoleTreeList({}).then(data => {
           this.loading = false;
           this.data = data;
-          //alert(JSON.stringify(data))
-          console.log(JSON.stringify(data))
         }).catch(e => {
           this.$message(e)
           this.loading = false
@@ -227,31 +174,8 @@
         this.state = null;
         this.getRoleList();
       },
-      /*设置状态*/
-      toggleRoleState(row, index) {
-        this.loading = true;
-        console.log(this.userInfo);
-        console.log(this.user_Id);
-        let param = {
-          roleId: row.id,
-          // userId: this.userInfo.id,
-          state: row.state == 0 ? 1 : 0,
-        }
-        console.log(param);
-        return http.updateUserRoleState(param).then(data => {
-          this.$message(`修改成功`)
-          this.getRoleList()
-          this.loading = false
-        }).catch(e => {
-          this.$message(e)
-          this.loading = false
-        })
-      },
-      gotoRoleDetail(row) {
-        // item=JSON.stringify(item)
-        console.log(row);
-        this.$router.push({name: `roleDetail`, query: {id: row.id}})
-      },
+
+
       ensureReset() {
         if (this.resetRuleForm.newPass === this.resetRuleForm.newPassRepeat) {
           this.changePasswordByOld();
@@ -262,12 +186,7 @@
         this.resetDialogVisible = false;
       },
 
-      //编辑账户
-      editRole(rowItem) {
-        console.log(rowItem);
-        this.$router.push({path: '/addRole', query: {productInfo: rowItem}})
 
-      },
       indexMethods(index) {
         return (this.currentPage - 1) * this.pageSize + index + 1
       },
@@ -293,8 +212,7 @@
     watch: {
       choseRoleInfoList(newValue) {
         this.getRoleList();
-        this.data;
-        // this.getRoleTreeList();
+        this.getRoleTreeList();
         this.showServiceSelector = !this.choseRoleInfoList.ruleOrgId;
       },
       parentOrgId(newValue) {
