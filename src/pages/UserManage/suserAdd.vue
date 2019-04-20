@@ -9,7 +9,7 @@
       </el-form-item>
 
       <el-form-item label="手机号码" prop="phone">
-        <el-input v-model="suserInfo.phone" placeholder="请输入手机号码"  class="disable-input"></el-input>
+        <el-input v-model="suserInfo.phone" placeholder="请输入手机号码"  class="disable-input" ></el-input>
       </el-form-item>
       <el-form-item label="登录密码" prop="password">
         <el-input v-model="suserInfo.password" placeholder="请输入登录密码"  class="disable-input"></el-input>
@@ -193,13 +193,10 @@
           if(val == 1){
             this.dialogVisible = true;
           }else{
-              this.derInfo.dershopName = ''
-              this.derInfo.derphone = ''
-              this.derInfo.derlogoIamgeUrls = ''
-              this.derInfo.derinstruction = ''
-             this.img_msg='只能上传jpg/png文件，且不超过3M';
-              this.img_names=[];
-              this.img_url = [];
+            this.suserInfo.type = '';
+            this.img_msg='只能上传jpg/png文件，且不超过3M';
+            this.img_names=[];
+            this.img_url = [];
           }
       },
       submitForm() {
@@ -209,7 +206,6 @@
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
           params.logoIamgeUrls = this.img_url;
-          console.log(JSON.stringify(params));
           https_f.addUserAndDer(params).then(data => {
             this.$message({
               type: 'success',
@@ -265,6 +261,34 @@
             this.suserInfo.phone = '';
             this.$message("手机号码有误，请重填");
             return false;
+          }else{
+            let phonearr = {
+              phone:this.suserInfo.phone
+            }
+            https_f.suser_List(phonearr).then(data => {
+              this.loading = false
+              let suserList = data.dataList;
+              try {
+                if(suserList.length <= 0){
+                  return true;
+                }else{
+                  this.$message(`手机号码已存在`)
+                  this.suserInfo.phone = '';
+                  this.loading = false
+                  return false;
+                }
+              }catch(e){
+                this.$message(`手机号码验证异常`)
+                this.suserInfo.phone = '';
+                this.loading = false
+                return false;
+              }
+            }).catch(e => {
+              this.$message(`手机号码验证异常`)
+              this.suserInfo.phone = '';
+              this.loading = false
+              return false;
+            })
           }
         }
 
@@ -278,7 +302,7 @@
           }
         }
 
-        if(jsonobj.userType == 0){
+        if(this.suserInfo.type ==   '' || this.suserInfo.type == null || this.suserInfo.type == undefined){
           this.$message(`请选择用户类型`)
           return false;
         }
@@ -297,6 +321,7 @@
         }
         return true;
       },
+      //
     },
     computed: {
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
