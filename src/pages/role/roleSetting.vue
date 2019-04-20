@@ -11,12 +11,12 @@
         <el-input v-model="roleName" placeholder="请输入"></el-input>
       </el-form-item>
 
-      <el-form-item label="状态">
-        <el-select v-model="state" placeholder="请选择">
-          <el-option label="启用" :value="1"></el-option>
-          <el-option label="停用" :value="0"></el-option>
-        </el-select>
-      </el-form-item>
+      <!--<el-form-item label="状态">-->
+        <!--<el-select v-model="state" placeholder="请选择">-->
+          <!--<el-option label="启用" :value="1"></el-option>-->
+          <!--<el-option label="停用" :value="0"></el-option>-->
+        <!--</el-select>-->
+      <!--</el-form-item>-->
 
     </el-form>
     <div class="query-btn">
@@ -137,6 +137,46 @@
     },
     components: { treeTable },
     methods: {
+
+      //搜索指定名称
+      scanRoleName(){
+        //进来默认还原数据
+        parentNode = null;
+        node = null;
+        let datas = this.data;
+        for(let x=0;x<datas.length;x++){
+          datas[x].bjys = "";
+        }
+        this.data = datas;
+        if(this.scanInfo.function_name != ''){
+          let obj = getNode(this.data, this.scanInfo.function_name);
+          if(obj.parentNode == null){
+            if(obj.node != null){
+              let id = obj.node.id;
+              this.resetData(id);
+            }else{
+              this.$message("无匹配结果!");
+            }
+          }else{
+            let id = obj.parentNode.id;
+            this.resetData(id);
+          }
+        }
+      },
+      resetData(id){
+        let objs = this.data;
+        if(objs.length > 0){
+          for(let x=0;x<objs.length;x++){
+            if(objs[x].id == id){
+              objs[x].bjys = "background: rgba(0, 158, 250, 0.219) !important;";
+              break;
+            }
+          }
+          this.data = objs;
+        }else{
+          this.$message("出现异常!");
+        }
+      },
       /*获取角色数据列表*/
       getRoleTreeList() {
         this.loading = true;
