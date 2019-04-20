@@ -58,6 +58,8 @@ import addRole from '../pages/role/addRole.vue'
 //角色详情
 import roleDetail from '../pages/role/roleDetail'
 
+import  tabTree from '../pages/role/TreeTable'
+
 //用户管理
 import suserManage from '../pages/UserManage/suserManage'
 import suserAdd from '../pages/UserManage/suserAdd'
@@ -510,5 +512,10 @@ export default new Router({
       name: 'ztreetable',
       component: ztreetable
     },
+    {
+      path: '/tabTree',
+      name: 'tabTree',
+      component: tabTree
+    }
   ]
 })
