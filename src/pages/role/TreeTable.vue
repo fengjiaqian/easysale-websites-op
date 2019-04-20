@@ -32,10 +32,10 @@
 
     <el-table-column align="center" label="操作" v-if="treeType === 'normal'" width="250">
       <template slot-scope="props">
-        <el-button type="text" size="small" @click="upRole(props.row)" >编辑</el-button>
-        <el-button type="text" size="small" @click="infoRole(props.row)" >详情</el-button>
-        <el-button type="text" size="small" @click="ischangeRole(props.row)" >{{props.row.state == 1 ? '停用':'启用'}}</el-button>
-        <el-button type="text" size="small" @click="delRole(props.row)" >刪除</el-button>
+        <el-button type="text" size="small" @click="gotoRoleDetail(props.row)" >详情</el-button>
+        <el-button type="text" size="small" @click="editRole(props.row)" >编辑</el-button>
+        <el-button type="text" size="small" @click="toggleRoleState(props.row)" >{{props.row.state == 1 ? '停用':'启用'}}</el-button>
+        <el-button type="text" size="small" @click="delRoleState(props.row)" >刪除</el-button>
       </template>
     </el-table-column>
     <slot/>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+  import http from 'http/roleSetApi';
   //引入 vue 后台发请求api接口
   import treeToArray from "./eval";
   export default {
@@ -132,7 +133,7 @@
     components: {
     },
     methods: {
-      showRow: function(row) {
+      showRow: function (row) {
         const show = row.row.parent
           ? row.row.parent._expanded && row.row.parent._show
           : true;
@@ -142,13 +143,89 @@
           : "display:none;";
       },
       // 切换下级是否展开
-      toggleExpanded: function(trIndex) {
+      toggleExpanded: function (trIndex) {
         const record = this.formatData[trIndex];
         record._expanded = !record._expanded;
       },
       // 图标显示
       iconShow(index, record) {
         return index === 0 && record.children && record.children.length > 0;
+      },
+      //编辑账户
+      editRole(rowItem) {
+        this.loading = true;
+        console.log(rowItem);
+        this.$router.push({path: '/addRole', query: {productInfo: rowItem}})
+      },
+      gotoRoleDetail(row) {
+        this.loading = true;
+        // item=JSON.stringify(item)
+        console.log(row);
+        this.$router.push({name: `roleDetail`, query: {id: row.id}})
+
+      },
+
+      //改变状态
+      toggleRoleState(row) {
+        this.$confirm('确定要改变当前数据状态吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let param = {
+            updateUser: this.crr_uid,
+            roleId: row.id,
+          }
+          if (row.state == 1) {
+            param.state = 0;
+          } else {
+            param.state = 1;
+          }
+          http.updateUserRoleState(param).then(data => {
+            this.$message({
+              type: 'success',
+              message: '执行成功!'
+            });
+            //状态如果改变成功 直接通过传递的 对象改变当前表格绑定的数据值
+            if (row.state == 1) {
+              row.state = 0;
+            } else {
+              row.state = 1;
+            }
+          }).catch(e => {
+            console.log(JSON.stringify(e));
+            this.$message("执行失败!");
+          })
+        }).catch(() => {
+          console.log("取消");
+        });
+      },
+
+      //删除
+      delRoleState(row) {
+        this.$confirm('确定要改变当前数据状态吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let param = {
+            updateUser: this.crr_uid,
+            roleId: row.id,
+            state:3,
+          }
+
+          http.updateUserRoleState(param).then(data => {
+            this.$message({
+              type: 'success',
+              message: '执行成功!'
+            });
+          }).catch(e => {
+            console.log(JSON.stringify(e));
+            this.$message("执行失败!");
+          })
+        }).catch(() => {
+          console.log("取消");
+        });
       },
     },
     data(){
