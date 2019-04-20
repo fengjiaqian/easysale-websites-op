@@ -17,6 +17,7 @@ export default {
   },
   //编辑角色
   updateBackRole(params = {}) {
+    console.log(params);
     return axios.post(prefix + '/role/updateBackRole', params)
   },
  //查询角色信息

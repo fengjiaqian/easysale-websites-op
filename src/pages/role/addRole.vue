@@ -11,7 +11,7 @@
       </el-form-item>
 
       <el-form-item label="父角色名称" prop="parentId">
-        <el-select v-model="productDetailForm.parent.roleName" placeholder="请输入关键字"
+        <el-select v-model="productDetailForm.parentName" placeholder="请输入关键字"
                    clearable
                    filterable
                    remote
@@ -66,6 +66,7 @@
           roleId:'',
           state: 1,//状态 0=停用 1=启用
         },
+        updateRole:{},
         dealerList: [],
         loading: false
       }
@@ -111,10 +112,11 @@
 
 
       submitForm(formName) {
+
         let params = Object.assign({}, this.productDetailForm)
         console.log(this.userInfo);
         params.userId = this.userInfo.id
-
+        params.parentId=params.parentName;
         this.$refs[formName].validate((valid) => {
           console.log(params);
           if (valid && this.pageType === `add`) {
@@ -129,10 +131,11 @@
                 this.$message(e)
               })
           } else if (valid && this.pageType === `edit`) {
-            params.roleId=params.id;
-            // params.parentId=params.parentName;
-            console.log(params);
-            https.updateBackRole(params)
+            this.updateRole.roleId=params.id;
+            this.updateRole.roleName=params.roleName;
+            this.updateRole.state=params.state;
+            console.log(this.updateRole);
+            https.updateBackRole(this.updateRole)
               .then(() => {
                 this.fullscreenLoading = false
                 this.$message(`编辑成功`)
