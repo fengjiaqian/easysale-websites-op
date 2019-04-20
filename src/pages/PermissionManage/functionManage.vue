@@ -122,7 +122,7 @@
         if(objs.length > 0){
           for(let x=0;x<objs.length;x++){
             if(objs[x].id == id){
-              objs[x].bjys = "background-color:#668B8B";
+              objs[x].bjys = "background: rgba(0, 158, 250, 0.219) !important;";
               break;
             }
           }
