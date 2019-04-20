@@ -215,7 +215,7 @@
             roleId: row.id,
             state:3,
           }
-
+          this.$router.go(0);
           http.updateUserRoleState(param).then(data => {
             this.$message({
               type: 'success',
