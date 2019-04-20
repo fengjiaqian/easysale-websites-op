@@ -75,7 +75,7 @@
           <div v-if="scope.row.userType == 1">
             <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
             <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
           </div>
@@ -83,14 +83,14 @@
           <!-- 销售人员 -->
           <div v-if="scope.row.userType == 2">
             <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
           </div>
 
           <!-- 终端人员 -->
           <div v-if="scope.row.userType == 3">
             <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
           </div>
