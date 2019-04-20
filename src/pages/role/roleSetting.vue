@@ -7,8 +7,8 @@
              label-suffix="："
              class="demo-form-inline"
              ref="searchForm">
-      <el-form-item label="角色">
-        <el-input v-model="roleName" placeholder="请输入"></el-input>
+      <el-form-item label="角色名称">
+        <el-input v-model="scanInfo.function_name" placeholder="请输入角色名称" ></el-input>
       </el-form-item>
 
       <!--<el-form-item label="状态">-->
@@ -20,7 +20,7 @@
 
     </el-form>
     <div class="query-btn">
-      <el-button type="primary" @click="getRoleList" size="medium">查询</el-button>
+      <el-button type="primary" @click="scanRoleName" size="medium">查询</el-button>
       <el-button type="info" @click="resetForm()" size="medium">重置</el-button>
     </div>
     <el-button type="primary" class="addAd" @click="addRole">新增角色</el-button>
@@ -75,12 +75,19 @@
   import {mapState} from 'vuex';
   import treeTable from "./TreeTable";
 
+  let parentNode = null;
+  let node = null;
+
   export default {
     name: "roleSetting",
 
     data() {
 
       return {
+        scanInfo:{
+          function_name:''
+        },
+        functionname:'',
             loading: false,
             columns: [
               {
@@ -104,8 +111,6 @@
 
         //账户查询字段
         roleName: null,
-        cityName: null,
-        mobileNo: null,
         state: null,
         currentPage: 1,
         pageSize: 20,
@@ -144,6 +149,7 @@
         parentNode = null;
         node = null;
         let datas = this.data;
+        console.log(this.data);
         for(let x=0;x<datas.length;x++){
           datas[x].bjys = "";
         }
@@ -177,11 +183,57 @@
           this.$message("出现异常!");
         }
       },
+
+      //搜索指定名称
+      scanRoleName(){
+        //进来默认还原数据
+        parentNode = null;
+        node = null;
+        let datas = this.data;
+        for(let x=0;x<datas.length;x++){
+          datas[x].bjys = "";
+        }
+        this.data = datas;
+        if(this.scanInfo.function_name != ''){
+          let obj = getNode(this.data, this.scanInfo.function_name);
+          if(obj.parentNode == null){
+            if(obj.node != null){
+              let id = obj.node.id;
+              this.resetData(id);
+            }else{
+              this.$message("无匹配结果!");
+            }
+          }else{
+            let id = obj.parentNode.id;
+            this.resetData(id);
+          }
+        }
+      },
+      resetData(id){
+        console.log(id)
+        let objs = this.data;
+        console.log(objs);
+        if(objs.length > 0){
+          for(let x=0;x<objs.length;x++){
+            if(objs[x].id == id){
+              // alert (objs[x].roleName);
+              objs[x].bjys = "background: rgba(0, 158, 250, 0.219) !important;";
+              break;
+            }
+          }
+          this.data = objs;
+        }else{
+          this.$message("出现异常!");
+        }
+      },
       /*获取角色数据列表*/
       getRoleTreeList() {
         this.loading = true;
         http.getRoleTreeList({}).then(data => {
           this.loading = false;
+          for(let x= 0;x<data.length;x++){
+            data[x].bjys = "";
+          }
           this.data = data;
         }).catch(e => {
           this.$message(e)
@@ -261,6 +313,48 @@
         this.cityId = ``
       }
     },
+  }
+  function getNode(json, nodeId) {
+    //1.第一层 root 深度遍历整个JSON
+    for (var i = 0; i < json.length; i++) {
+      if (node) {
+        break;
+      }
+      var obj = json[i];
+      console.log(obj);
+      //没有就下一个
+      if (!obj || !obj.roleName) {
+        continue;
+      }
+      //2.有节点就开始找，一直递归下去
+      if (obj.roleName == nodeId) {
+        //找到了与nodeId匹配的节点，结束递归
+        node = obj;
+        break;
+      } else {
+        //3.如果有子节点就开始找
+        if (obj.children) {
+          //4.递归前，记录当前节点，作为parent 父亲
+          parentNode = obj;
+          //递归往下找
+          getNode(obj.children, nodeId);
+        } else {
+          //跳出当前递归，返回上层递归
+          continue;
+        }
+      }
+    }
+
+    //5.如果木有找到父节点，置为null，因为没有父亲
+    if (!node) {
+      parentNode = null;
+    }
+
+    //6.返回结果obj
+    return {
+      parentNode: parentNode,
+      node: node
+    };
   }
 </script>
 

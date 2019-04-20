@@ -14,6 +14,8 @@
     <el-table-column v-for="(column, index) in columns"  v-else :key="column.value" :label="column.text" :width="column.width" row-key="id">
 
       <template slot-scope="scope"  >
+        <div :style="scope.row[column.bjys]">
+
         <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
         <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
           <i v-if="!scope.row._expanded" class="el-icon-plus"/>
@@ -26,7 +28,7 @@
            <span v-if="column.text == '创建时间'"> {{ scope.row[column.value] }}</span>
            <span v-if="column.text == '唯一编号'">{{ scope.row[column.value] }}</span>
          </span>
-
+        </div>
       </template>
     </el-table-column>
 
