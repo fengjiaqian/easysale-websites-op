@@ -1,6 +1,6 @@
 export default {
-  UA: `http://192.168.0.25:5201`,
-  supplyChainUrl: `http://192.168.0.25:5201`,
-  EAUrl: `http://192.168.0.25:5202`,
+  UA: `http://192.168.0.111:5202`,
+  supplyChainUrl: `http://192.168.0.111:5202`,
+  EAUrl: `http://192.168.0.111:5202`,
 }
 
