@@ -285,9 +285,20 @@
           }
           this.loading = false;
           //调用新增
+          if(params.parentId == null || params.parentId == undefined || params.parentId == '' || params.parentId == 0 || params.parentId == '0'){
+            delete params['parentId'];
+          }
+          console.log(JSON.stringify(params));
           https_f.addFucntionObj(params).then(data => {
             this.$message(`新增成功`)
+            //如果选择的是模型   隐藏下拉选  并且清空选中的值
+            this.showPrise_1 = false;
+            this.showPrise_2 = false;
+            this.model_arr = [];
+            this.menu_arr = [];
+            this.ck_types = 1;
             this.resetForm();
+            params = [];
             this.loading = false;
           }).catch(e => {
             this.$message(`新增失败`)
@@ -300,9 +311,6 @@
       },
       //刷新
       resetForm() {
-        if (this.pageType === 'edit') {
-          //TODO
-        } else {
           this.functionInfo={
               parentId:0,	 //父级节点
            //   parentWholeId:0,	 //父节点wholeId
@@ -326,7 +334,6 @@
               isshowimg:false,
             img_names:'',
           }
-        }
       },
       //校验数据
       valiFromObj(jsonobj){
