@@ -29,20 +29,24 @@
         <el-input v-model="suserInfo.instruction" placeholder="请输入店铺描述"  class="disable-input"></el-input>
       </el-form-item>
 
-      <el-form-item label="经销商LOGO:" prop="logoIamgeUrl">
+
+      <el-form-item label="经销商LOGO:" prop="logoIamgeUrls">
         <el-upload :action="upLoadUrl" :multiple="ismultiple"  :data="upobject"
                    ref="upload"
                    :show-file-list="false"
                    :on-success="upLoadSuccess"
                    :before-upload="beforeUpload"
         >
-          <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
-          <div class="el-upload__tip" slot="tip">{{img_msg}}</div>
+        <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
+          &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
+          <div class="el-upload__tip imgsclass" slot="tip"  v-for="(index, items) in img_url">
+             <img @click="isDel(items)" :src="index"  class="avatar"  />
+          </div>
         </el-upload>
       </el-form-item>
-      <el-dialog :visible.sync="dialogVisible_img">
-        <img width="100%" :src="suserInfo.logoIamgeUrl" >
-      </el-dialog>
+     <!-- <el-dialog :visible.sync="dialogVisible_img">
+        <img width="100%" :src="suserInfo.logoIamgeUrls" >
+      </el-dialog>-->
 
       <el-form-item>
         <el-button type="primary" @click="submitForm()">提交</el-button>
@@ -56,21 +60,23 @@
 <script>
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
-
   import https_f from 'http/suserManageApi'
-
+  import Urls from '../../assets/models/baseUrl'
+  const prefix = Urls.supplyChainUrl
   export default {
     name: 'suserAdd',
     props: [],
     data() {
       return {
+        img_names:[],
+        img_url:[],
         img_msg:'只能上传jpg/png文件，且不超过3M',
         dialogVisible_img:false,
         upobject:{
           fileType:1
         },
         ismultiple:false,
-        upLoadUrl:'http://192.168.0.111:5201/file/uploadImg',
+        upLoadUrl:prefix+'/file/uploadProductImg',
         dialogImageUrl: '',
         dialogVisible: false,
         // 先写死 页面载入动态设置
@@ -83,7 +89,7 @@
           //手机号
           phone:'',
           //店铺logo
-          logoIamgeUrl:'',
+          logoIamgeUrls:'',
           //店铺描述
           instruction:'',
           //类型 默认0  带走1经销商
@@ -104,7 +110,21 @@
       AdminCitySelector
     },
     methods: {
-
+      //删除图片
+      isDel(val){
+        this.$confirm('确定要删除当前图片吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //在下标处开始删除,删除一位
+          this.img_names.splice(val,1)
+          this.img_url.splice(val,1)
+          console.log(JSON.stringify(this.img_names));
+          console.log(JSON.stringify(this.img_url));
+        }).catch(() => {
+        });
+      },
       beforeUpload(file) {
         //上传支持格式（.doc/.docx/.pdf/.rar/.zip/.xls/.xlsx/.ppt）
         let reg = /\.(jpg|jpeg|png)$/i;
@@ -134,18 +154,27 @@
 //这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
       upLoadSuccess(response, file, fileList) {
         console.log(JSON.stringify(fileList));
-        //上传返回的图片 组件默认给装进了一个数组 在不刷新页面的 时候  一直在数组后面 叠加  所以上传完成 默认去数组长度-1
-        if (fileList.length > 0 && fileList[fileList.length -1].status == "success") {
-            if(fileList[fileList.length -1].response.data == undefined){
-              this.suserInfo.logoIamgeUrl = fileList[fileList.length -1].response;
-              console.log(fileList[fileList.length -1].response);
+        let imgs_ = fileList;
+        if(imgs_.length > 0){
+          if(imgs_[0].status == "success"){
+            if(imgs_[0].response.data == undefined){
+              this.img_url.push(imgs_[0].response);
+              this.suserInfo.logoIamgeUrls = imgs_[0].response
             }else{
-              this.suserInfo.logoIamgeUrl =  fileList[fileList.length -1].response.data
-              console.log(fileList[fileList.length -1].response.data);
+              this.img_url.push(imgs_[0].response.data);
+              this.suserInfo.logoIamgeUrls = imgs_[0].response.data
             }
-            this.dialogVisible_img = true;
-            this.img_msg = fileList[fileList.length -1].name;
-        } else {
+        //    this.dialogVisible_img = true;
+            this.img_names.push(imgs_[0].name)
+          }else{
+            //上传失败清空上传列表
+            this.$message({
+              showClose: true,
+              message: "上传失败",
+              type: 'error'
+            });
+          }
+        }else{
           //上传失败清空上传列表
           this.$message({
             showClose: true,
@@ -153,7 +182,10 @@
             type: 'error'
           });
         }
-
+        console.log("上传的时候:"+JSON.stringify(this.img_names));
+        console.log("上传的时候:"+JSON.stringify(this.img_url));
+        //上传完之后 清空组件缓存的上传信息
+        this.$refs.upload.clearFiles();
       },
       //根据不同的状态  弹出对应的  from 表单
       changeFrom(val){
@@ -163,9 +195,11 @@
           }else{
               this.derInfo.dershopName = ''
               this.derInfo.derphone = ''
-              this.derInfo.derlogoIamgeUrl = ''
+              this.derInfo.derlogoIamgeUrls = ''
               this.derInfo.derinstruction = ''
              this.img_msg='只能上传jpg/png文件，且不超过3M';
+              this.img_names=[];
+              this.img_url = [];
           }
       },
       submitForm() {
@@ -174,12 +208,15 @@
         params.create_user = this.crrur_userid;
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
+          params.logoIamgeUrls = this.img_url;
+          console.log(JSON.stringify(params));
           https_f.addUserAndDer(params).then(data => {
             this.$message({
               type: 'success',
               message: '新增成功'
             });
             this.loading = false;
+            this.resetForm();
           }).catch(e => {
             this.$message(`新增失败`)
             this.resetForm();
@@ -199,7 +236,7 @@
               //手机号
               phone:'',
               //店铺logo
-              logoIamgeUrl:'',
+              logoIamgeUrls:'',
               //店铺描述
               instruction:'',
               //类型 默认0  带走1经销商
@@ -209,7 +246,9 @@
               //名称
               name:'',
           },
-          this.img_msg='只能上传jpg/png文件，且不超过3M';
+            this.img_msg='只能上传jpg/png文件，且不超过3M';
+           this.img_names=[];
+          this.img_url = [];
         }
       },
       valiFromObj(jsonobj){
@@ -251,7 +290,8 @@
           this.$message(`请输入店铺描述`)
           return false;
         }
-        if(jsonobj.logoIamgeUrl == null || jsonobj.logoIamgeUrl == undefined || jsonobj.logoIamgeUrl == ''){
+
+        if(this.img_names.length <= 0 && this.img_url.length <= 0 ){
           this.$message(`请上传店铺logo`)
           return false;
         }
@@ -268,7 +308,7 @@
         //手机号
         phone:'',
         //店铺logo
-        logoIamgeUrl:'',
+        logoIamgeUrls:'',
         //店铺描述
         instruction:'',
         //类型 默认0  带走1经销商
@@ -278,6 +318,8 @@
         //名称
         name:'',
       }, this.img_msg='只能上传jpg/png文件，且不超过3M';
+      this.img_names=[];
+      this.img_url = [];
       //获取当前用户ID   赋值
       if(sessionStorage.getItem(`userInfo`) != null || sessionStorage.getItem(`userInfo`) != undefined){
         let  userobj  =sessionStorage.getItem(`userInfo`);
@@ -310,5 +352,33 @@
     .el-input.is-disabled > .el-input__inner {
       color: #333 !important
     }
+  }  .avatar-uploader .el-upload {
+       border: 1px dashed #d9d9d9;
+       border-radius: 6px;
+       cursor: pointer;
+       position: relative;
+       overflow: hidden;
+     }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
   }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+    border 10px;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display:inline;
+  }
+  .imgsclass{
+    white-space:nowrap;
+  }
+
+
 </style>

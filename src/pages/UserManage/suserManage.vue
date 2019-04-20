@@ -13,6 +13,25 @@
       <el-form-item label="手机号">
         <el-input v-model="suserInfo.phone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
+
+      <el-form-item label="用户类型" prop="userType">
+        <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
+          <el-option label="请选择" :value="6"></el-option>
+          <el-option label="经销商" :value="1"></el-option>
+          <el-option label="销售人员" :value="2"></el-option>
+          <el-option label="终端用户" :value="3"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="状态" prop="state">
+        <el-select v-model="suserInfo.state" placeholder="请选择状态">
+          <el-option label="请选择" :value="6"></el-option>
+          <el-option label="启用" :value="1"></el-option>
+          <el-option label="停用" :value="0"></el-option>
+        </el-select>
+      </el-form-item>
+
+
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getSuserList_" size="medium">查询</el-button>
@@ -38,7 +57,7 @@
       </el-table-column>
       <el-table-column prop="userType" label="用户类型" width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':'终端客户'}}</span>
+          <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'异常数据'}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="wxAppId" label="微信openid" >
@@ -52,9 +71,30 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
-          <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
-          <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
+          <!-- 经销商-->
+          <div v-if="scope.row.userType == 1">
+            <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
+            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+            <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
+          </div>
+
+          <!-- 销售人员 -->
+          <div v-if="scope.row.userType == 2">
+            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+          </div>
+
+          <!-- 终端人员 -->
+          <div v-if="scope.row.userType == 3">
+            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '关闭'}}</el-button>
+            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+            <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
+          </div>
+
         </template>
       </el-table-column>
     </el-table>
@@ -92,7 +132,7 @@
           userType:6,
           wxNickName:'',
           phone:'',
-          wxAppId:''
+          wxAppId:'',
         },
         chargeDialog: false,
         totalCount: 0,
@@ -104,6 +144,78 @@
       AdminCitySelector
     },
     methods: {
+      //审核
+      to_examine(row){
+        this.$confirm('确定要审核当前用户吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+        }).catch(() => {
+
+        });
+      },
+      // 删除用户
+      deleteuser(row){
+        this.$confirm('确定要删除当前数据吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let par = {
+              id:row.id,
+              state:3
+          }
+          https_f.updateSuserObj(par).then(data => {
+            this.loading = false
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            });
+            this.getSuserList_();
+          }).catch(e => {
+            this.$message(e)
+            this.loading = false
+          })
+        }).catch(() => {
+        });
+      },
+      //关闭或开启
+      closeorstrat(row){
+        this.$confirm('确定要改变当前数据状态吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let param ={
+            id:row.id
+          }
+          if(row.state == 1){
+            param .state = 0;
+          }else{
+            param .state = 1;
+          }
+          https_f.updateSuserObj(param).then(data => {
+            this.$message({
+              type: 'success',
+              message: '执行成功!'
+            });
+            this.getSuserList_();
+            //状态如果改变成功 直接通过传递的 对象改变当前表格绑定的数据值
+            if(row.state == 1){
+              row.state = 0;
+            }else{
+              row.state = 1;
+            }
+          }).catch(e => {
+            console.log(JSON.stringify(e));
+            this.$message("执行失败!");
+          })
+        }).catch(() => {
+          console.log("取消");
+        });
+      },
       //处理传递参数 剔除不要的
       param_handle(arr){
         let newarr = arr;
@@ -138,10 +250,10 @@
       /*获取功能数据列表*/
       getSuserList_() {
         this.loading = true;
-        // console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
+        console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
-          let objs  = data.dataList;
+          // let objs  = data.dataList;
           this.suserList = data.dataList;
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
@@ -161,7 +273,7 @@
           userType:6,
           wxNickName:'',
           phone:'',
-          wxAppId:''
+          wxAppId:'',
         }
         // this.getProductList()
       },
@@ -230,6 +342,7 @@
       this.suserInfo.wxNickName='';
       this.suserInfo.phone='';
       this.suserInfo.userType=6;
+
       this.getSuserList_();
     }
   }

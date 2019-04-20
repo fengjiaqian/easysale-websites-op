@@ -20,12 +20,12 @@
         </el-select>
       </el-form-item>
 
-     <!-- <el-form-item label="状态" prop="state">
+      <el-form-item label="状态" prop="state">
         <el-select v-model="suserInfo.state" placeholder="请选择">
           <el-option label="启用" :value="1"></el-option>
           <el-option label="停用" :value="0"></el-option>
         </el-select>
-      </el-form-item>-->
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="submitForm()">修改</el-button>
@@ -34,23 +34,6 @@
       </el-form-item>
     </el-form>
 
-    <!--设置费用弹框-->
-    <el-dialog
-      :title="alertInfo.status==0?'提示信息':'提示信息'"
-      :visible.sync="alertInfoState"
-      width="30%"
-      :append-to-body="true"
-    >
-      <el-form label-width="148px" class="el-form-product">
-        <el-form-item >
-          <span>您确定要修改吗!</span>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="alertInfoState = false">取 消</el-button>
-        <el-button type="primary" @click="ensureCharge">确 定</el-button>
-      </span>
-    </el-dialog>
 
   </div>
 
@@ -74,7 +57,8 @@
           wxNickName:'',
           phone:'',
           userType:1,
-          update_user:0
+          update_user:0,
+          state:6
         },
         alertInfoState:false,
         alertInfo:{
@@ -91,6 +75,9 @@
     methods: {
       param_handle(arr){
         let newarr = arr;
+        delete newarr['phone'];
+        delete newarr['userType'];
+        delete newarr['createTime'];
         return newarr;
       },
       // 确定修改
@@ -141,7 +128,8 @@
             wxNickName:this.suserInfo.wxNickName,
             phone:this.suserInfo.phone,
             userType:this.suserInfo.userType,
-            update_user:0
+            update_user:0,
+            state:6
           }
         }
       },
@@ -149,6 +137,10 @@
         //  验证数据合法性
         if (jsonobj.phone == null || jsonobj.phone == undefined || jsonobj.phone == '') {
           this.$message(`请输入手机号码`)
+          return false;
+        }
+        if (jsonobj.state == 6) {
+          this.$message(`网络异常`)
           return false;
         }
         return true;
@@ -170,7 +162,6 @@
           // 查询出实体 赋值
           this.loading = false;
           this.suserInfo = data;
-
         }).catch(e => {
           this.$message(`网络异常`)
           this.loading = false;

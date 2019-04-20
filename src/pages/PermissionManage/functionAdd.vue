@@ -60,10 +60,22 @@
         <el-input v-model="functionInfo.url" placeholder="请输入功能url"  class="disable-input"></el-input>
       </el-form-item>
 
-      <el-form-item label="功能图标" prop="imageUrl" >
-        <el-input v-model="functionInfo.imageUrl" placeholder="请输入功能图标"  class="disable-input"></el-input>
-      </el-form-item>
 
+      <el-form-item label="功能图标:" prop="imageUrl">
+        <el-upload :action="upLoadUrl" :multiple="ismultiple"  :data="upobject"
+                   ref="upload"
+                   :show-file-list="false"
+                   :on-success="upLoadSuccess"
+                   :before-upload="beforeUpload"
+        >
+          <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
+          &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
+          <div class="el-upload__tip imgsclass" slot="tip" v-if="isshowimg" >
+            <img @click="isDel" :src="functionInfo.imageUrl"  class="avatar"  />
+          </div>
+
+        </el-upload>
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="submitForm('functionInfo')">提交</el-button>
@@ -80,12 +92,23 @@
 
   //引入 vue 后台发请求api接口
   import https_f from 'http/functionManageApi'
+
+  import Urls from '../../assets/models/baseUrl'
+  const prefix = Urls.supplyChainUrl
   export default {
     name: 'functionAdd',
     props: [],
     data() {
       return {
+        isshowimg:false,
+        img_names:'',
+        img_msg:'只能上传jpg/png文件，且不超过3M',
         ck_types:1,
+        upobject:{
+          fileType:1
+        },
+        ismultiple:false,
+        upLoadUrl:prefix+'/file/uploadProductImg',
         //控制  模型 菜单下拉选 隐藏显示
         showPrise_1:false,
         showPrise_2:false,
@@ -120,6 +143,86 @@
       AdminCitySelector
     },
     methods: {
+      //删除图片
+      isDel(val){
+        this.$confirm('确定要删除当前图片吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //在下标处开始删除,删除一位
+          this.img_names = '';
+          this.img_url = '';
+          this.functionInfo.imageUrl = '';
+          this.isshowimg = false;
+          console.log(JSON.stringify(this.img_names));
+          console.log(JSON.stringify(this.img_url));
+        }).catch(() => {
+        });
+      },
+      beforeUpload(file) {
+        //上传支持格式（.doc/.docx/.pdf/.rar/.zip/.xls/.xlsx/.ppt）
+        let reg = /\.(jpg|jpeg|png)$/i;
+        if (!reg.test(file.name)) {
+          this.$message({
+            showClose: true,
+            message: '上传支持格式（.jpg/.jpeg/.png）',
+            type: 'error'
+          });
+          return false;
+        }
+
+        else if (file.size > 500 * 1024) {
+          this.$message({
+            showClose: true,
+            message: '文件大小上限为500K',
+            type: 'error'
+          });
+          return false;
+        }
+      },
+
+      // 点击上传图
+      uploadPic () {
+        // this.index = index;
+      },
+//这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
+      upLoadSuccess(response, file, fileList) {
+        console.log(JSON.stringify(fileList));
+        let imgs_ = fileList;
+        if(imgs_.length > 0){
+          if(imgs_[0].status == "success"){
+            if(imgs_[0].response.data == undefined){
+              this.functionInfo.imageUrl  = imgs_[0].response;
+            }else{
+              this.functionInfo.imageUrl =imgs_[0].response.data;
+            }
+            //    this.dialogVisible_img = true;
+            this.img_names=imgs_[0].name
+            this.isshowimg = true;
+          }else{
+            //上传失败清空上传列表
+            this.$message({
+              showClose: true,
+              message: "上传失败",
+              type: 'error'
+            });
+            this.isshowimg = false;
+          }
+        }else{
+          //上传失败清空上传列表
+          this.$message({
+            showClose: true,
+            message: "上传失败",
+            type: 'error'
+          });
+          this.isshowimg = false;
+        }
+        console.log("上传的时候:"+JSON.stringify(this.img_names));
+        console.log("上传的时候:"+JSON.stringify(this.img_url));
+        //上传完之后 清空组件缓存的上传信息
+        this.$refs.upload.clearFiles();
+      },
       //动态触发 根据选择的类型 拉去对应类型上级数据
       typechange(val){
         if(val > 1){
@@ -220,6 +323,8 @@
               model_arrselect:'',
               menu_arrselect:'',
               menu_arr:[],
+              isshowimg:false,
+            img_names:'',
           }
         }
       },
@@ -301,5 +406,31 @@
     .el-input.is-disabled > .el-input__inner {
       color: #333 !important
     }
+  } .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+    border 10px;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display:inline;
+  }
+  .imgsclass{
+    white-space:nowrap;
   }
 </style>
