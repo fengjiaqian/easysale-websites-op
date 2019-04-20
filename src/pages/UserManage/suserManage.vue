@@ -278,11 +278,11 @@
       /*获取功能数据列表*/
       getSuserList_() {
         this.loading = true;
-        console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
+        // console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
           // let objs  = data.dataList;
-          console.log("查询的结果:"+JSON.stringify(data.dataList));
+          // console.log("查询的结果:"+JSON.stringify(data.dataList));
           this.suserList = data.dataList;
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
