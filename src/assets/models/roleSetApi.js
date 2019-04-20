@@ -40,7 +40,10 @@ export default {
     return axios.post(prefix + '/role/updateRolePermissionList', params);
   },
 
-
+//返回功能 树形结构
+  getRoleTreeList(params = {}){
+    return axios.post(prefix +'/role/getRoleTreeByIds', params);
+  },
 
 
 
