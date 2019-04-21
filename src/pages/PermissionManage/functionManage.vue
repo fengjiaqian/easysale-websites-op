@@ -12,10 +12,13 @@
         <el-input v-model="scanInfo.function_name" placeholder="请输入功能名称" ></el-input>
       </el-form-item>
 
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button type="primary" @click="scanFunctionName" size="medium">查询</el-button>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button type="primary" @click="scanFunctionName" size="medium">定位</el-button>
     </el-form>
 
-
+    <div class="query-btn">
+      <el-button type="primary" @click="getFunctionList_" size="medium">查询</el-button>
+      <el-button type="info" @click="resetForm" style="margin-left:40px;" size="medium">重置</el-button>
+    </div>
     <el-button type="primary" class="add-warehouse" @click="addFunction">新增功能</el-button>
     <!--表格-->
       <tree-table :data="data" :columns="columns"  border/>
@@ -224,6 +227,7 @@
       },
       //刷新页面
       resetForm() {
+        this.scanInfo.function_name = '';
       },
       //  修改
       updateFunction(row) {
