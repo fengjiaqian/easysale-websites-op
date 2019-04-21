@@ -66,6 +66,7 @@ import suserManage from '../pages/UserManage/suserManage'
 import suserAdd from '../pages/UserManage/suserAdd'
 import suserUpdate from '../pages/UserManage/suserUpdate'
 import suser_roleAuthorization from '../pages/UserManage/suser_roleAuthorization'
+import suser_roleAuthorizationcp from '../pages/UserManage/suser_roleAuthorizationcp'
 import suserInfo from '../pages/UserManage/suserInfo'
 
 //功能管理
@@ -515,6 +516,11 @@ export default new Router({
       path: '/treeTable',
       name: 'treeTable',
       component: treeTable
+    },
+    {
+      path: '/suser_roleAuthorizationcp',
+      name: 'suser_roleAuthorizationcp',
+      component: suser_roleAuthorizationcp
     }
 
   ]
