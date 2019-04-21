@@ -128,6 +128,7 @@
       :visible.sync="chargeDialog"
       width="30%"
     >
+
       <el-form :model="applyInfo" label-width="148px" class="el-form-product">
         <el-form-item label="申请人：">
           <el-input v-model="applyInfo.name" size="mini" disabled="disabled"></el-input>
@@ -135,11 +136,17 @@
         <el-form-item label="申请手机号：">
           <el-input v-model="applyInfo.phone" size="mini" disabled="disabled"></el-input>
         </el-form-item>
+        <el-form-item label="店铺名称：">
+          <el-input v-model="applyInfo.shopName" size="mini" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="店铺地址：">
+          <el-input v-model="applyInfo.address" size="mini" disabled="disabled"></el-input>
+        </el-form-item>
         <el-form-item label="申请时间：">
-          <el-input v-model="applyInfo.ctime" size="mini" disabled="disabled"></el-input>
+          <el-input v-model="applyInfo.createDate" size="mini" disabled="disabled"></el-input>
         </el-form-item>
         <el-form-item label="营业执照：">
-            <img :src="applyInfo.yyzcimg"   />
+            <img :src="applyInfo.logoIamgeUrls"   />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -157,6 +164,7 @@
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
   import https_f from 'http/suserManageApi'
+  import {formatDate} from './dateHandle'
 
   export default {
     name: "suserManage",
@@ -180,11 +188,13 @@
           auditState:6,
         },
         applyInfo:{
-           name:'',
+          shopName:'',
           phone:'',
-          ctime:'',
-          yyzcimg:'',
-          userinfo:null
+          address:'',
+          name:'',
+          createDate:'',
+          logoIamgeUrls:'',
+          userId:'',
         },
         chargeDialog: false,
         totalCount: 0,
@@ -196,14 +206,28 @@
       AdminCitySelector
     },
     methods: {
+      //
+      formatDate_(time){
+        let date = new Date(time);
+        return formatDate(date,'yyyy-MM-dd hh:mm:ss');
+      },
       //审核
       to_examine(row){
-        this.applyInfo.userinfo = row;
-        this.chargeDialog = true;
+        let ids = {
+          id:row.id,
+        }
+        https_f.findApplyDealer(ids).then(data => {
+          this.loading = false
+          this.applyInfo  = data;
+          this.chargeDialog = true;
+        }).catch(e => {
+          this.$message('数据异常')
+          this.loading = false
+        })
       },
       // 确认审核
       ckto_examine(){
-        if(this.applyInfo.userinfo == null){
+        if(this.applyInfo == null){
           this.$message("数据异常审核失败!");
         }else{
           this.$confirm('确定要审核当前用户吗, 是否继续?', '提示', {
@@ -212,7 +236,7 @@
             type: 'warning'
           }).then(() => {
             let par = {
-              id:this.applyInfo.userinfo.id
+              id:this.applyInfo.userId
             }
             https_f.userApplyDer(par).then(data => {
               this.loading = false
@@ -221,7 +245,6 @@
                 message: '审核成功'
               });
               //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
-              this.applyInfo.userinfo.userType = 1;
               this.chargeDialog = false;
               this.getSuserList_();
             }).catch(e => {
@@ -229,7 +252,6 @@
               this.loading = false
             })
           }).catch(() => {
-
           });
         }
       },
@@ -333,6 +355,9 @@
           // let objs  = data.dataList;
           // console.log("查询的结果:"+JSON.stringify(data.dataList));
           this.suserList = data.dataList;
+          for(let x=0;x<this.suserList.length;x++){
+            this.suserList[x].createTime =  this.formatDate_(this.suserList[x].createTime);
+          }
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
           this.$message(e)
@@ -355,11 +380,13 @@
           auditState:6,
         }
         this.applyInfo={
-            name:'',
-            phone:'',
-            ctime:'',
-            yyzcimg:'',
-            userinfo:null
+          shopName:'',
+          phone:'',
+          address:'',
+          name:'',
+          createDate:'',
+          logoIamgeUrls:'',
+          userId:'',
         }
         // this.getProductList()
       },
@@ -369,8 +396,8 @@
       },
       //  修改
       updateuser(row) {
-        let id = row.id;
-        this.$router.push({name:`suserUpdate`, query:{id}})
+        // let id = row.id;
+        this.$router.push({name:`suserUpdate`, query:{row}})
       },
       //详情
       goToDetail(row){
@@ -429,11 +456,13 @@
       this.suserInfo.phone='';
       this.suserInfo.userType=6;
       this.applyInfo={
-        name:'',
+        shopName:'',
         phone:'',
-        ctime:'',
-        yyzcimg:'',
-        userinfo:null
+        address:'',
+        name:'',
+        createDate:'',
+        logoIamgeUrls:'',
+        userId:'',
       }
       this.getSuserList_();
     }

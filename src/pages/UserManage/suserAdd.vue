@@ -206,6 +206,7 @@
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
           params.logoIamgeUrls = this.img_url;
+
           https_f.addUserAndDer(params).then(data => {
             this.$message({
               type: 'success',

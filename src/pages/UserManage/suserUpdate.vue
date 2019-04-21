@@ -68,7 +68,6 @@
     props: [],
     data() {
       return {
-        img_names:[],
         img_url:[],
         img_msg:'只能上传jpg/png文件，且不超过3M',
         upobject:{
@@ -108,9 +107,7 @@
           type: 'warning'
         }).then(() => {
           //在下标处开始删除,删除一位
-          this.img_names.splice(val,1)
           this.img_url.splice(val,1)
-          console.log(JSON.stringify(this.img_names));
           console.log(JSON.stringify(this.img_url));
         }).catch(() => {
         });
@@ -143,19 +140,16 @@
       },
 //这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
       upLoadSuccess(response, file, fileList) {
-        console.log(JSON.stringify(fileList));
         let imgs_ = fileList;
         if(imgs_.length > 0){
           if(imgs_[0].status == "success"){
             if(imgs_[0].response.data == undefined){
               this.img_url.push(imgs_[0].response);
-              this.suserInfo.logoIamgeUrls = imgs_[0].response
+              // this.suserInfo.logoIamgeUrls = imgs_[0].response
             }else{
               this.img_url.push(imgs_[0].response.data);
-              this.suserInfo.logoIamgeUrls = imgs_[0].response.data
+              // this.suserInfo.logoIamgeUrls = imgs_[0].response.data
             }
-            //    this.dialogVisible_img = true;
-            this.img_names.push(imgs_[0].name)
           }else{
             //上传失败清空上传列表
             this.$message({
@@ -172,7 +166,6 @@
             type: 'error'
           });
         }
-        console.log("上传的时候:"+JSON.stringify(this.img_names));
         console.log("上传的时候:"+JSON.stringify(this.img_url));
         //上传完之后 清空组件缓存的上传信息
         this.$refs.upload.clearFiles();
@@ -193,6 +186,10 @@
         params.update_user = this.crrur_userid;
         if(this.valiFromObj(params)){
           let new_ar =  this.param_handle(params);
+          if(this.img_url.length > 0){
+            new_ar.logoIamgeUrls = this.img_url
+          }
+          console.log(JSON.stringify(new_ar));
           https_f.updateSuserObj(new_ar).then(data => {
             this.$message({
               type: 'success',
@@ -226,8 +223,6 @@
         });
       },
       resetForm() {
-        if (this.pageType === 'edit') {
-        } else {
           this.suserInfo={
             id:this.suserInfo.id,
             wxNickName:this.suserInfo.wxNickName,
@@ -236,9 +231,7 @@
             update_user:0,
             state:6
           }
-        }
         this.img_msg='只能上传jpg/png文件，且不超过3M';
-        this.img_names=[];
         this.img_url = [];
       },
       valiFromObj(jsonobj){
@@ -251,6 +244,11 @@
           this.$message(`网络异常`)
           return false;
         }
+
+        if(this.img_url.length <= 0){
+          this.$message(`请上传LOGO`)
+          return false;
+        }
         return true;
       },
     },
@@ -259,24 +257,26 @@
     },
     mounted:function(){
       this.img_msg='只能上传jpg/png文件，且不超过3M';
-      this.img_names=[];
       this.img_url = [];
       //根据ID 拉取功能实体   编辑修改用户的ID
-      let uid = this.$route.query.id;
-      if(uid > 0) {
-        this.loading = true;
-        let param_ = {
-          id: uid
-        }
-        // alert("传递参数:"+JSON.stringify(param_));
-        https_f.getSuserObj(param_).then(data => {
-          // 查询出实体 赋值
-          this.loading = false;
-          this.suserInfo = data;
-        }).catch(e => {
-          this.$message(`网络异常`)
-          this.loading = false;
-        })
+      if(this.$route.query.row != null && this.$route.query.row != undefined){
+          this.loading = true;
+          let param_ = {
+            id: this.$route.query.row.id,
+            userType:this.$route.query.row.userType
+          }
+          // alert("传递参数:"+JSON.stringify(param_));
+          https_f.getSuserObj(param_).then(data => {
+            // 查询出实体 赋值
+            this.loading = false;
+            this.suserInfo = data;
+            if(data.logoIamgeUrls != undefined && (data.logoIamgeUrls).length>0){
+              this.img_url = data.logoIamgeUrls;
+            }
+          }).catch(e => {
+            this.$message(`网络异常`)
+            this.loading = false;
+          })
       }else{
         this.$message(`网络异常`)
       }
