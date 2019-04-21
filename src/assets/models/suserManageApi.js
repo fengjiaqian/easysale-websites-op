@@ -32,4 +32,11 @@ export default {
   userApplyDer(params = {}){
     return axios.post(prefix +'/user/auditCustomerApplyToDealer', params)
   },
+
+  //查询当前用户申请的信息user/findApplyDealer
+  findApplyDealer(params = {}){
+    return axios.post(prefix +'/user/findApplyDealer', params)
+  },
+
+
 }

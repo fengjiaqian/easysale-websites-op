@@ -24,4 +24,9 @@ export default {
     return axios.post(prefix +'/role/selectRoleIdList', params)
   },
 
+  //获取角色树形结构
+  getZtrrRole(params = {}){
+    return axios.post(prefix +'/role/getRoleTreeByIds', params)
+  },
+
 }
