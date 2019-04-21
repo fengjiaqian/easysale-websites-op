@@ -75,7 +75,7 @@
       evalArgs: Array,
       expandAll: {
         type: Boolean,
-        default: false
+        default: true
       },
       // 这是数据源
       dataSource: {
