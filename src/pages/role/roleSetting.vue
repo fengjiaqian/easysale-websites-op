@@ -7,20 +7,19 @@
              label-suffix="："
              class="demo-form-inline"
              ref="searchForm">
+      <!--<el-form-item label="角色名称">-->
+        <!--<el-input v-model="scanInfo.function_name" placeholder="请输入角色名称" ></el-input>-->
+        <!--&nbsp;<el-button type="primary" @click="scanFunctionName" size="medium">定位</el-button>-->
+      <!--</el-form-item>-->
+
       <el-form-item label="角色名称">
         <el-input v-model="scanInfo.function_name" placeholder="请输入角色名称" ></el-input>
       </el-form-item>
 
-      <!--<el-form-item label="状态">-->
-        <!--<el-select v-model="state" placeholder="请选择">-->
-          <!--<el-option label="启用" :value="1"></el-option>-->
-          <!--<el-option label="停用" :value="0"></el-option>-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
-
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button type="primary" @click="scanRoleName" size="medium">定位</el-button>
     </el-form>
     <div class="query-btn">
-      <el-button type="primary" @click="scanRoleName" size="medium">查询</el-button>
+      <el-button type="primary" @click="searchRoleTreeList" size="medium">查询</el-button>
       <el-button type="info" @click="resetForm()" size="medium">重置</el-button>
     </div>
     <el-button type="primary" class="addAd" @click="addRole">新增角色</el-button>
@@ -85,7 +84,8 @@
 
       return {
         scanInfo:{
-          function_name:''
+          function_name:'',
+          searchName:''
         },
         functionname:'',
             loading: false,
@@ -227,6 +227,19 @@
         }else{
           this.$message("出现异常!");
         }
+      },
+
+      /*模糊查询获取角色数据列表*/
+      searchRoleTreeList() {
+        this.loading = true;
+        this.scanInfo.searchName = this.scanInfo.function_name
+        http.getRoleTreeList( this.scanInfo ).then(data => {
+          this.loading = false;
+          this.data = data;
+        }).catch(e => {
+          this.$message(e)
+          this.loading = false
+        })
       },
       /*获取角色数据列表*/
       getRoleTreeList() {

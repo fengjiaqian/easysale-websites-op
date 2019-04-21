@@ -43,6 +43,7 @@ export default {
 
 //返回功能 树形结构
   getRoleTreeList(params = {}){
+    console.log(params);
     return axios.post(prefix +'/role/getRoleTreeByIds', params);
   },
 
