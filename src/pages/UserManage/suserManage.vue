@@ -329,7 +329,7 @@
       },
       /*用户授权 */
       userAuthRole(id){
-        this.$router.push({name:'suser_roleAuthorization', query:{id}})
+        this.$router.push({name:'suser_roleAuthorizationcp', query:{id}})
       },
       /*获取功能数据列表*/
       getSuserList_() {

@@ -219,8 +219,16 @@
         this.loading = true;
         https_f.getAllRole(this.roleInfo).then(data => {
           this.loading = false
-          this.suserList = data;
-          console.log(JSON.stringify(data));
+          let parenArr = [];
+          let cArr = [];
+          for(let x=0;x<data.length;x++){
+            if(data[x].parentId != undefined || data[x].parentId != null){
+              cArr.push(data[x]);
+            }else{
+              parenArr.push(data[x]);
+            }
+          }
+          this.suserList = parenArr;
           // 测试添加选中状态
           let rids  = this.userrolearr;
           for(let x=0;x<this.suserList.length;x++){
