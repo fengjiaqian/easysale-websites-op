@@ -146,7 +146,7 @@
         }).catch(e => {
           this.$message("执行失败!");
         })
-        this.alertInfoState = false;
+        // this.alertInfoState = false;
         //刷新页面shuj
         this.getFunctionList_();
       },

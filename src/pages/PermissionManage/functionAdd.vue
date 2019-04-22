@@ -155,8 +155,8 @@
           this.img_url = '';
           this.functionInfo.imageUrl = '';
           this.isshowimg = false;
-          console.log(JSON.stringify(this.img_names));
-          console.log(JSON.stringify(this.img_url));
+          // console.log(JSON.stringify(this.img_names));
+          // console.log(JSON.stringify(this.img_url));
         }).catch(() => {
         });
       },
@@ -188,7 +188,7 @@
       },
 //这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
       upLoadSuccess(response, file, fileList) {
-        console.log(JSON.stringify(fileList));
+        // console.log(JSON.stringify(fileList));
         let imgs_ = fileList;
         if(imgs_.length > 0){
           if(imgs_[0].status == "success"){
@@ -218,8 +218,8 @@
           });
           this.isshowimg = false;
         }
-        console.log("上传的时候:"+JSON.stringify(this.img_names));
-        console.log("上传的时候:"+JSON.stringify(this.img_url));
+        // console.log("上传的时候:"+JSON.stringify(this.img_names));
+        // console.log("上传的时候:"+JSON.stringify(this.img_url));
         //上传完之后 清空组件缓存的上传信息
         this.$refs.upload.clearFiles();
       },
@@ -288,7 +288,7 @@
           if(params.parentId == null || params.parentId == undefined || params.parentId == '' || params.parentId == 0 || params.parentId == '0'){
             delete params['parentId'];
           }
-          console.log(JSON.stringify(params));
+          // console.log(JSON.stringify(params));
           https_f.addFucntionObj(params).then(data => {
             this.$message(`新增成功`)
             //如果选择的是模型   隐藏下拉选  并且清空选中的值
@@ -337,18 +337,7 @@
       },
       //校验数据
       valiFromObj(jsonobj){
-       /* functionInfo: {
-            parentId:0,	 //父级节点
-            parentWholeId:0,	 //父节点wholeId
-            type:3,	// 权限类型（1：模型 2：菜单 3：功能）
-            systemType:1,//系统类型（1：小程序 2：pc端）
-            name:'', //权限名称
-            url:'',//链接
-            imageUrl:'',//      图标
-            state:1,//状态（0:停用 1：启用）
-            createUser:'',//	创建人
-            updateUser:'',//更新人即创建人
-        },*/
+
         if (jsonobj.name == null || jsonobj.name == undefined || jsonobj.name == '') {
           this.$message(`请输入功能名称`)
           return false;
