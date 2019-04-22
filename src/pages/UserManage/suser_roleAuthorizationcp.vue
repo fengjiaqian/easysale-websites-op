@@ -55,16 +55,6 @@
       <el-button type="primary" @click="onckbox_"  size="medium">保存</el-button>
       <el-button @click="$router.go(-1)">返回</el-button>
     </div>
-    <!--分页-->
-   <!-- <el-pagination
-      background
-      layout="total,prev, pager, next"
-      @current-change="handlePageNumChange($event)"
-      :page-size="functionInfo.pageSize"
-      :total="totalCount"
-      v-if="totalCount>0"
-    >
-    </el-pagination>-->
     <!--设置费用弹框-->
     <el-dialog
       :title="alertInfo.status==0?'确认信息':'确认信息'"
@@ -214,6 +204,8 @@
         let newarr = arr;
         return newarr;
       },
+
+
       /*获取功能数据列表*/
       getSuserList_() {
         this.loading = true;
