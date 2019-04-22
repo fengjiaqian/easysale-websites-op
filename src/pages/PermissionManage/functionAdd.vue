@@ -1,6 +1,6 @@
 <template>
   <div class="productAdd" v-loading="loading">
-    <el-form class="content" :model="functionInfo"
+    <el-form class="content" :model="functionInfo"  :rules="rules"
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
@@ -136,7 +136,13 @@
         },
         dealerList: [],
         productList: [],
-        loading: false
+        loading: false,
+        // 表单定义验证规则
+        rules: {
+          // 姓名
+          name: [{ required: true, message: '请输入功能名称', trigger: 'blur' }],
+          url: [{ required: true, message: '请输入功能url', trigger: 'blur' }],
+        },
       }
     },
     components: {
@@ -150,11 +156,11 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.isshowimg = false;
           //在下标处开始删除,删除一位
           this.img_names = '';
           this.img_url = '';
           this.functionInfo.imageUrl = '';
-          this.isshowimg = false;
           // console.log(JSON.stringify(this.img_names));
           // console.log(JSON.stringify(this.img_url));
         }).catch(() => {
@@ -288,8 +294,8 @@
           if(params.parentId == null || params.parentId == undefined || params.parentId == '' || params.parentId == 0 || params.parentId == '0'){
             delete params['parentId'];
           }
-          // console.log(JSON.stringify(params));
           https_f.addFucntionObj(params).then(data => {
+            this.isshowimg = false;
             this.$message(`新增成功`)
             //如果选择的是模型   隐藏下拉选  并且清空选中的值
             this.showPrise_1 = false;

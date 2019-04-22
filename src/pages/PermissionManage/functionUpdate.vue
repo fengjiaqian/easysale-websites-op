@@ -1,24 +1,9 @@
 <template>
   <div class="functionUpdate"  v-loading="loading">
-    <el-form class="content" :model="functionInfo"
+    <el-form class="content" :model="functionInfo" :rules="rules"
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
-     <!-- <el-form-item label="父级节点" prop="parentId">
-        <el-input v-model="functionInfo.parentId" placeholder="请输入父级节点" disabled="disabled" class="disable-input"></el-input>
-      </el-form-item>
-
-      <el-form-item label="父级WholeId" prop="parentWholeId">
-        <el-input v-model="functionInfo.wholeId" placeholder="请输入父级节点WholeId" disabled="disabled" class="disable-input"></el-input>
-      </el-form-item>
--->
-    <!--  <el-form-item label="功能类型" prop="type">
-        <el-select v-model="functionInfo.type" placeholder="请选择功能类型">
-          <el-option label="模型" :value="1"></el-option>
-          <el-option label="菜单" :value="2"></el-option>
-          <el-option label="功能" :value="3"></el-option>
-        </el-select>
-      </el-form-item>-->
 
       <el-form-item label="系统类型" prop="systemType">
         <el-select v-model="functionInfo.systemType" placeholder="请选择系统类型">
@@ -42,8 +27,24 @@
         <el-input v-model="functionInfo.url" placeholder="请输入功能url"  class="disable-input"></el-input>
       </el-form-item>
 
-      <el-form-item label="功能图标" prop="imageUrl" >
+   <!--   <el-form-item label="功能图标" prop="imageUrl" >
         <el-input v-model="functionInfo.imageUrl" placeholder="请输入功能图标"  class="disable-input"></el-input>
+      </el-form-item>-->
+
+      <el-form-item label="功能图标:" prop="imageUrl">
+        <el-upload :action="upLoadUrl" :multiple="ismultiple"  :data="upobject"
+                   ref="upload"
+                   :show-file-list="false"
+                   :on-success="upLoadSuccess"
+                   :before-upload="beforeUpload"
+        >
+          <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
+          &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
+          <div class="el-upload__tip imgsclass" slot="tip" v-if="isshowimg">
+            <img @click="isDel" :src="functionInfo.imageUrl"  class="avatar"  />
+          </div>
+
+        </el-upload>
       </el-form-item>
 
 
@@ -78,7 +79,8 @@
 <script>
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
-
+  import Urls from '../../assets/models/baseUrl'
+  const prefix = Urls.supplyChainUrl
   //引入 vue 后台发请求api接口
   import https_f from 'http/functionManageApi'
 
@@ -87,6 +89,15 @@
     props: [],
     data() {
       return {
+        isshowimg:true,
+        img_names:'',
+        img_msg:'只能上传jpg/png文件，且不超过3M',
+        ck_types:1,
+        upobject:{
+          fileType:1
+        },
+        ismultiple:false,
+        upLoadUrl:prefix+'/file/uploadProductImg',
         //当前操作人的ID  页面载入的时候 动态设置
         crrur_userid:6666666,
         // initAddressStr: ``,
@@ -109,7 +120,13 @@
         },
         dealerList: [],
         productList: [],
-        loading: false
+        loading: false,
+        // 表单定义验证规则
+        rules: {
+          // 姓名
+          name: [{ required: true, message: '请输入功能名称', trigger: 'blur' }],
+          url: [{ required: true, message: '请输入功能url', trigger: 'blur' }],
+        },
       }
     },
     components: {
@@ -117,6 +134,82 @@
     },
     //页面新加的方法
     methods: {
+      //删除图片
+      isDel(val){
+        this.$confirm('确定要删除当前图片吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isshowimg = false;
+          //在下标处开始删除,删除一位
+          this.img_names = '';
+          this.img_url = '';
+          this.functionInfo.imageUrl = '';
+        }).catch(() => {
+        });
+      },
+      beforeUpload(file) {
+        //上传支持格式（.doc/.docx/.pdf/.rar/.zip/.xls/.xlsx/.ppt）
+        let reg = /\.(jpg|jpeg|png)$/i;
+        if (!reg.test(file.name)) {
+          this.$message({
+            showClose: true,
+            message: '上传支持格式（.jpg/.jpeg/.png）',
+            type: 'error'
+          });
+          return false;
+        }
+
+        else if (file.size > 500 * 1024) {
+          this.$message({
+            showClose: true,
+            message: '文件大小上限为500K',
+            type: 'error'
+          });
+          return false;
+        }
+      },
+
+      // 点击上传图
+      uploadPic () {
+        // this.index = index;
+      },
+//这个是对于logo1上传成功的钩子函数，因此logo2上传成功之后的钩子函数与这个同理
+      upLoadSuccess(response, file, fileList) {
+        // console.log(JSON.stringify(fileList));
+        let imgs_ = fileList;
+        if(imgs_.length > 0){
+          if(imgs_[0].status == "success"){
+            if(imgs_[0].response.data == undefined){
+              this.functionInfo.imageUrl  = imgs_[0].response;
+            }else{
+              this.functionInfo.imageUrl =imgs_[0].response.data;
+            }
+            //    this.dialogVisible_img = true;
+            this.img_names=imgs_[0].name
+            this.isshowimg = true;
+          }else{
+            //上传失败清空上传列表
+            this.$message({
+              showClose: true,
+              message: "上传失败",
+              type: 'error'
+            });
+            this.isshowimg = false;
+          }
+        }else{
+          //上传失败清空上传列表
+          this.$message({
+            showClose: true,
+            message: "上传失败",
+            type: 'error'
+          });
+          this.isshowimg = false;
+        }
+        //上传完之后 清空组件缓存的上传信息
+        this.$refs.upload.clearFiles();
+      },
       //处理不需要传递到后台的参数
       param_handle(arr){
         let newarr = arr;
