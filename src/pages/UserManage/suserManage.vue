@@ -327,7 +327,7 @@
       addSuser(){
         this.$router.push({name: `suserAdd`})
       },
-      /*用户授权 */
+      /*用户授权 AAAAAAAAAAAAAA*/
       userAuthRole(id){
         console.log('');
         this.$router.push({name:'suser_roleAuthorizationcp', query:{id}})
