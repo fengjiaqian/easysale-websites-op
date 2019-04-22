@@ -52,14 +52,12 @@
       </el-form-item>
     </el-form>
 
-
   </div>
 
 </template>
 <script>
   import AdminCitySelector from 'common/AdministrativeCitySelector'
   import {mapState, mapMutations} from 'vuex'
-
   import https_f from 'http/suserManageApi'
   import Urls from '../../assets/models/baseUrl'
   const prefix = Urls.supplyChainUrl
@@ -77,7 +75,6 @@
         upLoadUrl:prefix+'/file/uploadProductImg',
         //页面载入 动态设置当前操作人ID
         crrur_userid:6666666,
-        // initAddressStr: ``,
         suserInfo: {
           id:0,
           wxNickName:'',
@@ -133,7 +130,6 @@
           return false;
         }
       },
-
       // 点击上传图
       uploadPic () {
         // this.index = index;
@@ -145,10 +141,8 @@
           if(imgs_[0].status == "success"){
             if(imgs_[0].response.data == undefined){
               this.img_url.push(imgs_[0].response);
-              // this.suserInfo.logoIamgeUrls = imgs_[0].response
             }else{
               this.img_url.push(imgs_[0].response.data);
-              // this.suserInfo.logoIamgeUrls = imgs_[0].response.data
             }
           }else{
             //上传失败清空上传列表
@@ -170,7 +164,6 @@
         //上传完之后 清空组件缓存的上传信息
         this.$refs.upload.clearFiles();
       },
-
       param_handle(arr){
         let newarr = arr;
         delete newarr['phone'];
@@ -189,7 +182,6 @@
           if(this.img_url.length > 0){
             new_ar.logoIamgeUrls = this.img_url
           }
-          console.log(JSON.stringify(new_ar));
           https_f.updateSuserObj(new_ar).then(data => {
             this.$message({
               type: 'success',
@@ -200,14 +192,11 @@
           })
           this.loading = false;
         }else{
-          //alert("存在不合法数据!");
           this.loading = false;
         }
       },
-
       submitForm() {
         //弹出窗口
-        // this.alertInfoState = true;
         this.$confirm('确定要修改当前数据吗, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -244,7 +233,6 @@
           this.$message(`网络异常`)
           return false;
         }
-
         if(this.img_url.length <= 0){
           this.$message(`请上传LOGO`)
           return false;
@@ -258,16 +246,13 @@
     mounted:function(){
       this.img_msg='只能上传jpg/png文件，且不超过3M';
       this.img_url = [];
-      //根据ID 拉取功能实体   编辑修改用户的ID
       if(this.$route.query.row != null && this.$route.query.row != undefined){
           this.loading = true;
           let param_ = {
             id: this.$route.query.row.id,
             userType:this.$route.query.row.userType
           }
-          // alert("传递参数:"+JSON.stringify(param_));
           https_f.getSuserObj(param_).then(data => {
-            // 查询出实体 赋值
             this.loading = false;
             this.suserInfo = data;
             if(data.logoIamgeUrls != undefined && (data.logoIamgeUrls).length>0){

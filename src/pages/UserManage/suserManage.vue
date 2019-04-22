@@ -30,8 +30,6 @@
           <el-option label="停用" :value="0"></el-option>
         </el-select>
       </el-form-item>
-
-
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getSuserList_" size="medium">查询</el-button>
@@ -39,7 +37,6 @@
     </div>
 
     <el-button type="primary" class="add-warehouse" @click="addSuser">新增用户</el-button>
-
     <!--表格-->
     <el-table
       :data="suserList"
@@ -68,8 +65,6 @@
           </div>
         </template>
       </el-table-column>
-
-
       <el-table-column prop="state" label="状态" width="120">
                 <template slot-scope="scope">
                   <span>{{scope.row.state===0?'停用':'启用'}}</span>
@@ -120,15 +115,12 @@
       v-if="totalCount>0"
     >
     </el-pagination>
-
-
     <!--设置费用弹框-->
     <el-dialog
       :title="sqr_title"
       :visible.sync="chargeDialog"
       width="30%"
     >
-
       <el-form :model="applyInfo" label-width="148px" class="el-form-product">
         <el-form-item label="申请人：">
           <el-input v-model="applyInfo.name" size="mini" disabled="disabled"></el-input>
@@ -154,10 +146,6 @@
         <el-button type="primary" @click="ckto_examine">通过审核</el-button>
       </span>
     </el-dialog>
-
-
-
-
   </div>
 </template>
 <script>
@@ -173,12 +161,11 @@
         sqr_title:'申请人信息',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
-        //6为页面默认状态
         suserInfo: {
-          type:6,	// 权限类型（1：模型 2：菜单 3：功能）
-          systemType:6,//系统类型（1：小程序 2：pc端）
-          name:'', //权限名称
-          state:6,//状态（0:停用 1：启用）,
+          type:6,
+          systemType:6,
+          name:'',
+          state:6,
           pageSize:20,
           pageNum:1,
           userType:6,
@@ -206,7 +193,6 @@
       AdminCitySelector
     },
     methods: {
-      //
       formatDate_(time){
         let date = new Date(time);
         return formatDate(date,'yyyy-MM-dd hh:mm:ss');
@@ -315,7 +301,6 @@
           console.log("取消");
         });
       },
-      //处理传递参数 剔除不要的
       param_handle(arr){
         let newarr = arr;
         if(newarr.type == 6){
@@ -349,11 +334,8 @@
       /*获取功能数据列表*/
       getSuserList_() {
         this.loading = true;
-        // console.log("查询条件:"+JSON.stringify(this.param_handle(this.suserInfo)));
         https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
           this.loading = false
-          // let objs  = data.dataList;
-          // console.log("查询的结果:"+JSON.stringify(data.dataList));
           this.suserList = data.dataList;
           for(let x=0;x<this.suserList.length;x++){
             this.suserList[x].createTime =  this.formatDate_(this.suserList[x].createTime);
@@ -364,13 +346,12 @@
           this.loading = false
         })
       },
-      //刷新
       resetForm() {
         this.suserInfo= {
-          type:6,	// 权限类型（1：模型 2：菜单 3：功能）
-          systemType:6,//系统类型（1：小程序 2：pc端）
-          name:'', //权限名称
-          state:6,//状态（0:停用 1：启用）,
+          type:6,
+          systemType:6,
+          name:'',
+          state:6,
           pageSize:20,
           pageNum:1,
           userType:6,
@@ -388,7 +369,6 @@
           logoIamgeUrls:'',
           userId:'',
         }
-        // this.getProductList()
       },
       getSelectDate(value) {
         this.suserInfo.startTime = value[0]
@@ -404,10 +384,8 @@
         let id = row.id;
         this.$router.push({name:`suserInfo`, query:{id}})
       },
-      /*设置状态*/
       toggleState(row, index) {
       },
-      //点击上一下 下一页的时候  设置当前页码值
       indexMethods(index) {
         return (this.suserInfo.pageNum - 1) * this.suserInfo.pageSize + index + 1
       },
@@ -424,7 +402,6 @@
             if (self.endTime) {
               return new Date(self.endTime).getTime() < time.getTime()
             }
-            //return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
       },
@@ -445,7 +422,6 @@
     },
     //載入
     mounted:function(){
-      //初始化页码数据 默认不根据条件查询拉去 第一页
       this.suserInfo.pageNum = 1;
       this.suserInfo.pageSize = 20;
       this.suserInfo.type=6;
