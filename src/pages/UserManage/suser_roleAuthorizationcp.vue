@@ -48,8 +48,8 @@
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间">
       </el-table-column>
-      <el-table-column prop="createUser" label="创建人" >
-      </el-table-column>
+     <!-- <el-table-column prop="createUser" label="创建人" >
+      </el-table-column>-->
     </el-table>
     <div style="margin:0 auto;width:300px;height:100px;margin-top:25px">
       <el-button type="primary" @click="onckbox_"  size="medium">保存</el-button>
