@@ -1,6 +1,6 @@
 <template>
   <div class="suserAdd" v-loading="loading">
-    <el-form class="content" :model="suserInfo"
+    <el-form class="content" :model="suserInfo"   :rules="rules"
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
@@ -63,6 +63,7 @@
   import Urls from '../../assets/models/baseUrl'
 
   const prefix = Urls.supplyChainUrl
+  let that = null;
   export default {
     name: 'suserAdd',
     props: [],
@@ -95,9 +96,78 @@
         dealerList: [],
         productList: [],
         loading: false,
-        dialogVisible: false
+        dialogVisible: false,
+        // 表单定义验证规则
+        rules: {
+          // 姓名
+          name: [{ required: true, message: '请输入经销商名称', trigger: 'blur' }],
+          // 手机号码
+          phone: [
+            { required: true, message: '请输入手机号码', trigger: 'blur' },
+            {
+              validator: function(rule, value, callback) {
+                let MobileRegex = /^(13[0-9]|147|15[0-9]|17[0-9]|18[0-9])\d{8}$/
+                if (!MobileRegex.test(value)) {
+                  callback(new Error('手机号码格式不正确！'))
+                } else {
+                  let phonearr = {
+                    phone: value
+                  }
+                  https_f.suser_List(phonearr).then(data => {
+                    let suserList = data.dataList;
+                    try {
+                      if (suserList.length <= 0) {
+                        callback();
+                      } else {
+                        callback(new Error('手机号码已存在！'))
+                        that.suserInfo.phone = '';
+                      }
+                    } catch (e) {
+                      callback(new Error('手机号码验证异常！'))
+                      that.suserInfo.phone = '';
+                    }
+                  }).catch(e => {
+                    callback(new Error('手机号码验证异常！'))
+                    that.suserInfo.phone = '';
+                  })
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          password:[
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            {
+              validator: function(rule, value, callback) {
+                if (value.length < 6) {
+                  callback(new Error('密码由6位字符串组成！'))
+                } else {
+                  callback()
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          shopName: [{ required: true, message: '请输入店铺名称', trigger: 'blur' }],
+          instruction: [{ required: true, message: '请输入店铺描述', trigger: 'blur' }],
+          type: [
+            { required: true, message: '请选择用户类型', trigger: 'change' },
+            {
+              validator: function(rule, value, callback) {
+                if (value == 0) {
+                  callback(new Error('请选择用户类型！'))
+                } else {
+                  callback()
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          logoIamgeUrls:[{ required: true, message: '请上传店铺LOGO', trigger: 'blur' }],
+        },
       }
     },
+
     components: {
       AdminCitySelector
     },
@@ -210,7 +280,7 @@
             phone: '',
             logoIamgeUrls: '',
             instruction: '',
-            type: '',
+            type: 1,
             password: '',
             name: '',
           },
@@ -294,10 +364,12 @@
       },
       //
     },
+
     computed: {
       ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
     },
     mounted: function () {
+      that =  this;
       this.suserInfo = {
         shopName: '',
         phone: '',

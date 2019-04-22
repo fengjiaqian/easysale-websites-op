@@ -1,6 +1,6 @@
 <template>
   <div class="suserUpdate"  v-loading="loading">
-    <el-form class="content" :model="suserInfo"
+    <el-form class="content" :model="suserInfo"   :rules="rules"
              ref="productDetailForm" label-width="115px"
              label-suffix="：" size="medium"
              style="width:50%">
@@ -89,7 +89,12 @@
         },
         dealerList: [],
         productList: [],
-        loading: false
+        loading: false,
+        // 表单定义验证规则
+        rules: {
+          // 姓名
+          wxNickName: [{ required: true, message: '用户昵称是必填项', trigger: 'blur' }],
+        },
       }
     },
     components: {
@@ -227,6 +232,10 @@
         //  验证数据合法性
         if (jsonobj.phone == null || jsonobj.phone == undefined || jsonobj.phone == '') {
           this.$message(`请输入手机号码`)
+          return false;
+        }
+        if (jsonobj.wxNickName == null || jsonobj.wxNickName == undefined || jsonobj.wxNickName == '') {
+          this.$message(`请输入昵称`)
           return false;
         }
         if (jsonobj.state == 6) {
