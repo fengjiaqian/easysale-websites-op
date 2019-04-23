@@ -74,8 +74,11 @@
   import {mapState} from 'vuex';
   import treeTable from "./TreeTable";
 
+
   let parentNode = null;
   let node = null;
+  let isExitsArr = [];
+
 
   export default {
     name: "roleSetting",
@@ -144,31 +147,77 @@
     },
     components: { treeTable },
     methods: {
+      //递归处理 原始数据data
+      handleYData(arr){
+        for(let x=0;x<arr.length;x++){
+          arr[x].bjys = "";
+          if(arr[x].children){
+            if((arr[x].children).length > 0){
+              this.handleYData(arr[x].children);
+            }
+          }
+        }
+        return arr;
+      },
+      setBJYS(arr,id){
+        for(var x=0;x<arr.length;x++){
+          if(arr[x].id == id){
+            arr[x].bjys = "background: rgba(0, 158, 250, 0.219) !important;";
+            if(arr[x].children){
+              if((arr[x].children).length > 0){
+                this.setBJYS(arr[x].children,id);
+              }
+            }
+          }else{
+            if((arr[x].children)){
+              if((arr[x].children).length > 0){
+                this.setBJYS(arr[x].children,id);
+              }
+            }
+          }
+        }
+        return arr;
+      },
 
       //搜索指定名称
       scanRoleName(){
         //进来默认还原数据
         parentNode = null;
         node = null;
-        let datas = this.data;
-        console.log(this.data);
-        for(let x=0;x<datas.length;x++){
-          datas[x].bjys = "";
-        }
-        this.data = datas;
+        isExitsArr = [];
+        // let datas = this.data;
+        this.handleYData(this.data);
         if(this.scanInfo.function_name != ''){
           let obj = getNode(this.data, this.scanInfo.function_name);
-          if(obj.parentNode == null){
-            if(obj.node != null){
-              let id = obj.node.id;
-              this.resetData(id);
-            }else{
-              this.$message("无匹配结果!");
+          if(obj.length > 0){
+            let ids = [];
+            for(let x=0;x<obj.length;x++){
+              ids.push(obj[x].node.id);
+            }
+            for(let x=0;x<ids.length;x++){
+              this.setBJYS(this.data,ids[x])
             }
           }else{
-            let id = obj.parentNode.id;
-            this.resetData(id);
+            isExitsArr = [];
+            parentNode = null;
+            node = null;
+            this.$message("无匹配结果!");
           }
+
+          // let obj = getNode(this.data, this.scanInfo.function_name);
+          // if(obj.parentNode == null){
+          //   if(obj.node != null){
+          //     let id = obj.node.id;
+          //     this.resetData(id);
+          //   }else{
+          //     this.$message("无匹配结果!");
+          //   }
+          // }else{
+          //   let id = obj.parentNode.id;
+          //   this.resetData(id);
+          // }
+        }else{
+          this.$message("请输入要搜索的数据!");
         }
       },
       resetData(id){
@@ -186,31 +235,31 @@
         }
       },
 
-      //搜索指定名称
-      scanRoleName(){
-        //进来默认还原数据
-        parentNode = null;
-        node = null;
-        let datas = this.data;
-        for(let x=0;x<datas.length;x++){
-          datas[x].bjys = "";
-        }
-        this.data = datas;
-        if(this.scanInfo.function_name != ''){
-          let obj = getNode(this.data, this.scanInfo.function_name);
-          if(obj.parentNode == null){
-            if(obj.node != null){
-              let id = obj.node.id;
-              this.resetData(id);
-            }else{
-              this.$message("无匹配结果!");
-            }
-          }else{
-            let id = obj.parentNode.id;
-            this.resetData(id);
-          }
-        }
-      },
+      // //搜索指定名称
+      // scanRoleName(){
+      //   //进来默认还原数据
+      //   parentNode = null;
+      //   node = null;
+      //   let datas = this.data;
+      //   for(let x=0;x<datas.length;x++){
+      //     datas[x].bjys = "";
+      //   }
+      //   this.data = datas;
+      //   if(this.scanInfo.function_name != ''){
+      //     let obj = getNode(this.data, this.scanInfo.function_name);
+      //     if(obj.parentNode == null){
+      //       if(obj.node != null){
+      //         let id = obj.node.id;
+      //         this.resetData(id);
+      //       }else{
+      //         this.$message("无匹配结果!");
+      //       }
+      //     }else{
+      //       let id = obj.parentNode.id;
+      //       this.resetData(id);
+      //     }
+      //   }
+      // },
       resetData(id){
         console.log(id)
         let objs = this.data;
@@ -330,33 +379,56 @@
     },
   }
   function getNode(json, nodeId) {
+
     //1.第一层 root 深度遍历整个JSON
-    for (var i = 0; i < json.length; i++) {
+    for (let i = 0; i < json.length; i++) {
       if (node) {
         break;
       }
-      var obj = json[i];
-      console.log(obj);
+      let obj = json[i];
       //没有就下一个
       if (!obj || !obj.roleName) {
         continue;
       }
-      //2.有节点就开始找，一直递归下去
-      if (obj.roleName == nodeId) {
+
+      //if (obj.label == nodeId) {
+      if ((obj.roleName).search(nodeId) != -1) {
         //找到了与nodeId匹配的节点，结束递归
         node = obj;
-        break;
+        let result_arr = {
+          parentNode: parentNode,
+          node: node
+        };
+        isExitsArr.push(result_arr);
+        node = null;
+        parentNode = null;
+        //如果当前节点存在字节  继续递归
+        if((obj.children)){
+          if((obj.children).length >0){
+            parentNode = obj;
+            //递归往下找
+            getNode(obj.children, nodeId);
+          }
+        }
+
+        //    break;
       } else {
         //3.如果有子节点就开始找
-        if (obj.children) {
-          //4.递归前，记录当前节点，作为parent 父亲
-          parentNode = obj;
-          //递归往下找
-          getNode(obj.children, nodeId);
+        if((obj.children)){
+          if ((obj.children).length >0) {
+            //4.递归前，记录当前节点，作为parent 父亲
+            parentNode = obj;
+            //递归往下找
+            getNode(obj.children, nodeId);
+          } else {
+            //跳出当前递归，返回上层递归
+            continue;
+          }
         } else {
           //跳出当前递归，返回上层递归
           continue;
         }
+
       }
     }
 
@@ -366,11 +438,17 @@
     }
 
     //6.返回结果obj
-    return {
+    let result_arr = {
       parentNode: parentNode,
       node: node
     };
+    if(result_arr.parentNode != null || result_arr.node != null){
+      isExitsArr.push(result_arr);
+    }
+    return isExitsArr;
+
   }
+
 </script>
 
 <style lang="stylus" scoped>
