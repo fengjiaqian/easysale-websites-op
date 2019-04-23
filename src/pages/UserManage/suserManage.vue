@@ -119,7 +119,6 @@
     <el-dialog
       :title="sqr_title"
       :visible.sync="chargeDialog"
-      width="30%"
     >
       <el-form :model="applyInfo" label-width="148px" class="el-form-product">
         <el-form-item label="申请人：">
@@ -138,11 +137,16 @@
           <el-input v-model="applyInfo.createDate" size="mini" disabled="disabled"></el-input>
         </el-form-item>
         <el-form-item label="营业执照：">
-            <img :src="applyInfo.logoIamgeUrls"   />
+          <div class="el-upload__tip imgsclass"  v-for="(index, items) in applyInfo.logoIamgeUrls">
+            <img  @click="isFD(items)" :src="index" class="avatar"/>
+          </div>
+          <div class="shadow" v-if="isshow" @click="close_img">
+            <img :src="fdimg">
+          </div>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="chargeDialog = false">取 消</el-button>
+        <el-button @click="qxshck">取 消</el-button>
         <el-button type="primary" @click="ckto_examine">通过审核</el-button>
       </span>
     </el-dialog>
@@ -158,6 +162,9 @@
     name: "suserManage",
     data() {
       return {
+        isshow:false,
+        fdimg:'',
+        isChoose:null,
         sqr_title:'申请人信息',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -180,7 +187,7 @@
           address:'',
           name:'',
           createDate:'',
-          logoIamgeUrls:'',
+          logoIamgeUrls:[],
           userId:'',
         },
         chargeDialog: false,
@@ -193,6 +200,20 @@
       AdminCitySelector
     },
     methods: {
+      qxshck(){
+        this.chargeDialog = false;
+        this.fdimg = '';
+        this.isshow = false;
+      },
+      isFD(inx){
+       let imgs = this.applyInfo.logoIamgeUrls[inx];
+       this.fdimg = imgs;
+       this.isshow = true;
+      },
+      close_img(){
+        this.fdimg = '';
+        this.isshow = false;
+      },
       formatDate_(time){
         let date = new Date(time);
         return formatDate(date,'yyyy-MM-dd hh:mm:ss');
@@ -204,6 +225,8 @@
         }
         https_f.findApplyDealer(ids).then(data => {
           this.loading = false
+          // data.logoIamgeUrls.push('http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/d7d3cd15abb548588a30949396491085.png');
+          // data.logoIamgeUrls.push('http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/5918cf19c9c348babfd3debcd9ee528a.png');
           this.applyInfo  = data;
           this.chargeDialog = true;
         }).catch(e => {
@@ -213,7 +236,11 @@
       },
       // 确认审核
       ckto_examine(){
+
         if(this.applyInfo == null){
+          this.fdimg = '';
+          this.isshow = false;
+          this.chargeDialog = false;
           this.$message("数据异常审核失败!");
         }else{
           this.$confirm('确定要审核当前用户吗, 是否继续?', '提示', {
@@ -221,6 +248,9 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.fdimg = '';
+            this.isshow = false;
+            this.chargeDialog = false;
             let par = {
               id:this.applyInfo.userId
             }
@@ -361,13 +391,14 @@
           wxAppId:'',
           auditState:6,
         }
+        this.null =0;
         this.applyInfo={
           shopName:'',
           phone:'',
           address:'',
           name:'',
           createDate:'',
-          logoIamgeUrls:'',
+          logoIamgeUrls:[],
           userId:'',
         }
       },
@@ -423,6 +454,7 @@
     },
     //載入
     mounted:function(){
+      this.null =0;
       this.suserInfo.pageNum = 1;
       this.suserInfo.pageSize = 20;
       this.suserInfo.type=6;
@@ -438,7 +470,7 @@
         address:'',
         name:'',
         createDate:'',
-        logoIamgeUrls:'',
+        logoIamgeUrls:[],
         userId:'',
       }
       this.getSuserList_();
@@ -479,6 +511,69 @@
   .add-warehouse {
     padding: 10px 24px;
     margin-top: 16px
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+    border 10px;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: inline;
+    border-radius: 15px;
+  }
+
+  .imgsclass {
+    white-space: nowrap;
+    position: relative;
+  }
+  .vueBox{
+    text-align: center;
+    margin-left: 300px;
+    position: relative;
+  }
+
+  .active {
+      transform: scale(3);          /*图片需要放大3倍*/
+      position: absolute;           /*是相对于前面的容器定位的，此处要放大的图片，不能使用position：relative；以及float，否则会导致z-index无效*/
+      z-index: 100;
+    margin-top: -300px;
+  }
+
+  .shadow{
+    width: 500px;
+    height: 550px;
+    /*background-color: #ffc0cb;*/
+    position: absolute;
+    left: -100px;
+    top: -172px;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  .shadow img{
+    width:100%;
+    height:100%;
   }
 </style>
 
