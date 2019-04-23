@@ -76,6 +76,8 @@ import  functionUpdate from '../pages/PermissionManage/functionUpdate'
 import  functionInfo from '../pages/PermissionManage/functionInfo'
 import  tabletree from '../pages/PermissionManage/tabletree'
 import  ztreetable from '../pages/PermissionManage/ztreetable'
+//备份 功能列表 固定值 单个匹配搜索
+import  functionManageFixedmatching from '../pages/PermissionManage/functionManageFixedmatching'
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
@@ -522,6 +524,11 @@ export default new Router({
       name: 'suser_roleAuthorizationcp',
       component: suser_roleAuthorizationcp
     }
-
+    ,
+    {
+      path: '/functionManageFixedmatching',
+      name: 'functionManageFixedmatching',
+      component: functionManageFixedmatching
+    }
   ]
 })
