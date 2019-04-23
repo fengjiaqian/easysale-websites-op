@@ -71,7 +71,8 @@
           <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
           &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
           <div class="el-upload__tip imgsclass" slot="tip" v-if="isshowimg" >
-            <img @click="isDel" :src="functionInfo.imageUrl"  class="avatar"  />
+            <button @click="isDel" style="position:absolute;left: 152px;top:0;border-radius: 6px;">X</button>
+            <img  :src="functionInfo.imageUrl"  class="avatar"  />
           </div>
 
         </el-upload>
@@ -296,7 +297,11 @@
           }
           https_f.addFucntionObj(params).then(data => {
             this.isshowimg = false;
-            this.$message(`新增成功`)
+            // this.$message(`新增成功`)
+            this.$message({
+              type: 'success',
+              message: '新增成功'
+            });
             //如果选择的是模型   隐藏下拉选  并且清空选中的值
             this.showPrise_1 = false;
             this.showPrise_2 = false;
@@ -430,9 +435,12 @@
   .avatar {
     width: 178px;
     height: 178px;
-    display:inline;
+    display: inline;
+    border-radius: 15px;
   }
-  .imgsclass{
-    white-space:nowrap;
+
+  .imgsclass {
+    white-space: nowrap;
+    position: relative;
   }
 </style>

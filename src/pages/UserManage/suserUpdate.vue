@@ -38,7 +38,9 @@
             <el-button @click="uploadPic()" size="small" type="primary">点击上传</el-button>
             &nbsp;&nbsp;&nbsp;<span style="color: red;" class="el-upload__tip" slot="tip">{{img_msg}}</span>
             <div class="el-upload__tip imgsclass" slot="tip"  v-for="(index, items) in img_url">
-              <img @click="isDel(items)" :src="index"  class="avatar"  />
+              <button @click="isDel(items)" style="position:absolute;left: 152px;top:0;border-radius: 6px;">X</button>
+              <img  :src="index" class="avatar"/>
+            <!--  <img @click="isDel(items)" :src="index"  class="avatar"  />-->
             </div>
           </el-upload>
         </el-form-item>
@@ -298,5 +300,16 @@
     .el-input.is-disabled > .el-input__inner {
       color: #333 !important
     }
+  }
+  .avatar {
+      width: 178px;
+      height: 178px;
+      display: inline;
+      border-radius: 15px;
+    }
+
+  .imgsclass {
+    white-space: nowrap;
+    position: relative;
   }
 </style>
