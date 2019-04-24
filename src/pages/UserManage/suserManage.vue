@@ -136,12 +136,15 @@
         <el-form-item label="申请时间：">
           <el-input v-model="applyInfo.createDate" size="mini" disabled="disabled"></el-input>
         </el-form-item>
-        <el-form-item label="营业执照：">
-          <div class="el-upload__tip imgsclass"  v-for="(index, items) in applyInfo.logoIamgeUrls">
-            <img  @click="isFD(items)" :src="index" class="avatar"/>
-          </div>
-          <div class="shadow" v-if="isshow" @click="close_img">
-            <img :src="fdimg">
+        <el-form-item label="营业执照：" >
+          <div class="el-upload__tip imgsclass"  v-for="index in applyInfo.logoIamgeUrls">
+            <el-popover
+              placement="right"
+              title=""
+              trigger="hover">
+              <img :src="index" class="avatar"/>
+              <img slot="reference" :src="index"  style="max-height: 178px;max-width: 178px">
+            </el-popover>
           </div>
         </el-form-item>
       </el-form>
@@ -223,8 +226,10 @@
         let ids = {
           id:row.id,
         }
-        https_f.findApplyDealer(ids).then(data => {
+
+       https_f.findApplyDealer(ids).then(data => {
           this.loading = false
+          console.log(JSON.stringify(data));
           // data.logoIamgeUrls.push('http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/d7d3cd15abb548588a30949396491085.png');
           // data.logoIamgeUrls.push('http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/5918cf19c9c348babfd3debcd9ee528a.png');
           this.applyInfo  = data;
@@ -236,7 +241,6 @@
       },
       // 确认审核
       ckto_examine(){
-
         if(this.applyInfo == null){
           this.fdimg = '';
           this.isshow = false;
@@ -536,16 +540,12 @@
   }
 
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 300px;
+    height: 300px;
     display: inline;
     border-radius: 15px;
   }
 
-  .imgsclass {
-    white-space: nowrap;
-    position: relative;
-  }
   .vueBox{
     text-align: center;
     margin-left: 300px;
