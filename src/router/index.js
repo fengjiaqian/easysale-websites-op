@@ -78,6 +78,11 @@ import  tabletree from '../pages/PermissionManage/tabletree'
 import  ztreetable from '../pages/PermissionManage/ztreetable'
 //备份 功能列表 固定值 单个匹配搜索
 import  functionManageFixedmatching from '../pages/PermissionManage/functionManageFixedmatching'
+
+
+//登录成功 跳转默认页面
+ import welcomePage from '../pages/homePage/welcomePage'
+
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
@@ -529,6 +534,11 @@ export default new Router({
       path: '/functionManageFixedmatching',
       name: 'functionManageFixedmatching',
       component: functionManageFixedmatching
+    } ,
+    {
+      path: '/welcomePage',
+      name: 'welcomePage',
+      component: welcomePage
     }
   ]
 })
