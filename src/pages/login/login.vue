@@ -67,7 +67,12 @@
           phone:this.loginarr.phone
         }
         http.getUALogin(param).then(data => {
-          this.userToken = data.token
+          if(data.token == undefined){
+            //没有的话 随便整个字符串  不影响后续流程  因为主界面 是根据是否存在token 来控制显示的
+            this.userToken = "sadksajdjsadkjaldjaldaljdlkajdklksajdlsajdaa===";
+          }else{
+            this.userToken = data.token;
+          }
           this.setToken({token: this.userToken});
           this.updateToken(this.userToken);
           this.getLoginInfo()
@@ -96,27 +101,17 @@
           //将获取到的用户信息存在vuex中
           this.setUserInfo({userInfo: data});
           this.updateUserInfo(data);
-          // this.roleCode = data.userLoginAuth[0].roleCode;
-          // let choseRoleInfoList = data.userLoginAuth[0];//当前选中角色的信息
-          // this.setChoseRoleInfoList(choseRoleInfoList);
-          // this.updateChoseRoleInfoList(choseRoleInfoList);
           this.roleCode=`Developer`
-          // this.updateChoosenRole(this.roleCode);//将角色列表中的第一角色存在vuex中
-          // this.updateChoseRole(this.roleCode);
-          // console.log('role', this.roleCode)
           this.$message('登录成功');
           this.getMenuList()
-          this.$router.replace({path: `/emptyPage`})
+          this.$router.replace({path: `/welcomePage`})
           this.fullscreenLoading = false
-
-          console.log("登录成功============================");
-          this.$router.go(0);
+          // this.$router.go(0);
         }).catch(e => {
           console.log(e)
           this.clearToken()
           this.$message(e)
           this.fullscreenLoading = false
-
         })
       },
       getMenuList() {
