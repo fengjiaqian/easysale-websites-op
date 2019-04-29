@@ -170,6 +170,8 @@
             menuItem.routePage = `roleSetting`
           }else if (menuItem.nameSpace === `/PermissionManage`) {//功能管理
             menuItem.routePage = `functionManage`
+          }else if (menuItem.nameSpace === `/CustomerManage`) {//客户管理
+            menuItem.routePage = `customerManage`
           }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示

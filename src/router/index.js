@@ -69,6 +69,11 @@ import suser_roleAuthorization from '../pages/UserManage/suser_roleAuthorization
 import suser_roleAuthorizationcp from '../pages/UserManage/suser_roleAuthorizationcp'
 import suserInfo from '../pages/UserManage/suserInfo'
 
+//客户管理
+import customerManage from '../pages/customer/customerList'
+import customerDetail from '../pages/customer/customerDetail'
+
+
 //功能管理
 import  functionManage from '../pages/PermissionManage/functionManage'
 import  functionAdd from '../pages/PermissionManage/functionAdd'
@@ -534,11 +539,6 @@ export default new Router({
       path: '/functionManageFixedmatching',
       name: 'functionManageFixedmatching',
       component: functionManageFixedmatching
-    } ,
-    {
-      path: '/welcomePage',
-      name: 'welcomePage',
-      component: welcomePage
     }
   ]
 })
