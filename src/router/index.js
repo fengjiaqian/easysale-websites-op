@@ -72,6 +72,11 @@ import suserAddcp from '../pages/UserManage/suserAddcp'
 import suserUpdatecp from '../pages/UserManage/suserUpdatecp'
 import toexaminebossManage from '../pages/UserManage/toexaminebossManage'
 
+//客户管理
+import customerManage from '../pages/customer/customerList'
+import customerDetail from '../pages/customer/customerDetail'
+
+
 //功能管理
 import  functionManage from '../pages/PermissionManage/functionManage'
 import  functionAdd from '../pages/PermissionManage/functionAdd'
