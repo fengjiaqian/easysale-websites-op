@@ -168,6 +168,8 @@
           type: 'warning'
         }).then(() => {
           let params = Object.assign({}, this.customerInfo)
+          params.updateUser = this.currentUser.id;
+          params.createUser = this.currentUser.id;
           if (params.id) {
             customerHttp.updateCustomer(params).then(data => {
               this.$message({
@@ -182,7 +184,16 @@
               this.$message("执行失败!");
             })
           } else {
-
+            customerHttp.addCustomerInfo(params).then(data =>{
+              this.$message({
+                type: 'success',
+                message: '执行成功!'
+              });
+              this.disabled = true;
+            }).catch(e => {
+              console.log(JSON.stringify(e));
+              this.$message("执行失败!");
+            })
           }
         }).catch(() => {
           console.log("取消");
@@ -200,7 +211,7 @@
       },
       handleSelect(index, row) {
         this.customerInfo.salesmen = row.name;
-        this.customerInfo.salesPersonUserId = row.id;
+        this.customerInfo.salesPersonUserId = row.userId;
         this.dialogTableVisible = false;
       }
     },

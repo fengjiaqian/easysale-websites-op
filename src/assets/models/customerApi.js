@@ -14,5 +14,9 @@ export default {
   //查询客户信息
   findCustomerInfo(params={}){
     return axios.post(prefix+`/customer/findCustomerInfo`,params)
+  },
+  //新增客户信息
+  addCustomerInfo(params={}){
+    return axios.post(prefix+`/customer/addCustomer`,params)
   }
 }

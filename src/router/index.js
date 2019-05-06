@@ -540,5 +540,17 @@ export default new Router({
       name: 'functionManageFixedmatching',
       component: functionManageFixedmatching
     }
+    ,
+    {
+      path: '/customerManage',
+      name: 'customerManage',
+      component: customerManage
+    }
+    ,
+    {
+      path: '/customerDetail',
+      name: 'customerDetail',
+      component: customerDetail
+    }
   ]
 })
