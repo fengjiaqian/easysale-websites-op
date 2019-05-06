@@ -68,6 +68,9 @@ import suserUpdate from '../pages/UserManage/suserUpdate'
 import suser_roleAuthorization from '../pages/UserManage/suser_roleAuthorization'
 import suser_roleAuthorizationcp from '../pages/UserManage/suser_roleAuthorizationcp'
 import suserInfo from '../pages/UserManage/suserInfo'
+import suserAddcp from '../pages/UserManage/suserAddcp'
+import suserUpdatecp from '../pages/UserManage/suserUpdatecp'
+import toexaminebossManage from '../pages/UserManage/toexaminebossManage'
 
 //客户管理
 import customerManage from '../pages/customer/customerList'
@@ -539,6 +542,26 @@ export default new Router({
       path: '/functionManageFixedmatching',
       name: 'functionManageFixedmatching',
       component: functionManageFixedmatching
+    } ,
+    {
+      path: '/welcomePage',
+      name: 'welcomePage',
+      component: welcomePage
+    },
+    {
+      path: '/suserAddcp',
+      name: 'suserAddcp',
+      component: suserAddcp
+    },
+    {
+      path: '/suserUpdatecp',
+      name: 'suserUpdatecp',
+      component: suserUpdatecp
+    },
+    {
+      path: '/toexaminebossManage',
+      name: 'toexaminebossManage',
+      component: toexaminebossManage
     }
     ,
     {
