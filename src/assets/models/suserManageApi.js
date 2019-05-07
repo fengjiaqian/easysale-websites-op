@@ -38,5 +38,18 @@ export default {
     return axios.post(prefix +'/user/findApplyDealer', params)
   },
 
+  //申请成店老板的待审核列表
+  dealerbossapplylist(params = {}){
+    return axios.post(prefix +'/user/dealerbossapplylist', params)
+  },
 
+  //申请详情
+  dealerbossapplyinfo(params = {}){
+    return axios.post(prefix +'/user/dealerbossapplyinfo', params)
+  },
+
+  // 审核
+  dealerbossapply(params = {}){
+    return axios.post(prefix +'/user/dealerbossapply', params)
+  },
 }
