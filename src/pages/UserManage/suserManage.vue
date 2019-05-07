@@ -6,9 +6,9 @@
              label-suffix="："
              class="demo-form-inline"
              ref="suserInfo">
-  <!--    <el-form-item label="微信昵称">
-        <el-input v-model="suserInfo.wxNickName" placeholder="请输入微信昵称" clearable></el-input>
-      </el-form-item>-->
+      <!--    <el-form-item label="微信昵称">
+            <el-input v-model="suserInfo.wxNickName" placeholder="请输入微信昵称" clearable></el-input>
+          </el-form-item>-->
 
       <el-form-item label="手机号">
         <el-input v-model="suserInfo.phone" placeholder="请输入手机号" clearable></el-input>
@@ -17,6 +17,7 @@
       <el-form-item label="用户类型" prop="userType">
         <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
           <el-option label="请选择" :value="6"></el-option>
+          <el-option label="后台人员" :value="0"></el-option>
           <el-option label="经销商" :value="1"></el-option>
           <el-option label="销售人员" :value="2"></el-option>
           <el-option label="终端用户" :value="3"></el-option>
@@ -37,6 +38,7 @@
     </div>
 
     <el-button type="primary" class="add-warehouse" @click="addSuser">新增用户</el-button>
+    <el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>
     <!--表格-->
     <el-table
       :data="suserList"
@@ -54,7 +56,7 @@
       </el-table-column>
       <el-table-column prop="userType" label="用户类型" width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'异常数据'}}</span>
+          <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'后台员工'}}</span>
         </template>
       </el-table-column>
 
@@ -66,33 +68,41 @@
         </template>
       </el-table-column>
       <el-table-column prop="state" label="状态" width="120">
-                <template slot-scope="scope">
-                  <span>{{scope.row.state===0?'停用':'启用'}}</span>
-                </template>
+        <template slot-scope="scope">
+          <span>{{scope.row.state===0?'停用':'启用'}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="250">
       </el-table-column>
       <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
           <!-- 经销商-->
-          <div v-if="scope.row.userType == 1">
+
+          <div v-if="scope.row.userType == 0">
             <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
-           <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
-            <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>
+          </div>
+
+
+          <div v-if="scope.row.userType == 1">
+            <!--    <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>-->
+            <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
+            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
+            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+            <!--        <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>-->
           </div>
 
           <!-- 销售人员 -->
           <div v-if="scope.row.userType == 2">
-<!--            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
+            <!--            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
           </div>
 
           <!-- 终端人员 -->
           <div v-if="scope.row.userType == 3  && scope.row.auditState == 0">
-           <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
+            <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
@@ -178,7 +188,7 @@
           state:6,
           pageSize:20,
           pageNum:1,
-          userType:6,
+          userType:0,
           wxNickName:'',
           phone:'',
           wxAppId:'',
@@ -203,15 +213,20 @@
       AdminCitySelector
     },
     methods: {
+      //店铺老板申请 审核
+      toexamine_boss(){
+        //toexaminebossManage
+        this.$router.push({name:'toexaminebossManage'});
+      },
       qxshck(){
         this.chargeDialog = false;
         this.fdimg = '';
         this.isshow = false;
       },
       isFD(inx){
-       let imgs = this.applyInfo.logoIamgeUrls[inx];
-       this.fdimg = imgs;
-       this.isshow = true;
+        let imgs = this.applyInfo.logoIamgeUrls[inx];
+        this.fdimg = imgs;
+        this.isshow = true;
       },
       close_img(){
         this.fdimg = '';
@@ -227,7 +242,7 @@
           id:row.id,
         }
 
-       https_f.findApplyDealer(ids).then(data => {
+        https_f.findApplyDealer(ids).then(data => {
           this.loading = false
           console.log(JSON.stringify(data));
           // data.logoIamgeUrls.push('http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/d7d3cd15abb548588a30949396491085.png');
@@ -283,8 +298,8 @@
           type: 'warning'
         }).then(() => {
           let par = {
-              id:row.id,
-              state:3
+            id:row.id,
+            state:3
           }
           https_f.updateSuserObj(par).then(data => {
             this.loading = false
@@ -389,7 +404,7 @@
           state:6,
           pageSize:20,
           pageNum:1,
-          userType:6,
+          userType:0,
           wxNickName:'',
           phone:'',
           wxAppId:'',
@@ -467,7 +482,7 @@
       this.suserInfo.name='';
       this.suserInfo.wxNickName='';
       this.suserInfo.phone='';
-      this.suserInfo.userType=6;
+      this.suserInfo.userType=0;
       this.applyInfo={
         shopName:'',
         phone:'',
@@ -553,9 +568,9 @@
   }
 
   .active {
-      transform: scale(3);          /*图片需要放大3倍*/
-      position: absolute;           /*是相对于前面的容器定位的，此处要放大的图片，不能使用position：relative；以及float，否则会导致z-index无效*/
-      z-index: 100;
+    transform: scale(3);          /*图片需要放大3倍*/
+    position: absolute;           /*是相对于前面的容器定位的，此处要放大的图片，不能使用position：relative；以及float，否则会导致z-index无效*/
+    z-index: 100;
     margin-top: -300px;
   }
 

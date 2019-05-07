@@ -29,12 +29,15 @@
       </el-table-column>
       <el-table-column prop="shopName" label="店铺名称" ></el-table-column>
       <el-table-column prop="phone" label="手机号" ></el-table-column>
-      <el-table-column prop="createTime" label="申请时间" ></el-table-column>
+
+      <el-table-column prop="name" label="申请人" ></el-table-column>
+
+      <el-table-column prop="updateDate" label="申请时间" ></el-table-column>
 
       <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
-          <div>
-            <el-button type="text" size="small" @click="to_examine(scope.row)">授权</el-button>
+          <div v-if="scope.row.dealerId > 0 && scope.row.userId > 0">
+            <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
           </div>
         </template>
       </el-table-column>
@@ -65,9 +68,9 @@
         <el-form-item label="店铺名称：">
           <el-input v-model="applyInfo.shopName" size="mini" disabled="disabled"></el-input>
         </el-form-item>
-        <el-form-item label="店铺地址：">
-          <el-input v-model="applyInfo.address" size="mini" disabled="disabled"></el-input>
-        </el-form-item>
+        <!-- <el-form-item label="店铺地址：">
+           <el-input v-model="applyInfo.address" size="mini" disabled="disabled"></el-input>
+         </el-form-item>-->
         <el-form-item label="申请时间：">
           <el-input v-model="applyInfo.createDate" size="mini" disabled="disabled"></el-input>
         </el-form-item>
@@ -121,6 +124,9 @@
           createDate:'',
           logoIamgeUrls:[],
           userId:'',
+          dealerId:'',
+          userType:'',
+          type:''
         },
         chargeDialog: false,
         totalCount: 0,
@@ -138,9 +144,9 @@
         this.isshow = false;
       },
       isFD(inx){
-       let imgs = this.applyInfo.logoIamgeUrls[inx];
-       this.fdimg = imgs;
-       this.isshow = true;
+        let imgs = this.applyInfo.logoIamgeUrls[inx];
+        this.fdimg = imgs;
+        this.isshow = true;
       },
       close_img(){
         this.fdimg = '';
@@ -152,29 +158,37 @@
       },
       //审核
       to_examine(row){
-        //TODO
-        /*let ids = {
-          id:row.id,
-        }*/
+        let parm = {
+          dealerId:row.dealerId
+        }
 
-        this.applyInfo  = {
-          shopName:row.shopName,
-          phone:row.phone,
-          address:row.address,
-          name:row.wxNickName,
-          createDate:row.createTime,
-          logoIamgeUrls:[row.imgurl],
-        };
-        this.chargeDialog = true;
-      /* https_f.findApplyDealer(ids).then(data => {
+        https_f.dealerbossapplyinfo(parm).then(data => {
           this.loading = false
           console.log(JSON.stringify(data));
-          this.applyInfo  = data;
+          // this.applyInfo  = data;
+          // return false;
+          let ctimes = '';
+          if(data.updateDate){
+            ctimes =this.formatDate_(data.updateDate);
+          }
+          this.applyInfo  = {
+            shopName:data.shopName,
+            phone:data.phone,
+            address:data.address,
+            name:data.name,
+            createDate:ctimes,
+            logoIamgeUrls:data.logoIamgeUrls,
+            userId:data.userId,
+            dealerId:data.dealerId,
+            userType:'',
+            type:''
+          };
+
           this.chargeDialog = true;
         }).catch(e => {
           this.$message('数据异常')
           this.loading = false
-        })*/
+        })
       },
       // 确认审核
       ckto_examine(){
@@ -193,21 +207,28 @@
             this.isshow = false;
             this.chargeDialog = false;
             let par = {
-              id:this.applyInfo.userId
+              userId:this.applyInfo.userId,
+              dealerId:this.applyInfo.dealerId,
+              userType:1,
+              type:1,
             }
-            https_f.userApplyDer(par).then(data => {
-              this.loading = false
-              this.$message({
-                type: 'success',
-                message: '审核成功'
-              });
-              //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
-              this.chargeDialog = false;
-              this.getSuserList_();
-            }).catch(e => {
-              this.$message(e)
-              this.loading = false
-            })
+            if(this.applyInfo.userId != null && this.applyInfo.dealerId != null && this.applyInfo.userType != null && this.applyInfo.type != null){
+              https_f.dealerbossapply(par).then(data => {
+                this.loading = false
+                this.$message({
+                  type: 'success',
+                  message: '审核成功'
+                });
+                //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
+                this.chargeDialog = false;
+                this.getToexamineList_();
+              }).catch(e => {
+                this.$message(e)
+                this.loading = false
+              })
+            }else{
+              this.$message('数据异常')
+            }
           }).catch(() => {
           });
         }
@@ -248,57 +269,27 @@
         });
       },
       param_handle(arr){
-        //TODO
+        let newarr = arr;
+        newarr.pageNum = this.pageNum;
+        newarr.pageSize = this.pageSize;
         return newarr;
       },
       /*获取功能数据列表*/
       getToexamineList_() {
-        this.loading = false
-        //TODO  接口待完善  模拟数据
-        this.toexamineList = [{
-          id:1,
-          wxNickName:'测试申请',
-          shopName:'天猫',
-          phone:'133312321321',
-          createTime:'2019-01-11 12:04:10',
-          imgurl:'http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/675976c4d2854eb1802124bd4f5be9ee.png',
-          address:'武汉市'
-        },{
-          id:2,
-          wxNickName:'测试申请2',
-          shopName:'天猫2',
-          phone:'133312321321',
-          createTime:'2019-01-11 12:04:10',
-          imgurl:'http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/675976c4d2854eb1802124bd4f5be9ee.png',
-          address:'武汉市'
-        },{
-          id:3,
-          wxNickName:'测试申请3',
-          shopName:'天猫3',
-          phone:'133312321321',
-          createTime:'2019-01-11 12:04:10',
-          imgurl:'http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/675976c4d2854eb1802124bd4f5be9ee.png',
-          address:'武汉市'
-        },{
-          id:4,
-          wxNickName:'测试申请4',
-          shopName:'天猫5',
-          phone:'133312321321',
-          createTime:'2019-01-11 12:04:10',
-          imgurl:'http://yjp-dev-articlesharing.ufile.ucloud.cn/easysale/2019/04/675976c4d2854eb1802124bd4f5be9ee.png',
-          address:'武汉市'
-        }];
-        /*https_f.suser_List(this.param_handle(this.suserInfo)).then(data => {
+        this.loading = true;
+        https_f.dealerbossapplylist(this.param_handle(this.toexamineInfo)).then(data => {
           this.loading = false
-          this.suserList = data.dataList;
-          for(let x=0;x<this.suserList.length;x++){
-            this.suserList[x].createTime =  this.formatDate_(this.suserList[x].createTime);
+          this.toexamineList = data.dataList;
+          for(let x=0;x<this.toexamineList.length;x++){
+            if(this.toexamineList[x].updateDate){
+              this.toexamineList[x].updateDate =  this.formatDate_(this.toexamineList[x].updateDate);
+            }
           }
           this.totalCount = data.pager.recordCount;
         }).catch(e => {
           this.$message(e)
           this.loading = false
-        })*/
+        })
       },
       resetForm() {
         this.toexamineInfo= {
@@ -314,6 +305,9 @@
           createDate:'',
           logoIamgeUrls:[],
           userId:'',
+          dealerId:'',
+          userType:'',
+          type:''
         }
       },
       getSelectDate(value) {
@@ -383,6 +377,9 @@
         createDate:'',
         logoIamgeUrls:[],
         userId:'',
+        dealerId:'',
+        userType:'',
+        type:''
       }
       this.getToexamineList_();
     }
@@ -460,9 +457,9 @@
   }
 
   .active {
-      transform: scale(3);          /*图片需要放大3倍*/
-      position: absolute;           /*是相对于前面的容器定位的，此处要放大的图片，不能使用position：relative；以及float，否则会导致z-index无效*/
-      z-index: 100;
+    transform: scale(3);          /*图片需要放大3倍*/
+    position: absolute;           /*是相对于前面的容器定位的，此处要放大的图片，不能使用position：relative；以及float，否则会导致z-index无效*/
+    z-index: 100;
     margin-top: -300px;
   }
 
