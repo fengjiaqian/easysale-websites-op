@@ -10,9 +10,9 @@
       <el-form-item label="手机号">
         <el-input v-model="toexamineInfo.phone" placeholder="请输入搜索手机号" clearable></el-input>
       </el-form-item>
-      <el-form-item label="申请人名称">
+  <!--    <el-form-item label="申请人名称">
         <el-input v-model="toexamineInfo.name" placeholder="请输入搜索名称" clearable></el-input>
-      </el-form-item>
+      </el-form-item>-->
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getToexamineList_" size="medium">查询</el-button>
@@ -108,7 +108,7 @@
         fdimg:'',
         isChoose:null,
         pageSize:20,
-        pageNum:0,
+        pageNum:1,
         sqr_title:'申请人信息',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -277,7 +277,11 @@
       /*获取功能数据列表*/
       getToexamineList_() {
         this.loading = true;
+        console.log(JSON.stringify(this.param_handle(this.toexamineInfo)));
         https_f.dealerbossapplylist(this.param_handle(this.toexamineInfo)).then(data => {
+
+          console.log(JSON.stringify(data));
+
           this.loading = false
           this.toexamineList = data.dataList;
           for(let x=0;x<this.toexamineList.length;x++){
@@ -364,7 +368,7 @@
     mounted:function(){
       this.null =0;
       this.pageSize = 20;
-      this.pageNum = 0;
+      this.pageNum = 1;
       this.toexamineInfo = {
         name:'',
         phone:'',
