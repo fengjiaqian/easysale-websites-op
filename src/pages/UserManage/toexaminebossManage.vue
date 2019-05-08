@@ -284,11 +284,7 @@
       /*获取功能数据列表*/
       getToexamineList_() {
         this.loading = true;
-        console.log(JSON.stringify(this.param_handle(this.toexamineInfo)));
         https_f.dealerbossapplylist(this.param_handle(this.toexamineInfo)).then(data => {
-
-          console.log(JSON.stringify(data));
-
           this.loading = false
           this.toexamineList = data.dataList;
           for(let x=0;x<this.toexamineList.length;x++){
