@@ -159,7 +159,7 @@
       },
       //审核
       to_examine(row){
-        if(row.shopId && row.dealerId){
+        if(row.shopId && row.dealerId && row.userId){
           let parm = {
             shopId:row.shopId,
             dealerId:row.dealerId
@@ -192,7 +192,7 @@
             this.loading = false
           })
         }else{
-          this.$message('数据异常缺少店铺ID')
+          this.$message('数据异常缺少用户ID/经销商ID/店铺ID')
         }
 
       },
