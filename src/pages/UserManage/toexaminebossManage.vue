@@ -126,6 +126,7 @@
           userId:'',
           dealerId:'',
           userType:'',
+          shopId:'',
           type:''
         },
         chargeDialog: false,
@@ -181,6 +182,7 @@
               logoIamgeUrls:data.logoIamgeUrls,
               userId:data.userId,
               dealerId:data.dealerId,
+              shopId:data.shopId,
               userType:'',
               type:''
             };
@@ -213,10 +215,11 @@
             let par = {
               userId:this.applyInfo.userId,
               dealerId:this.applyInfo.dealerId,
+              shopId:this.applyInfo.shopId,
               userType:1,
               type:1,
             }
-            if(this.applyInfo.userId != null && this.applyInfo.dealerId != null && this.applyInfo.userType != null && this.applyInfo.type != null){
+            if(this.applyInfo.userId != null && this.applyInfo.dealerId != null && this.applyInfo.userType != null && this.applyInfo.type != null && this.applyInfo.shopId != null){
               https_f.dealerbossapply(par).then(data => {
                 this.loading = false
                 this.$message({
@@ -315,6 +318,7 @@
           userId:'',
           dealerId:'',
           userType:'',
+          shopId:'',
           type:''
         }
       },
@@ -387,6 +391,7 @@
         userId:'',
         dealerId:'',
         userType:'',
+        shopId:'',
         type:''
       }
       this.getToexamineList_();
