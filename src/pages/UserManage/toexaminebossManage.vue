@@ -160,7 +160,7 @@
       to_examine(row){
         if(row.shopId){
           let parm = {
-            dealerId:row.shopId
+            shopId:row.shopId
           }
           https_f.dealerbossapplyinfo(parm).then(data => {
             this.loading = false
