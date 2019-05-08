@@ -36,7 +36,7 @@
 
       <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
-          <div v-if="scope.row.dealerId > 0 && scope.row.userId > 0">
+          <div v-if="scope.row.dealerId > 0 && scope.row.userId > 0 && scope.row.shopId > 0">
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
           </div>
         </template>
