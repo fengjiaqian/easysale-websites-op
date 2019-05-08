@@ -158,37 +158,40 @@
       },
       //审核
       to_examine(row){
-        let parm = {
-          dealerId:row.dealerId
+        if(row.shopId){
+          let parm = {
+            dealerId:row.shopId
+          }
+          https_f.dealerbossapplyinfo(parm).then(data => {
+            this.loading = false
+            console.log(JSON.stringify(data));
+            // this.applyInfo  = data;
+            // return false;
+            let ctimes = '';
+            if(data.updateDate){
+              ctimes =this.formatDate_(data.updateDate);
+            }
+            this.applyInfo  = {
+              shopName:data.shopName,
+              phone:data.phone,
+              address:data.address,
+              name:data.name,
+              createDate:ctimes,
+              logoIamgeUrls:data.logoIamgeUrls,
+              userId:data.userId,
+              dealerId:data.dealerId,
+              userType:'',
+              type:''
+            };
+            this.chargeDialog = true;
+          }).catch(e => {
+            this.$message('数据异常')
+            this.loading = false
+          })
+        }else{
+          this.$message('数据异常缺少店铺ID')
         }
 
-        https_f.dealerbossapplyinfo(parm).then(data => {
-          this.loading = false
-          console.log(JSON.stringify(data));
-          // this.applyInfo  = data;
-          // return false;
-          let ctimes = '';
-          if(data.updateDate){
-            ctimes =this.formatDate_(data.updateDate);
-          }
-          this.applyInfo  = {
-            shopName:data.shopName,
-            phone:data.phone,
-            address:data.address,
-            name:data.name,
-            createDate:ctimes,
-            logoIamgeUrls:data.logoIamgeUrls,
-            userId:data.userId,
-            dealerId:data.dealerId,
-            userType:'',
-            type:''
-          };
-
-          this.chargeDialog = true;
-        }).catch(e => {
-          this.$message('数据异常')
-          this.loading = false
-        })
       },
       // 确认审核
       ckto_examine(){
