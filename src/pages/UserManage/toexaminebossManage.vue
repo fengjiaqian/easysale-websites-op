@@ -158,9 +158,10 @@
       },
       //审核
       to_examine(row){
-        if(row.shopId){
+        if(row.shopId && row.dealerId){
           let parm = {
-            shopId:row.shopId
+            shopId:row.shopId,
+            dealerId:row.dealerId
           }
           https_f.dealerbossapplyinfo(parm).then(data => {
             this.loading = false
