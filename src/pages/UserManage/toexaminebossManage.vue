@@ -286,6 +286,7 @@
         this.loading = true;
         https_f.dealerbossapplylist(this.param_handle(this.toexamineInfo)).then(data => {
           this.loading = false
+          console.log(JSON.stringify(data));
           this.toexamineList = data.dataList;
           for(let x=0;x<this.toexamineList.length;x++){
             if(this.toexamineList[x].updateDate){
