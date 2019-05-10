@@ -72,6 +72,12 @@ import suserAddcp from '../pages/UserManage/suserAddcp'
 import suserUpdatecp from '../pages/UserManage/suserUpdatecp'
 import toexaminebossManage from '../pages/UserManage/toexaminebossManage'
 
+
+// 店铺管理
+import shopManage from '../pages/ShopManage/shopManage'
+import shopUpdate from '../pages/ShopManage/shopUpdate'
+import shopAdd from '../pages/ShopManage/shopAdd'
+
 //客户管理
 import customerManage from '../pages/customer/customerList'
 import customerDetail from '../pages/customer/customerDetail'
@@ -574,6 +580,24 @@ export default new Router({
       path: '/customerDetail',
       name: 'customerDetail',
       component: customerDetail
+    }
+    ,
+    {
+      path: '/shopManage',
+      name: 'shopManage',
+      component: shopManage
+    }
+    ,
+    {
+      path: '/shopUpdate',
+      name: 'shopUpdate',
+      component: shopUpdate
+    }
+    ,
+    {
+      path: '/shopAdd',
+      name: 'shopAdd',
+      component: shopAdd
     }
   ]
 })
