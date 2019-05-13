@@ -172,6 +172,8 @@
             menuItem.routePage = `functionManage`
           }else if (menuItem.nameSpace === `/ShopManage`) {//店铺管理
             menuItem.routePage = `shopManage`
+          }else if (menuItem.nameSpace === `/LogManage`) {//日志管理
+            menuItem.routePage = `logManage`
           }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
