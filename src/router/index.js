@@ -78,6 +78,9 @@ import shopManage from '../pages/ShopManage/shopManage'
 import shopUpdate from '../pages/ShopManage/shopUpdate'
 import shopAdd from '../pages/ShopManage/shopAdd'
 
+//日志管理
+import logManage from '../pages/LogManage/logManage'
+
 //客户管理
 import customerManage from '../pages/customer/customerList'
 import customerDetail from '../pages/customer/customerDetail'
@@ -598,6 +601,11 @@ export default new Router({
       path: '/shopAdd',
       name: 'shopAdd',
       component: shopAdd
+    } ,
+    {
+      path: '/logManage',
+      name: 'logManage',
+      component: logManage
     }
   ]
 })
