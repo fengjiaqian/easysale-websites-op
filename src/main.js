@@ -7,7 +7,6 @@ import router from './router'
 import '@/assets/fonts/iconfont.css'
 import './utils/registerVue.js'
 import axios from 'axios'
-import echarts from "echarts"
 import {getCookie} from './utils/CookieUtil'
 import Interceptors from './assets/models/defaultInterceptor'
 axios.interceptors.request.use(Interceptors.requestInterceptor.config, Interceptors.requestInterceptor.error)
