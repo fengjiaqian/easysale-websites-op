@@ -16,7 +16,7 @@
 
       <el-form-item label="状态" prop="state">
         <el-select v-model="shopInfo.state" placeholder="请选择状态">
-          <el-option label="启动" :value="1"></el-option>
+          <el-option label="启用" :value="1"></el-option>
           <el-option label="停用" :value="0"></el-option>
         </el-select>
       </el-form-item>
@@ -117,7 +117,7 @@
       updateshop(row){
         this.$router.push({name:'shopUpdate', query:{row}})
       },
-      //启动
+      //启用
       statrorcloseShop(row,sta){
         this.$confirm('确定要变更当前店铺状态吗, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -128,6 +128,7 @@
             id:row.id,
             state:sta,
           }
+          console.log(JSON.stringify(param));
           https_f.shopupdtae(param).then(data => {
             this.$message({
               type: 'success',
