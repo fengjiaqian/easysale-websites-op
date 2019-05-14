@@ -221,6 +221,7 @@
             }
             if(this.applyInfo.userId != null && this.applyInfo.dealerId != null && this.applyInfo.userType != null && this.applyInfo.type != null && this.applyInfo.shopId != null){
               https_f.dealerbossapply(par).then(data => {
+                console.log(JSON.stringify(data));
                 this.loading = false
                 this.$message({
                   type: 'success',
