@@ -19,7 +19,8 @@
                   v-model="loginarr.password"></el-input>
       </div>
 
-      <el-button type="primary" style="width: 350px;margin-top: 24px;" @click="clickLogin">登录</el-button>
+      <!--<el-button type="primary" style="width: 350px;margin-top: 24px;" @click="clickLogin">登录</el-button>-->
+      <div id="captcha"></div>
     </div>
   </div>
 </template>
@@ -222,6 +223,10 @@
       }
     },
     mounted(){
+      let self = this;
+      jigsaw.init(document.getElementById("captcha"), function() {
+        self.clickLogin();
+      });
        let ph =localStorage.getItem("phone");
        let password =localStorage.getItem("password");
        this.loginarr.phone = ph;
@@ -301,5 +306,12 @@
     transform: translate(50%, 50%);
     position: absolute;
 
+  }
+  /*
+ * 滑块验证样式jigsaw
+ */
+  #captcha {
+    position: relative;
+    margin-top: 15px;
   }
 </style>

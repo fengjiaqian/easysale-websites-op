@@ -8,6 +8,8 @@ import '@/assets/fonts/iconfont.css'
 import './utils/registerVue.js'
 import axios from 'axios'
 import {getCookie} from './utils/CookieUtil'
+import '@/assets/jigsaw/jigsaw.css'
+import '@/assets/jigsaw/jigsaw.js'
 import Interceptors from './assets/models/defaultInterceptor'
 axios.interceptors.request.use(Interceptors.requestInterceptor.config, Interceptors.requestInterceptor.error)
 axios.interceptors.response.use(Interceptors.responseInterceptor.response, Interceptors.responseInterceptor.error)
