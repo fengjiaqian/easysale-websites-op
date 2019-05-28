@@ -5,7 +5,7 @@
     <img class="login-login" src="../../assets/icons/group31.png"/>
     <div class="title-header">
       <img src="../../assets/icons/neibu.png"/>
-      易酒批仓配服务系统
+      易经商后台管理系统
     </div>
     <img class="login-shadow" src="../../assets/icons/shadow.png"/>
     <div class="login-input-block">
