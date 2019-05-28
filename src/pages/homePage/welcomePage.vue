@@ -9,7 +9,7 @@
         name: "welcomePage",
         data(){
           return {
-            msg:'易经销后台管理系统！'
+            msg:'易经商后台管理系统！'
           }
         }
     }
