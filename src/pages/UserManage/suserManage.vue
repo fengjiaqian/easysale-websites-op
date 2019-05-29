@@ -38,7 +38,7 @@
     </div>
 
     <el-button type="primary" class="add-warehouse" @click="addSuser">新增用户</el-button>
-    <el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>
+    <!--<el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>-->
     <!--表格-->
     <el-table
       :data="suserList"
@@ -59,7 +59,8 @@
           <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'后台员工'}}</span>
         </template>
       </el-table-column>
-
+      <el-table-column prop="shopName" label="店铺名称" width="250">
+      </el-table-column>
       <el-table-column   label="申请状态"  width="120">
         <template slot-scope="scope">
           <div v-if="scope.row.userType == 3">
@@ -85,33 +86,33 @@
           </div>
 
 
-          <div v-if="scope.row.userType == 1">
-            <!--    <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>-->
-            <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
-            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
-            <!--        <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>-->
-          </div>
+          <!--<div v-if="scope.row.userType == 1">-->
+            <!--&lt;!&ndash;    <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>&ndash;&gt;-->
+            <!--&lt;!&ndash; <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
+            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
+            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
+            <!--&lt;!&ndash;        <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>&ndash;&gt;-->
+          <!--</div>-->
 
-          <!-- 销售人员 -->
-          <div v-if="scope.row.userType == 2">
-            <!--            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
-            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
-          </div>
+          <!--&lt;!&ndash; 销售人员 &ndash;&gt;-->
+          <!--<div v-if="scope.row.userType == 2">-->
+            <!--&lt;!&ndash;            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
+            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
+            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
+          <!--</div>-->
 
-          <!-- 终端人员 -->
-          <div v-if="scope.row.userType == 3  && scope.row.auditState == 0">
-            <!-- <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
-            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
-            <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
-          </div>
-          <div v-else-if="scope.row.userType == 3  && scope.row.auditState == 1">
-            <!--<el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>-->
-            <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
-            <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
-          </div>
+          <!--&lt;!&ndash; 终端人员 &ndash;&gt;-->
+          <!--<div v-if="scope.row.userType == 3  && scope.row.auditState == 0">-->
+            <!--&lt;!&ndash; <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
+            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
+            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
+            <!--<el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>-->
+          <!--</div>-->
+          <!--<div v-else-if="scope.row.userType == 3  && scope.row.auditState == 1">-->
+            <!--&lt;!&ndash;<el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
+            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
+            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
+          <!--</div>-->
         </template>
       </el-table-column>
     </el-table>
@@ -137,9 +138,9 @@
         <el-form-item label="申请手机号：">
           <el-input v-model="applyInfo.phone" size="mini" disabled="disabled"></el-input>
         </el-form-item>
-        <el-form-item label="店铺名称：">
-          <el-input v-model="applyInfo.shopName" size="mini" disabled="disabled"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="店铺名称：">-->
+          <!--<el-input v-model="applyInfo.shopName" size="mini" disabled="disabled"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="店铺地址：">
           <el-input v-model="applyInfo.address" size="mini" disabled="disabled"></el-input>
         </el-form-item>
@@ -185,6 +186,7 @@
           type:6,
           systemType:6,
           name:'',
+          shopName:'',
           state:6,
           pageSize:20,
           pageNum:1,
@@ -195,7 +197,7 @@
           auditState:6,
         },
         applyInfo:{
-          shopName:'',
+          // shopName:'',
           phone:'',
           address:'',
           name:'',
@@ -412,7 +414,7 @@
         }
         this.null =0;
         this.applyInfo={
-          shopName:'',
+          // shopName:'',
           phone:'',
           address:'',
           name:'',
@@ -484,7 +486,7 @@
       this.suserInfo.phone='';
       this.suserInfo.userType=0;
       this.applyInfo={
-        shopName:'',
+        // shopName:'',
         phone:'',
         address:'',
         name:'',

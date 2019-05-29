@@ -78,6 +78,9 @@ import shopManage from '../pages/ShopManage/shopManage'
 import shopUpdate from '../pages/ShopManage/shopUpdate'
 import shopAdd from '../pages/ShopManage/shopAdd'
 
+import shopDealerAudit from  '../pages/ShopManage/toexaminebossManage'
+//店铺审核详情
+
 //日志管理
 import logManage from '../pages/LogManage/logManage'
 
@@ -606,6 +609,12 @@ export default new Router({
       path: '/logManage',
       name: 'logManage',
       component: logManage
+    }
+    ,
+    {
+      path: '/shopDealerAudit',
+      name: 'shopDealerAudit',
+      component: shopDealerAudit
     }
   ]
 })

@@ -16,7 +16,7 @@ export default {
 
   //用户列表
   suser_List(params = {}){
-    return axios.post(prefix +'/user/getUserListByParams', params)
+    return axios.post(prefix +'/user/getOpUserList', params)
   },
 
   //用户修改

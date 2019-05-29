@@ -176,6 +176,9 @@
           }else if (menuItem.nameSpace === `/LogManage`) {//日志管理
             menuItem.routePage = `logManage`
           }
+          else if (menuItem.nameSpace === `/ShopDealerAudit`) {//日志管理
+            menuItem.routePage = `shopDealerAudit`
+          }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
         // if (!this.isGroupCompany) {
