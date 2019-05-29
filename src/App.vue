@@ -6,7 +6,7 @@
       <!--头部-->
       <el-header class="header-wrap">
         <div class="header-logo">
-          <img src="./assets/icons/yjs_logo.png"/>
+          <img src="./assets/icons/yjs_logo.png" class="logoyjs"/>
           <span class="menu-header">易经商运营平台</span>
         </div>
         <div class="top-bar">
@@ -294,6 +294,7 @@
 </script>
 
 <style lang="scss" scoped>
+
   #app {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
@@ -301,6 +302,12 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     height: 100%;
+  }
+
+  .logoyjs{
+    margin-right: 8px;
+    width: 48px;
+    height: 35px;
   }
 
   .footer {
