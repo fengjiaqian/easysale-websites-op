@@ -6,8 +6,8 @@
       <!--头部-->
       <el-header class="header-wrap">
         <div class="header-logo">
-          <img src="./assets/icons/neibu.png"/>
-          <span class="menu-header">易经销运营平台</span>
+          <img src="./assets/icons/yjs_logo.png"/>
+          <span class="menu-header">易经商运营平台</span>
         </div>
         <div class="top-bar">
           <span>{{userInfo.wxNickName}},你好</span>

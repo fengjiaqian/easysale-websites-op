@@ -4,7 +4,7 @@
     <!--<div class="login-bg"></div>-->
     <img class="login-login" src="../../assets/icons/group31.png"/>
     <div class="title-header">
-      <img src="../../assets/icons/neibu.png"/>
+      <img src="../../assets/icons//yjs_logo.png"/>
       易经商后台管理系统
     </div>
     <img class="login-shadow" src="../../assets/icons/shadow.png"/>
