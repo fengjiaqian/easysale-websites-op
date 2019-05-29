@@ -38,7 +38,7 @@
     </div>
 
     <el-button type="primary" class="add-warehouse" @click="addSuser">新增用户</el-button>
-    <el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>
+    <!--<el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>-->
     <!--表格-->
     <el-table
       :data="suserList"
