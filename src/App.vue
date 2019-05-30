@@ -275,6 +275,9 @@
           }else if (menuItem.nameSpace === `/LogManage`) {//日志管理
             menuItem.routePage = `logManage`
           }
+          else if (menuItem.nameSpace === `/SystemManage`) {//日志管理
+            menuItem.routePage = `systemManage`
+          }
           // else if (menuItem.nameSpace === `/ShopDealerAudit`) {//店铺审核
           //   menuItem.routePage = `shopDealerAudit`
           // }
@@ -305,9 +308,9 @@
   }
 
   .logoyjs{
-    margin-right: 8px;
-    width: 48px;
-    height: 35px;
+    margin-right: 5px;
+    width: 30px;
+    height: 20px;
   }
 
   .footer {

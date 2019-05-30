@@ -4,7 +4,7 @@
     <!--<div class="login-bg"></div>-->
     <img class="login-login" src="../../assets/icons/group31.png"/>
     <div class="title-header">
-      <img src="../../assets/icons//yjs_logo.png"/>
+      <img src="../../assets/icons//yjs_logo.png" class="imglogin"/>
       易经商后台管理系统
     </div>
     <img class="login-shadow" src="../../assets/icons/shadow.png"/>
@@ -179,6 +179,9 @@
           else if (menuItem.nameSpace === `/ShopDealerAudit`) {//日志管理
             menuItem.routePage = `shopDealerAudit`
           }
+          else if (menuItem.nameSpace === `/SystemManage`) {//系统管理
+            menuItem.routePage = `systemManage`
+          }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
         // if (!this.isGroupCompany) {
@@ -257,6 +260,11 @@
     left 0;
     // background: url("../../assets/icons/bgPhoto@2x.png")
   }
+    .imglogin {
+      margin-right: 5px;
+      width: 30px;
+      height: 20px;
+    }
 
   .login-login {
     position absolute;

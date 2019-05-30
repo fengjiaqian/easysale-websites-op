@@ -84,6 +84,11 @@ import shopDealerAudit from  '../pages/ShopManage/toexaminebossManage'
 //日志管理
 import logManage from '../pages/LogManage/logManage'
 
+
+import systemManage from '../pages/SystemManage/sysManage'
+import configurationAdd from '../pages/SystemManage/configurationAdd'
+import configurationUpdate from '../pages/SystemManage/configurationUpdate'
+
 //客户管理
 import customerManage from '../pages/customer/customerList'
 import customerDetail from '../pages/customer/customerDetail'
@@ -609,6 +614,22 @@ export default new Router({
       path: '/logManage',
       name: 'logManage',
       component: logManage
+    }
+    ,
+    {
+      path: '/systemManage',
+      name: 'systemManage',
+      component: systemManage
+    } ,
+    {
+      path: '/configurationAdd',
+      name: 'configurationAdd',
+      component: configurationAdd
+    },
+    {
+      path: '/configurationUpdate',
+      name: 'configurationUpdate',
+      component: configurationUpdate
     }
     ,
     {
