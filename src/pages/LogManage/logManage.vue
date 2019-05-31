@@ -139,6 +139,9 @@
         this.logInfo.pageNum = this.pageNum;
         this.logInfo.pageSize = this.pageSize;
         https_f.loglist(this.logInfo).then(data => {
+
+          console.log(JSON.stringify(data));
+
           this.loading = false
           this.logList = data.dataList;
           for(let x=0;x<this.logList.length;x++){
