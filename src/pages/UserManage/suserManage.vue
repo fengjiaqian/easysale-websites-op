@@ -61,13 +61,13 @@
       </el-table-column>
       <el-table-column prop="shopName" label="店铺名称" width="250">
       </el-table-column>
-      <el-table-column   label="申请状态"  width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.userType == 3">
-            <span>{{scope.row.auditState===0?'申请中':'未申请'}}</span>
-          </div>
-        </template>
-      </el-table-column>
+      <!--<el-table-column   label="申请状态"  width="120">-->
+        <!--<template slot-scope="scope">-->
+          <!--<div v-if="scope.row.userType == 3">-->
+            <!--<span>{{scope.row.auditState===0?'申请中':'未申请'}}</span>-->
+          <!--</div>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column prop="state" label="状态" width="120">
         <template slot-scope="scope">
           <span>{{scope.row.state===0?'停用':'启用'}}</span>
