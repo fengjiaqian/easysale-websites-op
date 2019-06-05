@@ -16,7 +16,7 @@
       </el-form-item>
 
       <el-form-item label="认证状态" prop="shopType">
-        <el-select v-model="dealerInfo.shopType" placeholder="请选择用户类型">
+        <el-select v-model="dealerInfo.shopType" placeholder="请选择认证状态">
           <el-option label="请选择" :value="6"></el-option>
           <el-option label="已认证" :value="1"></el-option>
           <el-option label="认证中" :value="0"></el-option>
@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="经销商类型" prop="type">
-        <el-select v-model="dealerInfo.type" placeholder="请选择用户类型">
+        <el-select v-model="dealerInfo.type" placeholder="请选择经销商类型">
           <el-option label="请选择" :value="6"></el-option>
           <el-option label="经销商" :value="1"></el-option>
           <el-option label="销售人员" :value="2"></el-option>
