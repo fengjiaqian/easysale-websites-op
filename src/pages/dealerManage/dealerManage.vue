@@ -102,7 +102,6 @@
         isshow:false,
         fdimg:'',
         isChoose:null,
-        sqr_title:'申请人信息',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         dealerInfo: {
@@ -156,9 +155,6 @@
           this.loading = false
           this.dealerList = data.dataList;
           for(let x=0;x<this.dealerList.length;x++){
-
-             console.log(this.dealerList[x].createDate);
-
             if(this.dealerList[x].type == 1){
               this.dealerList[x].dealertypename = "店老板";
             }else{
@@ -173,7 +169,6 @@
                 this.dealerList[x].dealerperm = "普工";
               }
             }
-            // dealerperm
             this.dealerList[x].createDate =  this.formatDate_(this.dealerList[x].createDate);
           }
           this.totalCount = data.pager.recordCount;
