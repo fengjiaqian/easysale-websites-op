@@ -277,6 +277,8 @@
           }
           else if (menuItem.nameSpace === `/SystemManage`) {//日志管理
             menuItem.routePage = `systemManage`
+          } else if (menuItem.nameSpace === `/DealerManage`) {// 经销商管理
+            menuItem.routePage = `dealerManage`
           }
           // else if (menuItem.nameSpace === `/ShopDealerAudit`) {//店铺审核
           //   menuItem.routePage = `shopDealerAudit`

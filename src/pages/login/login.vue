@@ -182,6 +182,9 @@
           else if (menuItem.nameSpace === `/SystemManage`) {//系统管理
             menuItem.routePage = `systemManage`
           }
+          else if (menuItem.nameSpace === `/DealerManage`) {// 经销商管理
+            menuItem.routePage = `dealerManage`
+          }
         })
         //菜单过滤的时候，基础数据服务这个菜单一般公司就不显示
         // if (!this.isGroupCompany) {

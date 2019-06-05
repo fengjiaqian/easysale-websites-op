@@ -37,16 +37,8 @@ import addServicerManage from '../pages/servicerManage/addServicerManage'
 //经销商详情
 import userDetail from '../pages/warehouseDelivery/userDetail'
 import accountDetail from '../pages/sysSeting/accountDetail'
-//经销商管理 ---  仓配经销商
-import wareHouseDealer from '../pages/dealerManage/wareHouseDealer'
-//经销商审核
-import dealerAudit from '../pages/dealerManage/dealerAudit'
-//经销商审核详情
-import dealerAuditDetail from '../pages/dealerManage/dealerAuditDetail'
-//店铺审核
-import shopAudit from '../pages/dealerManage/shopAudit'
-//店铺审核详情
-import shopAuditDetail from '../pages/dealerManage/shopAuditDetail'
+
+
 //产品管理
 import applyWarehouseProduct from '../pages/productManage/applyWarehouseProduct'
 //新增产品
@@ -93,7 +85,6 @@ import configurationUpdate from '../pages/SystemManage/configurationUpdate'
 import customerManage from '../pages/customer/customerList'
 import customerDetail from '../pages/customer/customerDetail'
 
-
 //功能管理
 import  functionManage from '../pages/PermissionManage/functionManage'
 import  functionAdd from '../pages/PermissionManage/functionAdd'
@@ -103,6 +94,10 @@ import  tabletree from '../pages/PermissionManage/tabletree'
 import  ztreetable from '../pages/PermissionManage/ztreetable'
 //备份 功能列表 固定值 单个匹配搜索
 import  functionManageFixedmatching from '../pages/PermissionManage/functionManageFixedmatching'
+
+
+//新的经销商管理
+import dealerManage from '../pages/dealerManage/dealerManage'
 
 
 //登录成功 跳转默认页面
@@ -397,52 +392,6 @@ export default new Router({
         keepalive: true
       }
     },
-    //经销商管理   ----  仓配经销商
-    {
-      path: '/wareHouseDealer',
-      name: 'wareHouseDealer',
-      component: wareHouseDealer,
-      meta: {
-        keepalive: true
-      }
-    },
-    //经销商审核
-    {
-      path: '/dealerAudit',
-      name: 'dealerAudit',
-      component: dealerAudit,
-      meta: {
-        keepalive: true
-      }
-    },
-    //经销商审核详情
-    {
-      path: '/dealerAuditDetail',
-      name: 'dealerAuditDetail',
-      component: dealerAuditDetail,
-      meta: {
-        keepalive: true
-      }
-    },
-    //店铺审核
-    {
-      path: '/shopAudit',
-      name: 'shopAudit',
-      component: shopAudit,
-      meta: {
-        keepalive: true
-      }
-    },
-
-    //店铺审核详情
-    {
-      path: '/shopAuditDetail',
-      name: 'shopAuditDetail',
-      component: shopAuditDetail,
-      meta: {
-        keepalive: true
-      }
-    },
 
     //产品管理    -----   第三方申请入库产品
     {
@@ -636,6 +585,11 @@ export default new Router({
       path: '/shopDealerAudit',
       name: 'shopDealerAudit',
       component: shopDealerAudit
+    },
+    {
+      path: '/dealerManage',
+      name: 'dealerManage',
+      component: dealerManage
     }
   ]
 })

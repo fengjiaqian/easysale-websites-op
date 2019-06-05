@@ -41,13 +41,13 @@
       </el-table-column>
       <el-table-column   label="状态"  width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.state===1?'启用': scope.row.state===0 ? '停用' :'异常'}}</span>
+          <span>{{scope.row.state==1?'启用': scope.row.state==0 ? '停用' :'异常'}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column   label="认证状态"  width="120">
+      <el-table-column prop="shopType"  label="认证状态"  width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.shopType===1?'已认证': scope.row.shopType===0 ? '认证中' : scope.row.shopType===2 ? '未认证' : '未认证'}}</span>
+          <span>{{scope.row.shopType==1?'已认证': scope.row.shopType==0 ? '认证中' :  '未认证'}}</span>
         </template>
       </el-table-column>
 
