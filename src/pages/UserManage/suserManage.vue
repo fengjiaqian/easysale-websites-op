@@ -18,9 +18,9 @@
         <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
           <el-option label="请选择" :value="6"></el-option>
           <el-option label="后台人员" :value="0"></el-option>
-          <el-option label="经销商" :value="1"></el-option>
+<!--          <el-option label="经销商" :value="1"></el-option>
           <el-option label="销售人员" :value="2"></el-option>
-          <el-option label="终端用户" :value="3"></el-option>
+          <el-option label="终端用户" :value="3"></el-option>-->
         </el-select>
       </el-form-item>
 
@@ -37,7 +37,7 @@
       <el-button type="info" @click="resetForm" style="margin-left:40px;" size="medium">重置</el-button>
     </div>
 
-    <el-button type="primary" class="add-warehouse" @click="addSuser">新增用户</el-button>
+    <el-button type="primary" class="add-warehouse" @click="addSuser">新增后台管理用户</el-button>
     <!--<el-button type="primary" class="add-warehouse" @click="toexamine_boss">店铺老板申请审核</el-button>-->
     <!--表格-->
     <el-table
@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column prop="userType" label="用户类型" width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.userType===1?'经销商':scope.row.userType==2?'销售人员':scope.row.userType==3 ? '终端客户' :'后台员工'}}</span>
+          <span>{{scope.row.userType===1?'小程序用户':scope.row.userType==2?'小程序用户':scope.row.userType==3 ? '小程序用户' :'后台操作用户'}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="shopName" label="店铺名称" width="250">
