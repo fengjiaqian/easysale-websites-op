@@ -44,6 +44,13 @@
           <span>{{scope.row.state===1?'启用': scope.row.state===0 ? '停用' :'异常'}}</span>
         </template>
       </el-table-column>
+
+      <el-table-column   label="认证状态"  width="120">
+        <template slot-scope="scope">
+          <span>{{scope.row.shopType===1?'已认证': scope.row.shopType===0 ? '认证中' : scope.row.shopType===2 ? '未认证' : '未认证'}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="createTime" label="创建时间" width="250">
       </el-table-column>
       <el-table-column fixed="right" label="操作"  >

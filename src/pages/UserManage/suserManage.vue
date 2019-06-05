@@ -16,7 +16,7 @@
 
       <el-form-item label="用户类型" prop="userType">
         <el-select v-model="suserInfo.userType" placeholder="请选择用户类型">
-          <el-option label="请选择" :value="6"></el-option>
+          <el-option label="全部用户" :value="6"></el-option>
           <el-option label="后台人员" :value="0"></el-option>
 <!--          <el-option label="经销商" :value="1"></el-option>
           <el-option label="销售人员" :value="2"></el-option>
