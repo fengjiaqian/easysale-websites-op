@@ -27,8 +27,8 @@
       <el-form-item label="经销商类型" prop="type">
         <el-select v-model="dealerInfo.type" placeholder="请选择经销商类型">
           <el-option label="请选择" :value="6"></el-option>
-          <el-option label="经销商" :value="1"></el-option>
-          <el-option label="销售人员" :value="2"></el-option>
+          <el-option label="老板" :value="1"></el-option>
+          <el-option label="员工" :value="2"></el-option>
         </el-select>
       </el-form-item>
 
