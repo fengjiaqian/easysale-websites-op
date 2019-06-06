@@ -557,8 +557,8 @@
   }
 
   .avatar {
-    width: 300px;
-    height: 300px;
+    width: 650px;
+    height: 100%;
     display: inline;
     border-radius: 15px;
   }
