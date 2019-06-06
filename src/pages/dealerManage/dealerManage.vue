@@ -32,6 +32,25 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="开始日期">
+        <el-date-picker
+          v-model="value1"
+          align="right"
+          type="datetime"
+          placeholder="选择日期"
+          :picker-options="pickerOptions">
+        </el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="截止日期">
+        <el-date-picker
+          v-model="value2"
+          align="right"
+          type="datetime"
+          placeholder="选择日期"
+          :picker-options="pickerOptions">
+        </el-date-picker>
+      </el-form-item>
     </el-form>
     <div class="query-btn">
       <el-button type="primary" @click="getdealerList_" size="medium">查询</el-button>
@@ -118,6 +137,33 @@
         totalCount: 0,
         dealerList: [],
         loading: false,
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        value1: '',
+        value2: '',
       }
     },
     components: {
@@ -142,6 +188,16 @@
         if(newarr.shopName == ''){
           delete newarr['shopName'];
         }
+
+        //开始时间
+        if(this.value1){
+          newarr.startTime = this.value1;
+        }
+        //结束时间
+        if(this.value2){
+          newarr.endTime = this.value2;
+        }
+
         delete newarr['auditState'];
         delete newarr['wxNickName'];
         delete newarr['name'];
@@ -150,6 +206,7 @@
       },
       /*获取功能数据列表*/
       getdealerList_() {
+
         this.loading = true;
         https_f.dealer_List(this.param_handle(this.dealerInfo)).then(data => {
           this.loading = false
@@ -188,13 +245,9 @@
           phone:'',
           auditState:6,
         }
+        this.value1 = '';
+        this.value2 = '';
         this.null =0;
-      },
-      getSelectDate(value) {
-        this.dealerInfo.startTime = value[0]
-        this.dealerInfo.endTime = value[1]
-      },
-      toggleState(row, index) {
       },
       indexMethods(index) {
         return (this.dealerInfo.pageNum - 1) * this.dealerInfo.pageSize + index + 1
@@ -240,6 +293,8 @@
       this.dealerInfo.type=6;
       this.dealerInfo.name='';
       this.dealerInfo.phone='';
+      this.value1 = '';
+      this.value2 = '';
       this.getdealerList_();
     }
   }
