@@ -261,7 +261,7 @@
               type: 'success',
               message: '执行成功!'
             });
-            this.getSuserList_();
+            this.getToexamineList_();
             //状态如果改变成功 直接通过传递的 对象改变当前表格绑定的数据值
             if(row.state == 1){
               row.state = 0;
@@ -342,7 +342,7 @@
       //执行
       handlePageNumChange(num) {
         this.pageNum = num
-        this.getSuserList_();
+        this.getToexamineList_();
       },
       //开始时间小于结束时间
       beginDate() {
