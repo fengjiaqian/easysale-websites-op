@@ -38,6 +38,7 @@
         <template slot-scope="scope">
           <div v-if="scope.row.dealerId > 0 && scope.row.userId > 0 && scope.row.shopId > 0">
             <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
+            <el-button type="text" size="small" @click="refuse_examine(scope.row)">拒绝</el-button>
           </div>
         </template>
       </el-table-column>
@@ -139,6 +140,42 @@
       AdminCitySelector
     },
     methods: {
+      refuse_examine(row){
+        if(row.shopId && row.dealerId && row.userId){
+          this.$confirm('确定要拒绝审核当前用户吗, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.chargeDialog = false;
+            let par = {
+              userId:row.userId,
+              dealerId:row.dealerId,
+              shopId:row.shopId,
+              text:'AAAA'
+            }
+
+              https_f.refusebossapply(par).then(data => {
+                console.log(JSON.stringify(data));
+                this.loading = false
+                this.$message({
+                  type: 'success',
+                  message: '拒绝审核成功'
+                });
+                //变更成经销商   这个只能改变当条数据  经销商的值  改变不了  状态 所以调用重新获取刷新页面
+                this.chargeDialog = false;
+                this.getToexamineList_();
+              }).catch(e => {
+                this.$message(e)
+                this.loading = false
+              })
+
+          }).catch(() => {
+          });
+        }else{
+          this.$message('数据异常缺少用户ID/经销商ID/店铺ID')
+        }
+      },
       qxshck(){
         this.chargeDialog = false;
         this.fdimg = '';

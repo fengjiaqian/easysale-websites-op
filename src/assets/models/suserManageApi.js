@@ -52,4 +52,9 @@ export default {
   dealerbossapply(params = {}){
     return axios.post(prefix +'/user/dealerbossapply', params)
   },
+
+  refusebossapply(params = {}){
+    return axios.post(prefix +'/user/refusebossapply', params)
+  },
+
 }
