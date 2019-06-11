@@ -146,7 +146,7 @@
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               inputPattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/,
-              inputErrorMessage: '不能为空'
+              inputErrorMessage: '拒绝理由不能为空'
             }).then(({ value }) => {
               this.chargeDialog = false;
               let par = {
