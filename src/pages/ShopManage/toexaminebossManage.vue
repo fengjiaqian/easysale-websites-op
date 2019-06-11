@@ -268,6 +268,8 @@
                 this.chargeDialog = false;
                 this.getToexamineList_();
               }).catch(e => {
+                this.chargeDialog = false;
+                this.getToexamineList_();
                 this.$message(e)
                 this.loading = false
               })
