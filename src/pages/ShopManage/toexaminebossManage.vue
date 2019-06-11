@@ -37,8 +37,8 @@
       <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
           <div v-if="scope.row.dealerId > 0 && scope.row.userId > 0 && scope.row.shopId > 0">
-            <el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>
-            <el-button type="text" size="small" @click="refuse_examine(scope.row)">拒绝</el-button>
+            <el-button type="text" size="small" @click="to_examine(scope.row)">审核通过</el-button>
+            <el-button type="text" size="small" @click="refuse_examine(scope.row)">拒绝审核</el-button>
           </div>
         </template>
       </el-table-column>
@@ -142,19 +142,19 @@
     methods: {
       refuse_examine(row){
         if(row.shopId && row.dealerId && row.userId){
-          this.$confirm('确定要拒绝审核当前用户吗, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.chargeDialog = false;
-            let par = {
-              userId:row.userId,
-              dealerId:row.dealerId,
-              shopId:row.shopId,
-              text:'AAAA'
-            }
-
+            this.$prompt('请输入拒绝的理由', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              inputPattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/,
+              inputErrorMessage: '不能为空'
+            }).then(({ value }) => {
+              this.chargeDialog = false;
+              let par = {
+                userId:row.userId,
+                dealerId:row.dealerId,
+                shopId:row.shopId,
+                text:value
+              }
               https_f.refusebossapply(par).then(data => {
                 console.log(JSON.stringify(data));
                 this.loading = false
@@ -169,9 +169,9 @@
                 this.$message(e)
                 this.loading = false
               })
+            }).catch(() => {
 
-          }).catch(() => {
-          });
+            });
         }else{
           this.$message('数据异常缺少用户ID/经销商ID/店铺ID')
         }
