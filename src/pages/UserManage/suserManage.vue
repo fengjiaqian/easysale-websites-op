@@ -73,6 +73,14 @@
           <span>{{scope.row.state===0?'停用':'启用'}}</span>
         </template>
       </el-table-column>
+
+      <el-table-column prop="state" label="是否接收通知" width="120">
+        <template slot-scope="scope">
+          <span>{{scope.row.isNotify===1?'是':'否'}}</span>
+        </template>
+      </el-table-column>
+
+
       <el-table-column prop="createTime" label="创建时间" width="250">
       </el-table-column>
       <el-table-column fixed="right" label="操作"  >
