@@ -74,12 +74,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="state" label="是否接收通知" width="120">
+      <el-table-column prop="isNotify" label="是否接收通知" width="120">
         <template slot-scope="scope">
           <span>{{scope.row.isNotify===1?'是':'否'}}</span>
         </template>
       </el-table-column>
 
+      <el-table-column prop="isAdminloginState" label="是否可登录OP" width="120">
+        <template slot-scope="scope">
+          <span>{{scope.row.isAdminloginState===1?'是':'否'}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column prop="createTime" label="创建时间" width="250">
       </el-table-column>
