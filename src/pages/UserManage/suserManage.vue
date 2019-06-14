@@ -77,42 +77,26 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作"  >
         <template slot-scope="scope">
-          <!-- 经销商-->
-
           <div v-if="scope.row.userType == 0">
             <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>
             <el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>
             <el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>
+            <el-button type="text" size="small" @click="resSetPwd(scope.row)">重置密码</el-button>
+          </div>
+          <div v-if="scope.row.isAdminloginState == 1">
+            <div v-if="scope.row.isNotify == 1">
+              <el-button type="text" size="small" @click="chageNotify(scope.row)">关闭接收通知</el-button>
+            </div>
+            <div v-if="scope.row.isNotify == 0">
+              <el-button type="text" size="small" @click="chageNotify(scope.row)">开启接收通知</el-button>
+            </div>
+            <el-button type="text" size="small" @click="chageOpAdmin(scope.row)">关闭当前OP管理员</el-button>
+            <el-button type="text" size="small" @click="resSetPwd(scope.row)">重置密码</el-button>
           </div>
 
-
-          <!--<div v-if="scope.row.userType == 1">-->
-            <!--&lt;!&ndash;    <el-button type="text" size="small" @click="updateuser(scope.row)">编辑</el-button>&ndash;&gt;-->
-            <!--&lt;!&ndash; <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
-            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
-            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
-            <!--&lt;!&ndash;        <el-button type="text" size="small" @click="userAuthRole(scope.row.id)">授权</el-button>&ndash;&gt;-->
-          <!--</div>-->
-
-          <!--&lt;!&ndash; 销售人员 &ndash;&gt;-->
-          <!--<div v-if="scope.row.userType == 2">-->
-            <!--&lt;!&ndash;            <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
-            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
-            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
-          <!--</div>-->
-
-          <!--&lt;!&ndash; 终端人员 &ndash;&gt;-->
-          <!--<div v-if="scope.row.userType == 3  && scope.row.auditState == 0">-->
-            <!--&lt;!&ndash; <el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
-            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
-            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
-            <!--<el-button type="text" size="small" @click="to_examine(scope.row)">审核</el-button>-->
-          <!--</div>-->
-          <!--<div v-else-if="scope.row.userType == 3  && scope.row.auditState == 1">-->
-            <!--&lt;!&ndash;<el-button type="text" size="small" @click="goToDetail(scope.row)">详情</el-button>&ndash;&gt;-->
-            <!--<el-button type="text" size="small" @click="closeorstrat(scope.row)">{{scope.row.state == 1 ? '停用' : '启用'}}</el-button>-->
-            <!--<el-button type="text" size="small" @click="deleteuser(scope.row)">刪除</el-button>-->
-          <!--</div>-->
+          <div v-if="scope.row.isAdminloginState == 0 && scope.row.userType != 0">
+            <el-button type="text" size="small" @click="chageOpAdmin(scope.row)">设置成OP管理员</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -215,10 +199,72 @@
       AdminCitySelector
     },
     methods: {
-      //店铺老板申请 审核
-      toexamine_boss(){
-        //toexaminebossManage
-        this.$router.push({name:'toexaminebossManage'});
+
+      //开启接收通知
+      chageNotify(row){
+        this.$confirm('确定要变更当前用户接受通知的状态吗, 是否继续?', '目前只支持接收认证店主通知', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let _state = 1;
+          if(row.isNotify == 1){
+            _state = 0;
+          }
+          let par = {
+            id:row.id,
+            isNotify:_state,
+            password:row.password,
+            phone:row.phone
+          }
+          https_f.updateUserOpState(par).then(data => {
+            this.loading = false
+            this.$message({
+              type: 'success',
+              message: '变更成功'
+            });
+            this.getSuserList_();
+          }).catch(e => {
+            this.$message(e)
+            this.loading = false
+          })
+        }).catch(() => {
+        });
+      },
+      //重置密码
+      resSetPwd(row){
+        this.$router.push({name:'ressetPwd', query:{row}})
+      },
+      //关闭当前OP管理员
+      chageOpAdmin(row){
+        this.$confirm('确定要变更当前用户OP管理员状态吗, 是否继续?', '一旦设置该用户就具备OP登录功能', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let _state = 1;
+          if(row.isAdminloginState == 1){
+            _state = 0;
+          }
+          let par = {
+            id:row.id,
+            isAdminloginState:_state,
+            password:row.password,
+            phone:row.phone
+          }
+          https_f.updateUserOpState(par).then(data => {
+            this.loading = false
+            this.$message({
+              type: 'success',
+              message: '变更成功'
+            });
+            this.getSuserList_();
+          }).catch(e => {
+            this.$message(e)
+            this.loading = false
+          })
+        }).catch(() => {
+        });
       },
       qxshck(){
         this.chargeDialog = false;

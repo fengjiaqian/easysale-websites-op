@@ -64,6 +64,8 @@ import suserAddcp from '../pages/UserManage/suserAddcp'
 import suserUpdatecp from '../pages/UserManage/suserUpdatecp'
 import toexaminebossManage from '../pages/UserManage/toexaminebossManage'
 
+import  ressetPwd from '../pages/UserManage/ressetPwd'
+
 
 // 店铺管理
 import shopManage from '../pages/ShopManage/shopManage'
@@ -590,6 +592,11 @@ export default new Router({
       path: '/dealerManage',
       name: 'dealerManage',
       component: dealerManage
+    },
+    {
+      path: '/ressetPwd',
+      name: 'ressetPwd',
+      component: ressetPwd
     }
   ]
 })

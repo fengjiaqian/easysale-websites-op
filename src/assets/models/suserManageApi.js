@@ -24,6 +24,16 @@ export default {
     return axios.post(prefix +'/user/updateUser', params)
   },
 
+  //用户修改状态
+  updateUserOpState(params = {}){
+    return axios.post(prefix +'/user/updateUserOpState', params)
+  },
+
+  //验证用户密码
+  valiuserpwd(params = {}){
+    return axios.post(prefix +'/user/valiuserpwd', params)
+  },
+
   //查询用户实体
   getSuserObj(params = {}){
     return axios.post(prefix +'/user/findUserInfo', params)
