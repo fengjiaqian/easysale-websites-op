@@ -95,6 +95,12 @@
             https_f.updateSuserObj(par).then(data => {
               this.loading = false;
               this.$message(`修改成功`);
+
+              if(this.userobj.indexPage != undefined &&  this.userobj.indexPage == true){
+                //如果是从注销边上点击改的密码   改完直接注销
+                this.clearToken();
+                window.location.reload()
+              }
               this.userInfo.jpwd = '';
               this.userInfo.newpwd = '';
               this.userInfo.clickpwd = '';
@@ -160,7 +166,7 @@
       //
     },
     computed: {
-      ...mapState(`user`, [`userInfo`, `choseRoleInfoList`])
+
     },
     mounted: function () {
       that =  this;

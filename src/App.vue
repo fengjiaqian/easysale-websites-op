@@ -35,6 +35,9 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+
+          <span @click="chagePwd" class="cancel">更改密码</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <span @click="logOut" class="cancel">注销</span>
         </div>
       </el-header>
@@ -128,6 +131,13 @@
       },
     },
     methods: {
+
+      //更改密码
+      chagePwd(){
+        let row = this.userInfo;
+        row.indexPage = true;
+        this.$router.push({name:'ressetPwd', query:{row}})
+      },
       logOut() {
         this.clearToken();
         window.location.reload()
@@ -386,4 +396,5 @@
     text-decoration: underline;
     cursor: pointer;
   }
+
 </style>
