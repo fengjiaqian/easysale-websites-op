@@ -11,6 +11,7 @@
   import {mapState} from 'vuex'
   import Urls from '../../assets/models/baseUrl'
   const prefix = Urls.supplyChainUrl
+  import https_f from 'http/deraler_ManageApi'
 
   import QRCode from 'qrcodejs2';
   let that = null;
@@ -42,13 +43,21 @@
             this.uuid = that.get_uuid();
           }
           // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-         let ur = "ws://"+window.location.host+"/websocket/"+this.uuid;
-          console.log(ur);
-          this.websock = new WebSocket(ur);
+
+          this.websock = new WebSocket("ws://easysalemini.release.yijiupidev.com/easysaleapi/websocket/"+this.uuid);
           this.websock.onopen = this.websocketonopen;
           this.websock.onerror = this.websocketonerror;
           this.websock.onmessage = this.websocketonmessage;
           this.websock.onclose = this.websocketclose;
+
+        https_f.dealer_Listsss({
+          phone:'13381112603'
+        }).then(data => {
+          console.log(data);
+        }).catch(e => {
+          this.$message(e)
+          this.loading = false
+        })
       },
       websocketonopen: function () {
         console.log("WebSocket连接成功");
