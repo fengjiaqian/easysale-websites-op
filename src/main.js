@@ -26,7 +26,10 @@ router.beforeEach(function (to, from, next) {
      next();
      return;
   }
-
+  if(to.path === "/orderprinting" ){
+    next();
+    return;
+  }
 
   let hasToken = !!this.app.$options.store.state.user.token;
   if (to.path === "/login" || to.path === "/resetPassword") {
