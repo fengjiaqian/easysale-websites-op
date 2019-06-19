@@ -108,6 +108,11 @@ import dealerManage from '../pages/dealerManage/dealerManage'
 //产品详情
 import warehouseProductDetail from '../pages/productManage/warehouseProductDetail'
 import chooseProduct from '../pages/warehouseDelivery/chooseProduct'
+
+import  orderprinting from '../pages/orderprinting/orderprinting'
+import  orderlist from '../pages/orderprinting/orderlist'
+
+
 Vue.use(Router);
 export default new Router({
   routes: [
@@ -597,6 +602,16 @@ export default new Router({
       path: '/ressetPwd',
       name: 'ressetPwd',
       component: ressetPwd
+    },
+    {
+      path: '/orderprinting',
+      name: 'orderprinting',
+      component: orderprinting
+    },
+    {
+      path: '/orderlist',
+      name: 'orderlist',
+      component: orderlist
     }
   ]
 })
