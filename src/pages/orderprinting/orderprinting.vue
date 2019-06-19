@@ -42,7 +42,7 @@
             this.uuid = that.get_uuid();
           }
           // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-          this.websock = new WebSocket("ws://easysalemini.release.yijiupidev.com/easysaleapi/websocket/"+this.uuid);
+          this.websock = new WebSocket("ws://"+window.location.host+"/websocket/"+this.uuid);
           this.websock.onopen = this.websocketonopen;
           this.websock.onerror = this.websocketonerror;
           this.websock.onmessage = this.websocketonmessage;
