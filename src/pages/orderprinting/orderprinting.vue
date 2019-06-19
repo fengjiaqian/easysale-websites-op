@@ -42,7 +42,9 @@
             this.uuid = that.get_uuid();
           }
           // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-          this.websock = new WebSocket("ws://"+window.location.host+"/websocket/"+this.uuid);
+         let ur = "ws://"+window.location.host+"/websocket/"+this.uuid;
+          console.log(ur);
+          this.websock = new WebSocket(ur);
           this.websock.onopen = this.websocketonopen;
           this.websock.onerror = this.websocketonerror;
           this.websock.onmessage = this.websocketonmessage;
