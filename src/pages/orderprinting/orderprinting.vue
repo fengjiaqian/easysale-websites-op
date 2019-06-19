@@ -42,7 +42,7 @@
             this.uuid = that.get_uuid();
           }
           // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-          this.websock = new WebSocket("ws://197.168.14.224:5202/websocket/"+this.uuid);
+          this.websock = new WebSocket("ws://easysalemini.release.yijiupidev.com/easysaleapi/websocket/"+this.uuid);
           this.websock.onopen = this.websocketonopen;
           this.websock.onerror = this.websocketonerror;
           this.websock.onmessage = this.websocketonmessage;
@@ -78,7 +78,7 @@
       },
       bindQRCode: function () {
         new QRCode(this.$refs.qrCodeDiv, {
-          text: "http://197.168.14.224:5202/ewmauth/authvali?id=405149&uuid="+this.uuid,
+          text: ""+this.uuid,
           width: 200,
           height: 200,
           colorDark: "#333333", //二维码颜色
