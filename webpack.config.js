@@ -12,9 +12,9 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 //TODO:切换开发环境
-// const devEnv = `dev`
+ const devEnv = `dev`
 //const devEnv = `test`
- const devEnv=`release`
+// const devEnv=`release`
 // const devEnv=`online`
 
 module.exports = {

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 
-let baseUrl = `http://197.168.13.22:9080/`
+let baseUrl = `http://192.168.1.10:8080/`
 
 axios.defaults.withCredentials = true
 

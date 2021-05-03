@@ -2,10 +2,10 @@
   <div class="page-wrap" v-loading.fullscreen.lock="fullscreenLoading">
     <img class="login-bg" src="../../assets/icons/bgPhoto@2x.png" alt=""/>
     <!--<div class="login-bg"></div>-->
-    <img class="login-login" src="../../assets/icons/group31.png"/>
+    <!--<img class="login-login" src="../../assets/icons/group31.png"/>-->
     <div class="title-header">
       <img src="../../assets/icons//yjs_logo.png" class="imglogin"/>
-      易经商后台管理系统
+      快租宝后台管理系统
     </div>
     <img class="login-shadow" src="../../assets/icons/shadow.png"/>
     <div class="login-input-block">
